@@ -11,7 +11,58 @@
     <properties>
         <!-- Make build platform independent -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- rest -->
+        <spark-core.version>2.9.1</spark-core.version>
+
+        <!-- general -->
+        <maven-compiler.version>3.5</maven-compiler.version>
+        <java.version>1.8</java.version>
+        <exec-maven.version>1.2.1</exec-maven.version>
+        <main-class>Main</main-class>
+
+       <!-- logging -->
+        <slf4j-simple.version>1.7.25</slf4j-simple.version>
     </properties>
+
+    <dependencies>
+        <!-- rest -->
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>${spark-core.version}</version>
+        </dependency>
+
+        <!-- logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j-simple.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- general -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven.version}</version>
+                <configuration>
+                    <mainClass>${main-class}</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

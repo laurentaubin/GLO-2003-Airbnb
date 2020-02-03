@@ -46,6 +46,28 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.cosium.code</groupId>
+                <artifactId>maven-git-code-format</artifactId>
+                <version>${maven-git-code-format.version}</version>
+                <executions>
+                    <!-- On commit, format the modified java files -->
+                    <execution>
+                        <id>install-formatter-hook</id>
+                        <goals>
+                            <goal>install-hooks</goal>
+                        </goals>
+                    </execution>
+                    <!-- On Maven verify phase, fail if any file
+                    (including unmodified) is badly formatted -->
+                    <execution>
+                        <id>validate-code-format</id>
+                        <goals>
+                            <goal>validate-code-format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- general -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -63,28 +85,6 @@
                 <configuration>
                     <mainClass>${main-class}</mainClass>
                 </configuration>
-            </plugin>
-            <plugin>
-                <!-- style -->
-                <groupId>com.cosium.code</groupId>
-                <artifactId>maven-git-code-format</artifactId>
-                <version>${maven-git-code-format.version}</version>
-                <executions>
-                    <!-- On commit, format the modified java files -->
-                    <execution>
-                        <id>install-formatter-hook</id>
-                        <goals>
-                            <goal>install-hooks</goal>
-                        </goals>
-                    </execution>
-                    <!-- On maven verify phase, fail if any file (including unmodified) is badly formatted -->
-                    <execution>
-                        <id>validate-code-format</id>
-                        <goals>
-                            <goal>validate-code-format</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

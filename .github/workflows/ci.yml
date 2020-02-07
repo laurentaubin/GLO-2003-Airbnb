@@ -16,3 +16,8 @@ jobs:
         run: mvn git-code-format:validate-code-format
       - name: Tests
         run: mvn test
+      - uses: actions/checkout@v2
+      - name: Build & Deploy
+        run: mvn clean install &&
+        HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }}
+        mvn clean heroku:deploy

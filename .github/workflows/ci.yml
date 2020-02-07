@@ -20,4 +20,5 @@ jobs:
       - name: Tests
         run: mvn test
       - uses: actions/checkout@v2
+      - name: Deployment
         run: mvn clean heroku:deploy

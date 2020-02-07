@@ -9,13 +9,12 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <!-- Make build platform independent -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- rest -->
+        <!-- spark -->
         <spark-core.version>2.9.1</spark-core.version>
 
-        <!-- general -->
+        <!-- maven -->
         <maven-compiler.version>3.5</maven-compiler.version>
         <java.version>1.8</java.version>
         <exec-maven.version>1.2.1</exec-maven.version>
@@ -24,10 +23,10 @@
        <!-- logging -->
         <slf4j-simple.version>1.7.25</slf4j-simple.version>
 
-        <!-- style -->
+        <!-- code styling -->
         <maven-git-code-format.version>1.39</maven-git-code-format.version>
 
-        <!-- test -->
+        <!-- junit -->
         <junit-jupiter-api.version>5.4.2</junit-jupiter-api.version>
         <junit-jupiter-engine.version>5.4.2</junit-jupiter-engine.version>
         <maven-surefire.version>2.22.1</maven-surefire.version>
@@ -36,11 +35,6 @@
         <jacoco.version>0.8.5</jacoco.version>
 
         <!-- deployment -->
-        <jar-file-name>boilerplate</jar-file-name>
-        <heroku-maven.version>2.0.16</heroku-maven.version>
-        <heroku-maven.appName>glo2003</heroku-maven.appName>
-        <maven-shade.version>3.2.1</maven-shade.version>
-        <maven-jar.version>2.4</maven-jar.version>
     </properties>
 
 
@@ -142,9 +136,20 @@
             </plugin>
 
             <!-- deployment -->
-
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>2.0.16</version>
+                <configuration>
+                    <appName>glo2003</appName>
+                    <processTypes>
+                        <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
+                    </processTypes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
     <reporting>
         <plugins>
             <plugin>

@@ -16,3 +16,5 @@ jobs:
         run: mvn git-code-format:format-code
       - name: Tests
         run: mvn test
+      - uses: actions/checkout@v2
+        run: mvn clean heroku:deploy

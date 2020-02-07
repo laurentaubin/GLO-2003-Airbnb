@@ -1,8 +1,5 @@
 name: Boilerplate CI
 on:
-  commit:
-    branches:
-      - master
   push:
     branches:
       - master

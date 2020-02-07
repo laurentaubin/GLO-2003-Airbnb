@@ -35,40 +35,14 @@
         <!-- code coverage -->
         <jacoco-maven.version>0.8.5</jacoco-maven.version>
 
-        <!-- deployment -->
-        <heroku-maven.version>2.0.16</heroku-maven.version>
+
 
         <!-- deployment -->
-       <jar-file-name>boilerplate</jar-file-name>
+      <jar-file-name>boilerplate</jar-file-name>
       <heroku-maven.version>2.0.16</heroku-maven.version>
       <heroku-maven.appName>glo2003-h2020</heroku-maven.appName>
 
     </properties>
-
-
-<build>
-    <finalName>${jar-file-name}</finalName>
-    <plugins>
-        ...
-        <!-- deployment -->
-        <plugin>
-            <groupId>com.heroku.sdk</groupId>
-            <artifactId>heroku-maven-plugin</artifactId>
-            <version>${heroku-maven.version}</version>
-            <configuration>
-                <appName>${heroku-maven.appName}</appName>
-                <includeTarget>false</includeTarget>
-                <includes>
-                    <include>target/${jar-file-name}.jar</include>
-                </includes>
-                <processTypes>
-                    <web>java -Dport=$PORT -jar 
-                        target/${jar-file-name}.jar</web>
-                </processTypes>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
 
 
     <dependencies>
@@ -176,6 +150,31 @@
                 <groupId>com.heroku.sdk</groupId>
                 <artifactId>heroku-maven-plugin</artifactId>
                 <version>${heroku-maven.version}</version>
+            </plugin>
+        </plugins>
+
+
+
+
+        <finalName>${jar-file-name}</finalName>
+        <plugins>
+            ...
+            <!-- deployment -->
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>${heroku-maven.version}</version>
+                <configuration>
+                    <appName>${heroku-maven.appName}</appName>
+                    <includeTarget>false</includeTarget>
+                    <includes>
+                        <include>target/${jar-file-name}.jar</include>
+                    </includes>
+                    <processTypes>
+                        <web>java -Dport=$PORT -jar 
+                            target/${jar-file-name}.jar</web>
+                    </processTypes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

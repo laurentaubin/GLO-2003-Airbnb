@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 public class MainTest {
 
   @Test
-  public void given_when_then() {
+  public void isDummyTest_equalsTrue_True() {
     assertTrue(true);
   }
 }

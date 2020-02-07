@@ -13,11 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check Style
-        run: mvn git-code-format:validate-code-format
+        run: mvn git-code-format:format-code
       - name: Tests
         run: mvn test
-      - uses: actions/checkout@v2
-      - name: Build & Deploy
-        run: mvn clean install &&
-        HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }}
-        mvn heroku:deploy

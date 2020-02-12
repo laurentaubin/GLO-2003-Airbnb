@@ -109,3 +109,9 @@ modules.xml
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/Intellij+all
+
+package-lock.json
+.DS_Store
+node_modules/
+src/.DS_Stpre
+src/test/.DS_Store

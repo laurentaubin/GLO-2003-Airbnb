@@ -1,4 +1,4 @@
-name: Boilerplate CI
+name: MasterCI
 on:
   push:
     branches:

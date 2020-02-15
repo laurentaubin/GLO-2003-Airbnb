@@ -13,6 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check Style
-        run: mvn git-code-format:format-code -DglobPattern=**/*
+        run: mvn git-code-format:validate-code-format
       - name: Tests
         run: mvn test

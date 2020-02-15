@@ -2,7 +2,7 @@
 
 Air Bed and Bug API
 
-##Table of content
+## Table of content
 
 - [Getting Started](#getting-started)
     - [Build](#build)

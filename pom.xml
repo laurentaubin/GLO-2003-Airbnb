@@ -133,6 +133,20 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+               <executions>
+                   <execution>
+                       <goals>
+                           <goal>prepare-agent</goal>
+                       </goals>
+                   </execution>
+                   <execution>
+                       <id>generate-code-coverage</id>
+                       <phase>verify</phase>
+                       <goals>
+                           <goal>report</goal>
+                       </goals>
+                   </execution>
+               </executions>
             </plugin>
 
             <!-- deployment -->

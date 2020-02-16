@@ -36,7 +36,7 @@ Manuel code format validation
 
 ### Testing culture
 
-Everything that might break must be test.
+Everything that might break must be tested.
 
 
 This project uses [JUnit](https://junit.org/junit5/).

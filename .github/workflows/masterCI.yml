@@ -1,4 +1,4 @@
-name: Boilerplate CI
+name: MasterCI
 on:
   push:
     branches:
@@ -13,9 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check Style
-        run: mvn git-code-format:format-code
+        run: mvn git-code-format:validate-code-format
       - name: Tests
         run: mvn test
-      - uses: actions/checkout@v2
-      - name: Deployment
-        run: mvn clean install && HEROKU_API_KEY=${{secrets.HEROKU_API_KEY}} mvn heroku:deploy

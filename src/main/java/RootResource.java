@@ -3,7 +3,7 @@ import static spark.Spark.path;
 
 import spark.RouteGroup;
 
-public class RootRessource implements RouteGroup {
+public class RootResource implements RouteGroup {
   public static final String ROOT_PATH = "/";
 
   @Override

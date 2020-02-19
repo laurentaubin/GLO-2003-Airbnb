@@ -67,7 +67,7 @@ public class Bed {
 
   public enum BedType {
     LATEX,
-    MEMORYFOAM,
+    MEMORY_FOAM,
     SPRINGS
   }
 
@@ -79,33 +79,33 @@ public class Bed {
   }
 
   public enum BloodType {
-    ONEG,
-    OPOS,
-    ANEG,
-    APOS,
-    BNEG,
-    BPOS,
-    ABNEG,
-    ABPOS;
+    O_NEG,
+    O_POS,
+    A_NEG,
+    A_POS,
+    B_NEG,
+    B_POS,
+    AB_NEG,
+    AB_POS;
 
     public static BloodType getBloodTypeFromString(String bloodTypeString) {
       switch (bloodTypeString) {
         case "O-":
-          return ONEG;
+          return O_NEG;
         case "O+":
-          return OPOS;
+          return O_POS;
         case "A-":
-          return ANEG;
+          return A_NEG;
         case "A+":
-          return APOS;
+          return A_POS;
         case "B-":
-          return BNEG;
+          return B_NEG;
         case "B+":
-          return BPOS;
+          return B_POS;
         case "AB-":
-          return ABNEG;
+          return AB_NEG;
         case "AB+":
-          return ABPOS;
+          return AB_POS;
       }
       throw new IllegalArgumentException("Invalid blood type string");
     }
@@ -132,9 +132,9 @@ public class Bed {
     }
 
     public enum Name {
-      BLOODTHIRSTY,
-      ALLYOUCANDRINK,
-      SWEETTOOTH
+      BLOOD_THIRSTY,
+      ALL_YOU_CAN_DRINK,
+      SWEET_TOOTH
     }
 
     public BedPackage(Name name, double pricePerNight) {

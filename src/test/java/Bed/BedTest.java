@@ -10,12 +10,12 @@ public class BedTest {
     String zipCode = "12345";
     Bed.BedType bedType = Bed.BedType.LATEX;
     Bed.CleaningFrequency cleaningFrequency = Bed.CleaningFrequency.MONTHLY;
-    Bed.BloodType[] bloodTypes = new Bed.BloodType[] {Bed.BloodType.ONEG, Bed.BloodType.ABPOS};
+    Bed.BloodType[] bloodTypes = new Bed.BloodType[] {Bed.BloodType.O_NEG, Bed.BloodType.AB_POS};
     int capacity = 950;
     Bed.BedPackage[] packages =
         new Bed.BedPackage[] {
-          new Bed.BedPackage(Bed.BedPackage.Name.BLOODTHIRSTY, 12.5),
-          new Bed.BedPackage(Bed.BedPackage.Name.SWEETTOOTH, 6)
+          new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
+          new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
         };
 
     Bed bedTest =

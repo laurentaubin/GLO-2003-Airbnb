@@ -115,13 +115,32 @@ public class Bed {
     private Name name;
     private double pricePerNight;
 
+    public Name getName() {
+      return name;
+    }
+
+    public void setName(Name name) {
+      this.name = name;
+    }
+
+    public double getPricePerNight() {
+      return pricePerNight;
+    }
+
+    public void setPricePerNight(double pricePerNight) {
+      this.pricePerNight = pricePerNight;
+    }
+
     public enum Name {
       BLOODTHIRSTY,
       ALLYOUCANDRINK,
       SWEETTOOTH
     }
 
-    public BedPackage(Name name, double pricePerNight) {}
+    public BedPackage(Name name, double pricePerNight) {
+      this.setName(name);
+      this.setPricePerNight(pricePerNight);
+    }
   }
 
   public Bed() {}
@@ -135,12 +154,12 @@ public class Bed {
       int capacity,
       BedPackage[] packages) {
 
-    setOwnerPublicKey(ownerPublicKey);
-    setZipCode(zipCode);
-    setBedType(bedType);
-    setCleaningFrequency(cleaningFrequency);
-    setBloodTypes(bloodTypes);
-    setCapacity(capacity);
-    setPackages(packages);
+    this.setOwnerPublicKey(ownerPublicKey);
+    this.setZipCode(zipCode);
+    this.setBedType(bedType);
+    this.setCleaningFrequency(cleaningFrequency);
+    this.setBloodTypes(bloodTypes);
+    this.setCapacity(capacity);
+    this.setPackages(packages);
   }
 }

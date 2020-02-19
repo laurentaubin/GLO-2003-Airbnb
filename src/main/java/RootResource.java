@@ -1,6 +1,9 @@
 import static spark.Spark.get;
-import static spark.Spark.path;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.jetty.http.HttpStatus;
+import spark.Request;
+import spark.Response;
 import spark.RouteGroup;
 
 public class RootResource implements RouteGroup {
@@ -8,6 +11,11 @@ public class RootResource implements RouteGroup {
 
   @Override
   public void addRoutes() {
-    path("/", () -> get("/hello", (req, res) -> "Air Bed and Bugs GLO2003"));
+    get("/hello", this::helloWorld, new ObjectMapper()::writeValueAsString);
+  }
+
+  public Object helloWorld(Request request, Response response) {
+    response.status(HttpStatus.OK_200);
+    return "Hello World";
   }
 }

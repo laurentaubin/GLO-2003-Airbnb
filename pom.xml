@@ -34,7 +34,8 @@
         <!-- code coverage -->
         <jacoco.version>0.8.5</jacoco.version>
 
-        <!-- deployment -->
+        <!-- rest -->
+        <jackson-databind.version>2.10.1</jackson-databind.version>
     </properties>
 
 
@@ -44,6 +45,11 @@
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
             <version>${spark-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
         </dependency>
 
         <!-- logging -->
@@ -71,6 +77,8 @@
             <version>${junit-jupiter-api.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- code coverage -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>

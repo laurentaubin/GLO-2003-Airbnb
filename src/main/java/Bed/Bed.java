@@ -66,48 +66,71 @@ public class Bed {
   }
 
   public enum BedType {
-    LATEX,
-    MEMORY_FOAM,
-    SPRINGS
+    LATEX("latex"),
+    MEMORY_FOAM("memory-foam"),
+    SPRINGS("springs");
+
+    private String label;
+
+    BedType(String type) {
+      this.label = type;
+    }
+
+    public static BedType valueOfLabel(String type) {
+      for (BedType bedType : values()) {
+        if (bedType.label.equals(type)) {
+          return bedType;
+        }
+      }
+      throw new IllegalArgumentException("Invalid bed type");
+    }
   }
 
   public enum CleaningFrequency {
-    WEEKLY,
-    MONTHLY,
-    ANNUAL,
-    NEVER
+    WEEKLY("weekly"),
+    MONTHLY("monthly"),
+    ANNUAL("annual"),
+    NEVER("never");
+
+    private String label;
+
+    CleaningFrequency(String frequency) {
+      this.label = frequency;
+    }
+
+    public static CleaningFrequency valueOfLabel(String frequency) {
+      for (CleaningFrequency cleaningFrequency : values()) {
+        if (cleaningFrequency.label.equals(frequency)) {
+          return cleaningFrequency;
+        }
+      }
+      throw new IllegalArgumentException("Invalid cleaning frequency");
+    }
   }
 
   public enum BloodType {
-    O_NEG,
-    O_POS,
-    A_NEG,
-    A_POS,
-    B_NEG,
-    B_POS,
-    AB_NEG,
-    AB_POS;
+    O_NEG("O-"),
+    O_POS("O+"),
+    A_NEG("A-"),
+    A_POS("A+"),
+    B_NEG("B-"),
+    B_POS("B+"),
+    AB_NEG("AB-"),
+    AB_POS("AB+");
 
-    public static BloodType getBloodTypeFromString(String bloodTypeString) {
-      switch (bloodTypeString) {
-        case "O-":
-          return O_NEG;
-        case "O+":
-          return O_POS;
-        case "A-":
-          return A_NEG;
-        case "A+":
-          return A_POS;
-        case "B-":
-          return B_NEG;
-        case "B+":
-          return B_POS;
-        case "AB-":
-          return AB_NEG;
-        case "AB+":
-          return AB_POS;
+    private String label;
+
+    BloodType(String type) {
+      this.label = type;
+    }
+
+    public static BloodType valueOfLabel(String type) {
+      for (BloodType bloodType : values()) {
+        if (bloodType.label.equals(type)) {
+          return bloodType;
+        }
       }
-      throw new IllegalArgumentException("Invalid blood type string");
+      throw new IllegalArgumentException("Invalid blood type");
     }
   }
 

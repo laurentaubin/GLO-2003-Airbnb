@@ -1,5 +1,7 @@
 package Bed;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 
 public class BedTest {
@@ -21,5 +23,62 @@ public class BedTest {
     Bed bedTest =
         new Bed(
             ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
+  }
+
+  @Test
+  void gettingBloodTypeValueOfLabel_withValidLabel_shouldReturnBloodType() throws Exception {
+    Bed.BloodType bloodType = Bed.BloodType.valueOfLabel("A+");
+
+    assertEquals(Bed.BloodType.A_POS, bloodType);
+  }
+
+  @Test
+  void gettingBloodTypeValueOfLabel_withInvalidLabel_shouldThrowIllegalArgumentException()
+      throws Exception {
+
+    Exception exception =
+        assertThrows(IllegalArgumentException.class, () -> Bed.BloodType.valueOfLabel("C+"));
+
+    String expectedMessage = "Invalid blood type";
+    String actualMessage = exception.getMessage();
+
+    assertEquals(expectedMessage, actualMessage);
+  }
+
+  @Test
+  void gettingCleaningFrequencyValueOfLabel_withValidLabel_shouldReturnCleaningFrequency() {
+    Bed.CleaningFrequency cleaningFrequency = Bed.CleaningFrequency.valueOfLabel("annual");
+
+    assertEquals(Bed.CleaningFrequency.ANNUAL, cleaningFrequency);
+  }
+
+  @Test
+  void gettingCleaningFrequencyValueOfLabel_withInvalidLabel_shouldThrowIllegalArgumentException() {
+    Exception exception =
+        assertThrows(
+            IllegalArgumentException.class, () -> Bed.CleaningFrequency.valueOfLabel("daily"));
+
+    String expectedMessage = "Invalid cleaning frequency";
+    String actualMessage = exception.getMessage();
+
+    assertEquals(expectedMessage, actualMessage);
+  }
+
+  @Test
+  void gettingBedTypeValueOfLabel_withValidLabel_shouldReturnBedType() {
+    Bed.BedType bedType = Bed.BedType.valueOfLabel("latex");
+
+    assertEquals(Bed.BedType.LATEX, bedType);
+  }
+
+  @Test
+  void gettingBedTypeValueOdLabel_withInvalidLabel_shouldThrowIllegalArgumentException() {
+    Exception exception =
+        assertThrows(IllegalArgumentException.class, () -> Bed.BedType.valueOfLabel("strong"));
+
+    String expectedMessage = "Invalid bed type";
+    String actualMessage = exception.getMessage();
+
+    assertEquals(expectedMessage, actualMessage);
   }
 }

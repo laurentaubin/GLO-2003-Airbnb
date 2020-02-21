@@ -44,7 +44,7 @@ class BedServiceTest {
             this.bloodTypes,
             this.capacity,
             this.packages));
-    assertEquals(bedService.getTotalNumberOfBeds(), 1);
+    assertEquals(1, bedService.getTotalNumberOfBeds());
   }
 
   @Test
@@ -59,6 +59,37 @@ class BedServiceTest {
             this.capacity,
             this.packages);
     this.bedService.addBed(bed);
-    assertEquals(this.bedService.getAllBeds().get(0), bed);
+    assertEquals(bed, this.bedService.getAllBeds().get(0));
+  }
+
+  @Test
+  void getBedByUuid_whenGettingBedWithValidUuid_shouldEqualSameBed() {
+    Bed bed =
+        new Bed(
+            this.ownerPublicKey,
+            this.zipCode,
+            this.bedType,
+            this.cleaningFrequency,
+            this.bloodTypes,
+            this.capacity,
+            this.packages);
+    String uuid = this.bedService.addBed(bed);
+    assertEquals(bed, this.bedService.getBedByUuid(uuid));
+  }
+
+  @Test
+  void getBedByUuid_whenGettingBedWithInvalidUuid_shouldThrow() {
+    Bed bed =
+        new Bed(
+            this.ownerPublicKey,
+            this.zipCode,
+            this.bedType,
+            this.cleaningFrequency,
+            this.bloodTypes,
+            this.capacity,
+            this.packages);
+    this.bedService.addBed(bed);
+    String invalidUuid = "";
+    assertThrows(IllegalArgumentException.class, () -> this.bedService.getBedByUuid(invalidUuid));
   }
 }

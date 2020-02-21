@@ -7,18 +7,24 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BedService {
-  private Map<String, Bed> beds = new HashMap<>();
+  private Map<String, Bed> beds = new HashMap<String, Bed>();
 
   public BedService() {};
-
-  public int getTotalNumberOfBeds() {
-    return beds.size();
-  }
 
   public String addBed(Bed bed) {
     String uuid = UUID.randomUUID().toString();
     beds.put(uuid, bed);
     return uuid;
+  }
+
+  public int getTotalNumberOfBeds() {
+    return beds.size();
+  }
+
+  public Bed getBedByUuid(String uuid) {
+    Bed bed = beds.get(uuid);
+    if (bed != null) return bed;
+    else throw new IllegalArgumentException();
   }
 
   public List<Bed> getAllBeds() {

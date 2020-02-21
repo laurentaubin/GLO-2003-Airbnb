@@ -1,6 +1,6 @@
-# Air Bed and Bug on the Blockchain - GLO2003
+# Air bed and Bug on the Blockchain - GLO2003
 
-Air Bed and Bug API
+Air bed and Bug API
 
 ## Table of content
 

@@ -1,4 +1,4 @@
-package Bed;
+package bed;
 
 public class Bed {
   private String ownerPublicKey;

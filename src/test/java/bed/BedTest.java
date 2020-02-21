@@ -1,4 +1,4 @@
-package Bed;
+package bed;
 
 import org.junit.jupiter.api.Test;
 

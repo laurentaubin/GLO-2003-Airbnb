@@ -84,6 +84,11 @@ public class Bed {
       }
       throw new IllegalArgumentException("Invalid bed type");
     }
+
+    @Override
+    public String toString() {
+      return this.label;
+    }
   }
 
   public enum CleaningFrequency {
@@ -105,6 +110,11 @@ public class Bed {
         }
       }
       throw new IllegalArgumentException("Invalid cleaning frequency");
+    }
+
+    @Override
+    public String toString() {
+      return this.label;
     }
   }
 
@@ -131,6 +141,11 @@ public class Bed {
         }
       }
       throw new IllegalArgumentException("Invalid blood type");
+    }
+
+    @Override
+    public String toString() {
+      return this.label;
     }
   }
 

@@ -34,15 +34,31 @@ class BedServiceTest {
   }
 
   @Test
-  void createBed_whenCreatingOneValidBed_shouldAddOneBedToHashMap() {
-    this.bedService.createBed(
-        this.ownerPublicKey,
-        this.zipCode,
-        this.bedType,
-        this.cleaningFrequency,
-        this.bloodTypes,
-        this.capacity,
-        this.packages);
+  void addBed_whenCreatingOneValidBed_shouldAddOneBedToHashMap() {
+    this.bedService.addBed(
+        new Bed(
+            this.ownerPublicKey,
+            this.zipCode,
+            this.bedType,
+            this.cleaningFrequency,
+            this.bloodTypes,
+            this.capacity,
+            this.packages));
     assertEquals(bedService.getTotalNumberOfBeds(), 1);
+  }
+
+  @Test
+  void addBed_whenCreatingOneValidBed_shouldBeEqualToFirstIndexOfGetAllBeds() {
+    Bed bed =
+        new Bed(
+            this.ownerPublicKey,
+            this.zipCode,
+            this.bedType,
+            this.cleaningFrequency,
+            this.bloodTypes,
+            this.capacity,
+            this.packages);
+    this.bedService.addBed(bed);
+    assertEquals(this.bedService.getAllBeds().get(0), bed);
   }
 }

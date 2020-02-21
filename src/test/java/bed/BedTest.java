@@ -10,14 +10,14 @@ public class BedTest {
   void creatingBed_withValidParameters_shouldNotThrow() throws Exception {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     String zipCode = "12345";
-    Bed.BedType bedType = Bed.BedType.LATEX;
-    Bed.CleaningFrequency cleaningFrequency = Bed.CleaningFrequency.MONTHLY;
-    Bed.BloodType[] bloodTypes = new Bed.BloodType[] {Bed.BloodType.O_NEG, Bed.BloodType.AB_POS};
+    bed.BedType bedType = bed.BedType.LATEX;
+    bed.CleaningFrequency cleaningFrequency = bed.CleaningFrequency.MONTHLY;
+    bed.BloodType[] bloodTypes = new bed.BloodType[] {bed.BloodType.O_NEG, bed.BloodType.AB_POS};
     int capacity = 950;
-    Bed.BedPackage[] packages =
-        new Bed.BedPackage[] {
-          new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
-          new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
+    bed.BedPackage[] packages =
+        new bed.BedPackage[] {
+          new bed.BedPackage(bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
+          new bed.BedPackage(bed.BedPackage.Name.SWEET_TOOTH, 6)
         };
 
     Bed bedTest =
@@ -27,9 +27,9 @@ public class BedTest {
 
   @Test
   void gettingBloodTypeValueOfLabel_withValidLabel_shouldReturnBloodType() throws Exception {
-    Bed.BloodType bloodType = Bed.BloodType.valueOfLabel("A+");
+    bed.BloodType bloodType = bed.BloodType.valueOfLabel("A+");
 
-    assertEquals(Bed.BloodType.A_POS, bloodType);
+    assertEquals(bed.BloodType.A_POS, bloodType);
   }
 
   @Test
@@ -37,7 +37,7 @@ public class BedTest {
       throws Exception {
 
     Exception exception =
-        assertThrows(IllegalArgumentException.class, () -> Bed.BloodType.valueOfLabel("C+"));
+        assertThrows(IllegalArgumentException.class, () -> bed.BloodType.valueOfLabel("C+"));
 
     String expectedMessage = "Invalid blood type";
     String actualMessage = exception.getMessage();
@@ -47,16 +47,16 @@ public class BedTest {
 
   @Test
   void gettingCleaningFrequencyValueOfLabel_withValidLabel_shouldReturnCleaningFrequency() {
-    Bed.CleaningFrequency cleaningFrequency = Bed.CleaningFrequency.valueOfLabel("annual");
+    bed.CleaningFrequency cleaningFrequency = bed.CleaningFrequency.valueOfLabel("annual");
 
-    assertEquals(Bed.CleaningFrequency.ANNUAL, cleaningFrequency);
+    assertEquals(bed.CleaningFrequency.ANNUAL, cleaningFrequency);
   }
 
   @Test
   void gettingCleaningFrequencyValueOfLabel_withInvalidLabel_shouldThrowIllegalArgumentException() {
     Exception exception =
         assertThrows(
-            IllegalArgumentException.class, () -> Bed.CleaningFrequency.valueOfLabel("daily"));
+            IllegalArgumentException.class, () -> bed.CleaningFrequency.valueOfLabel("daily"));
 
     String expectedMessage = "Invalid cleaning frequency";
     String actualMessage = exception.getMessage();
@@ -66,15 +66,15 @@ public class BedTest {
 
   @Test
   void gettingBedTypeValueOfLabel_withValidLabel_shouldReturnBedType() {
-    Bed.BedType bedType = Bed.BedType.valueOfLabel("latex");
+    bed.BedType bedType = bed.BedType.valueOfLabel("latex");
 
-    assertEquals(Bed.BedType.LATEX, bedType);
+    assertEquals(bed.BedType.LATEX, bedType);
   }
 
   @Test
   void gettingBedTypeValueOdLabel_withInvalidLabel_shouldThrowIllegalArgumentException() {
     Exception exception =
-        assertThrows(IllegalArgumentException.class, () -> Bed.BedType.valueOfLabel("strong"));
+        assertThrows(IllegalArgumentException.class, () -> bed.BedType.valueOfLabel("strong"));
 
     String expectedMessage = "Invalid bed type";
     String actualMessage = exception.getMessage();

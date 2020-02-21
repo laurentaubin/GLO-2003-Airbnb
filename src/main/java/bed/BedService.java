@@ -22,9 +22,10 @@ public class BedService {
   }
 
   public Bed getBedByUuid(String uuid) {
-    Bed bed = beds.get(uuid);
-    if (bed != null) return bed;
-    else throw new IllegalArgumentException();
+    if (!beds.containsKey(uuid)) {
+      throw new IllegalArgumentException();
+    }
+    return beds.get(uuid);
   }
 
   public List<Bed> getAllBeds() {

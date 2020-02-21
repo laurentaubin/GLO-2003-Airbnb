@@ -67,6 +67,87 @@ public class Bed {
     this.packages = packages;
   }
 
+  public double getCleaningFrequencyScore(){
+    switch(this.cleaningFrequency){
+      case WEEKLY:
+        return 0.5;
+      case MONTHLY:
+        return 1;
+      case ANNUAL:
+        return 1.25;
+      case NEVER:
+        return  2;
+    }
+    throw new IllegalArgumentException("Invalid cleaning frequency type");
+  }
+
+  public int getMattressScore() {
+    switch (this.bedType) {
+      case LATEX:
+        return  250;
+      case MEMORY_FOAM:
+        return 500;
+      case SPRINGS:
+        return 750;
+    }
+    throw new IllegalArgumentException("Invalid blood type string");
+  }
+
+
+  public double getBloodTypeScore(){
+    double scoreBloodType = 0;
+    for(int i = 0; i < this.bloodTypes.length; i++){
+      switch(this.bloodTypes[i]){
+        case O_NEG:
+          scoreBloodType += 1.5;
+          break;
+        case O_POS:
+          scoreBloodType += 1;
+          break;
+        case A_NEG:
+          scoreBloodType += 0.6;
+          break;
+        case A_POS:
+          scoreBloodType += 0.5;
+          break;
+        case B_NEG:
+          scoreBloodType += 0.5;
+          break;
+        case B_POS:
+          scoreBloodType += 0.4;
+          break;
+        case AB_NEG:
+          scoreBloodType += 0.2;
+          break;
+        case AB_POS:
+          scoreBloodType += 0.1;
+          break;
+        default:
+          throw new IllegalArgumentException("Invalid blood type");
+      }
+    }
+    return scoreBloodType / (this.bloodTypes.length);
+  }
+
+  public int getNomberOfStars(){
+    double globalScore = getMattressScore() * getCleaningFrequencyScore() * getBloodTypeScore();
+    if (0 <= globalScore && globalScore < 100){
+      return 1;
+    }
+    else if(100 <= globalScore && globalScore < 187.5){
+      return 2;
+    }
+    else if(187.5 <= globalScore && globalScore < 300){
+      return 3;
+    }
+    else if(300 <= globalScore && globalScore < 500 ){
+      return 4;
+    }
+    else{
+      return 5;
+    }
+  }
+
   public enum BedType {
     @JsonProperty("latex")
     LATEX("latex"),

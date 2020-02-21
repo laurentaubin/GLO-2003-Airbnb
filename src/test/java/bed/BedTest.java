@@ -1,4 +1,4 @@
-package Bed;
+package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 

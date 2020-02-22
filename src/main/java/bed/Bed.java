@@ -67,69 +67,16 @@ public class Bed {
     this.packages = packages;
   }
 
-  public double getCleaningFrequencyScore() {
-    switch (this.cleaningFrequency) {
-      case WEEKLY:
-        return 0.5;
-      case MONTHLY:
-        return 1;
-      case ANNUAL:
-        return 1.25;
-      case NEVER:
-        return 2;
+  private double getGlobalBloodTypeScore() {
+    double bloodTypeScore = 0;
+    for (BloodType bloodType : this.bloodTypes) {
+      bloodTypeScore += bloodType.getScore();
     }
-    throw new IllegalArgumentException("Invalid cleaning frequency type");
-  }
-
-  public int getMattressScore() {
-    switch (this.bedType) {
-      case LATEX:
-        return 250;
-      case MEMORY_FOAM:
-        return 500;
-      case SPRINGS:
-        return 750;
-    }
-    throw new IllegalArgumentException("Invalid blood type string");
-  }
-
-  public double getBloodTypeScore() {
-    double scoreBloodType = 0;
-    for (int i = 0; i < this.bloodTypes.length; i++) {
-      switch (this.bloodTypes[i]) {
-        case O_NEG:
-          scoreBloodType += 1.5;
-          break;
-        case O_POS:
-          scoreBloodType += 1;
-          break;
-        case A_NEG:
-          scoreBloodType += 0.6;
-          break;
-        case A_POS:
-          scoreBloodType += 0.5;
-          break;
-        case B_NEG:
-          scoreBloodType += 0.5;
-          break;
-        case B_POS:
-          scoreBloodType += 0.4;
-          break;
-        case AB_NEG:
-          scoreBloodType += 0.2;
-          break;
-        case AB_POS:
-          scoreBloodType += 0.1;
-          break;
-        default:
-          throw new IllegalArgumentException("Invalid blood type");
-      }
-    }
-    return scoreBloodType / (this.bloodTypes.length);
+    return (bloodTypeScore / this.bloodTypes.length);
   }
 
   public int getNomberOfStars() {
-    double globalScore = getMattressScore() * getCleaningFrequencyScore() * getBloodTypeScore();
+    double globalScore = this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
     if (0 <= globalScore && globalScore < 100) {
       return 1;
     } else if (100 <= globalScore && globalScore < 187.5) {
@@ -144,17 +91,19 @@ public class Bed {
   }
 
   public enum BedType {
-    @JsonProperty("latex")
-    LATEX("latex"),
-    @JsonProperty("memoryFoam")
-    MEMORY_FOAM("memoryFoam"),
-    @JsonProperty("springs")
-    SPRINGS("springs");
+  @JsonProperty("latex")
+  LATEX("latex", 250),
+  @JsonProperty("memoryFoam")
+  MEMORY_FOAM("memory-foam", 500),
+  @JsonProperty("springs")
+  SPRINGS("springs", 750);
 
     private String label;
+    private int score;
 
-    BedType(String type) {
+    BedType(String type, int score) {
       this.label = type;
+      this.score = score;
     }
 
     public static BedType valueOfLabel(String type) {
@@ -166,6 +115,10 @@ public class Bed {
       throw new IllegalArgumentException("Invalid bed type");
     }
 
+    public int getScore() {
+      return this.score;
+    }
+
     @Override
     public String toString() {
       return this.label;
@@ -174,18 +127,20 @@ public class Bed {
 
   public enum CleaningFrequency {
     @JsonProperty("weekly")
-    WEEKLY("weekly"),
+    WEEKLY("weekly", 0.5),
     @JsonProperty("monthly")
-    MONTHLY("monthly"),
+    MONTHLY("monthly", 1),
     @JsonProperty("annual")
-    ANNUAL("annual"),
+    ANNUAL("annual", 1.25),
     @JsonProperty("never")
-    NEVER("never");
+    NEVER("never", 2);
 
     private String label;
+    private double score;
 
-    CleaningFrequency(String frequency) {
+    CleaningFrequency(String frequency, double score) {
       this.label = frequency;
+      this.score = score;
     }
 
     public static CleaningFrequency valueOfLabel(String frequency) {
@@ -197,6 +152,10 @@ public class Bed {
       throw new IllegalArgumentException("Invalid cleaning frequency");
     }
 
+    public double getScore (){
+      return this.score;
+    }
+
     @Override
     public String toString() {
       return this.label;
@@ -205,26 +164,28 @@ public class Bed {
 
   public enum BloodType {
     @JsonProperty("O-")
-    O_NEG("O-"),
+    O_NEG("O-", 1.5),
     @JsonProperty("O+")
-    O_POS("O+"),
+    O_POS("O+", 1),
     @JsonProperty("A-")
-    A_NEG("A-"),
+    A_NEG("A-", 0.6),
     @JsonProperty("A+")
-    A_POS("A+"),
+    A_POS("A+", 0.5),
     @JsonProperty("B-")
-    B_NEG("B-"),
+    B_NEG("B-", 0.5),
     @JsonProperty("B+")
-    B_POS("B+"),
+    B_POS("B+", 0.4),
     @JsonProperty("AB-")
-    AB_NEG("AB-"),
+    AB_NEG("AB-", 0.2),
     @JsonProperty("AB+")
-    AB_POS("AB+");
+    AB_POS("AB+", 0.1);
 
     private String label;
+    private double score;
 
-    BloodType(String type) {
+    BloodType(String type, double score) {
       this.label = type;
+      this.score = score;
     }
 
     public static BloodType valueOfLabel(String type) {
@@ -234,6 +195,10 @@ public class Bed {
         }
       }
       throw new IllegalArgumentException("Invalid blood type");
+    }
+
+    public double getScore() {
+      return this.score;
     }
 
     @Override

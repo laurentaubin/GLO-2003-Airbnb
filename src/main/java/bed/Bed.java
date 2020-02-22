@@ -1,5 +1,7 @@
 package bed;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Bed {
   private String ownerPublicKey;
   private String zipCode;
@@ -66,8 +68,11 @@ public class Bed {
   }
 
   public enum BedType {
+    @JsonProperty("latex")
     LATEX("latex"),
-    MEMORY_FOAM("memory-foam"),
+    @JsonProperty("memoryFoam")
+    MEMORY_FOAM("memoryFoam"),
+    @JsonProperty("springs")
     SPRINGS("springs");
 
     private String label;
@@ -92,9 +97,13 @@ public class Bed {
   }
 
   public enum CleaningFrequency {
+    @JsonProperty("weekly")
     WEEKLY("weekly"),
+    @JsonProperty("monthly")
     MONTHLY("monthly"),
+    @JsonProperty("annual")
     ANNUAL("annual"),
+    @JsonProperty("never")
     NEVER("never");
 
     private String label;
@@ -119,13 +128,21 @@ public class Bed {
   }
 
   public enum BloodType {
+    @JsonProperty("O-")
     O_NEG("O-"),
+    @JsonProperty("O+")
     O_POS("O+"),
+    @JsonProperty("A-")
     A_NEG("A-"),
+    @JsonProperty("A+")
     A_POS("A+"),
+    @JsonProperty("B-")
     B_NEG("B-"),
+    @JsonProperty("B+")
     B_POS("B+"),
+    @JsonProperty("AB-")
     AB_NEG("AB-"),
+    @JsonProperty("AB+")
     AB_POS("AB+");
 
     private String label;
@@ -170,14 +187,51 @@ public class Bed {
     }
 
     public enum Name {
-      BLOOD_THIRSTY,
-      ALL_YOU_CAN_DRINK,
-      SWEET_TOOTH
+      @JsonProperty("bloodthirsty")
+      BLOOD_THIRSTY("bloodthirsty"),
+      @JsonProperty("allYouCanDrink")
+      ALL_YOU_CAN_DRINK("allYouCanDrink"),
+      @JsonProperty("sweetTooth")
+      SWEET_TOOTH("sweetTooth");
+
+      private String label;
+
+      Name(String label) {
+        this.label = label;
+      }
+
+      public static Name valueOfLabel(String bedPackage) {
+        for (Name name : values()) {
+          if (name.label.equals(bedPackage)) {
+            return name;
+          }
+        }
+        throw new IllegalArgumentException("Invalid package name");
+      }
+
+      @Override
+      public String toString() {
+        return this.label;
+      }
     }
 
     public BedPackage(Name name, double pricePerNight) {
       this.setName(name);
       this.setPricePerNight(pricePerNight);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null || getClass() != obj.getClass()) {
+        return false;
+      }
+
+      BedPackage other = (BedPackage) obj;
+      return this.getName().equals(other.getName())
+          && this.getPricePerNight() == other.getPricePerNight();
     }
   }
 

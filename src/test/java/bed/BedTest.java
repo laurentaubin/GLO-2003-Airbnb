@@ -127,7 +127,6 @@ public class BedTest {
     if (bedTest.getNomberOfStars() != 3) {
       throw new Exception("Le résultat calculé est incorrect");
     }
-    ;
   }
 
   @Test

@@ -32,21 +32,22 @@ public class BedTest {
     Bed.BloodType[] bloodTypes = new Bed.BloodType[] {Bed.BloodType.O_NEG, Bed.BloodType.AB_POS};
     int capacity = 950;
     Bed.BedPackage[] packages =
-            new Bed.BedPackage[] {
-                    new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
-                    new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
-            };
+        new Bed.BedPackage[] {
+          new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
+          new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
+        };
     Bed bedTest =
-            new Bed(
-                    ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
+        new Bed(
+            ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
 
-    if(bedTest.getNomberOfStars() != 3){
+    if (bedTest.getNomberOfStars() != 3) {
       throw new Exception("Le résultat calculé est incorrect");
-    };
+    }
+    ;
   }
 
   @Test
-  void gettingMaxStarRating_withValidParameters_shouldNotThrow() throws Exception{
+  void gettingMaxStarRating_withValidParameters_shouldNotThrow() throws Exception {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     String zipCode = "12345";
     Bed.BedType bedType = Bed.BedType.SPRINGS;
@@ -54,21 +55,22 @@ public class BedTest {
     Bed.BloodType[] bloodTypes = new Bed.BloodType[] {Bed.BloodType.O_NEG};
     int capacity = 950;
     Bed.BedPackage[] packages =
-            new Bed.BedPackage[] {
-                    new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
-                    new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
-            };
+        new Bed.BedPackage[] {
+          new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
+          new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
+        };
     Bed bedTest =
-            new Bed(
-                    ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
+        new Bed(
+            ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
 
-    if(bedTest.getNomberOfStars() != 5){
+    if (bedTest.getNomberOfStars() != 5) {
       throw new Exception("Le résultat calculé est incorrect");
-    };
+    }
+    ;
   }
 
   @Test
-  void gettingMinStarRating_withValidParameters_shouldNotThrow() throws Exception{
+  void gettingMinStarRating_withValidParameters_shouldNotThrow() throws Exception {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     String zipCode = "12345";
     Bed.BedType bedType = Bed.BedType.LATEX;
@@ -76,16 +78,17 @@ public class BedTest {
     Bed.BloodType[] bloodTypes = new Bed.BloodType[] {Bed.BloodType.AB_POS};
     int capacity = 950;
     Bed.BedPackage[] packages =
-            new Bed.BedPackage[] {
-                    new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
-                    new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
-            };
+        new Bed.BedPackage[] {
+          new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
+          new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
+        };
     Bed bedTest =
-            new Bed(
-                    ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
+        new Bed(
+            ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
 
-    if(bedTest.getNomberOfStars() != 1){
+    if (bedTest.getNomberOfStars() != 1) {
       throw new Exception("Le résultat calculé est incorrect");
-    };
+    }
+    ;
   }
 }

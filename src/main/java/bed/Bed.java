@@ -67,8 +67,8 @@ public class Bed {
     this.packages = packages;
   }
 
-  public double getCleaningFrequencyScore(){
-    switch(this.cleaningFrequency){
+  public double getCleaningFrequencyScore() {
+    switch (this.cleaningFrequency) {
       case WEEKLY:
         return 0.5;
       case MONTHLY:
@@ -76,7 +76,7 @@ public class Bed {
       case ANNUAL:
         return 1.25;
       case NEVER:
-        return  2;
+        return 2;
     }
     throw new IllegalArgumentException("Invalid cleaning frequency type");
   }
@@ -84,7 +84,7 @@ public class Bed {
   public int getMattressScore() {
     switch (this.bedType) {
       case LATEX:
-        return  250;
+        return 250;
       case MEMORY_FOAM:
         return 500;
       case SPRINGS:
@@ -93,11 +93,10 @@ public class Bed {
     throw new IllegalArgumentException("Invalid blood type string");
   }
 
-
-  public double getBloodTypeScore(){
+  public double getBloodTypeScore() {
     double scoreBloodType = 0;
-    for(int i = 0; i < this.bloodTypes.length; i++){
-      switch(this.bloodTypes[i]){
+    for (int i = 0; i < this.bloodTypes.length; i++) {
+      switch (this.bloodTypes[i]) {
         case O_NEG:
           scoreBloodType += 1.5;
           break;
@@ -129,21 +128,17 @@ public class Bed {
     return scoreBloodType / (this.bloodTypes.length);
   }
 
-  public int getNomberOfStars(){
+  public int getNomberOfStars() {
     double globalScore = getMattressScore() * getCleaningFrequencyScore() * getBloodTypeScore();
-    if (0 <= globalScore && globalScore < 100){
+    if (0 <= globalScore && globalScore < 100) {
       return 1;
-    }
-    else if(100 <= globalScore && globalScore < 187.5){
+    } else if (100 <= globalScore && globalScore < 187.5) {
       return 2;
-    }
-    else if(187.5 <= globalScore && globalScore < 300){
+    } else if (187.5 <= globalScore && globalScore < 300) {
       return 3;
-    }
-    else if(300 <= globalScore && globalScore < 500 ){
+    } else if (300 <= globalScore && globalScore < 500) {
       return 4;
-    }
-    else{
+    } else {
       return 5;
     }
   }

@@ -2,6 +2,8 @@ package bed;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.sql.SQLOutput;
+
 public class Bed {
   private String ownerPublicKey;
   private String zipCode;
@@ -76,17 +78,21 @@ public class Bed {
   }
 
   public int getNomberOfStars() {
-    double globalScore = this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
-    if (0 <= globalScore && globalScore < 100) {
-      return 1;
-    } else if (100 <= globalScore && globalScore < 187.5) {
-      return 2;
-    } else if (187.5 <= globalScore && globalScore < 300) {
-      return 3;
-    } else if (300 <= globalScore && globalScore < 500) {
-      return 4;
-    } else {
-      return 5;
+    try {
+      double globalScore = this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
+      if (0 <= globalScore && globalScore < 100) {
+        return 1;
+      } else if (100 <= globalScore && globalScore < 187.5) {
+        return 2;
+      } else if (187.5 <= globalScore && globalScore < 300) {
+        return 3;
+      } else if (300 <= globalScore && globalScore < 500) {
+        return 4;
+      } else {
+        return 5;
+      }
+    } catch(Exception e){
+        return -1;
     }
   }
 

@@ -78,7 +78,7 @@ public class SerializerTest {
 
     assertEquals(
         "{\"ownerPublicKey\":null,\"zipCode\":null,\"bedType\":null,\"cleaningFrequency\":null,\"bloodTypes\":null,\"capacity\":0,\"packages\":null,\"nomberOfStars\":-1}",
-            Serializer.dataToJson(dummyBed));
+        Serializer.dataToJson(dummyBed));
   }
 
   @Test

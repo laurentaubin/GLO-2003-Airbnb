@@ -75,9 +75,10 @@ public class SerializerTest {
   @Test
   void serialize_withDummyBedObject_shouldEqualJson() throws UnserialiazableObjectException {
     Bed dummyBed = new Bed();
+
     assertEquals(
-        "{\"ownerPublicKey\":null,\"zipCode\":null,\"bedType\":null,\"cleaningFrequency\":null,\"bloodTypes\":null,\"capacity\":0,\"packages\":null}",
-        Serializer.dataToJson(dummyBed));
+        "{\"ownerPublicKey\":null,\"zipCode\":null,\"bedType\":null,\"cleaningFrequency\":null,\"bloodTypes\":null,\"capacity\":0,\"packages\":null,\"nomberOfStars\":-1}",
+            Serializer.dataToJson(dummyBed));
   }
 
   @Test
@@ -94,7 +95,7 @@ public class SerializerTest {
             this.packages);
 
     assertEquals(
-        "{\"ownerPublicKey\":\"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\",\"zipCode\":\"12345\",\"bedType\":\"latex\",\"cleaningFrequency\":\"monthly\",\"bloodTypes\":[\"O-\",\"AB+\"],\"capacity\":950,\"packages\":[{\"name\":\"bloodthirsty\",\"pricePerNight\":12.5},{\"name\":\"sweetTooth\",\"pricePerNight\":6.0}]}",
+        "{\"ownerPublicKey\":\"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\",\"zipCode\":\"12345\",\"bedType\":\"latex\",\"cleaningFrequency\":\"monthly\",\"bloodTypes\":[\"O-\",\"AB+\"],\"capacity\":950,\"packages\":[{\"name\":\"bloodthirsty\",\"pricePerNight\":12.5},{\"name\":\"sweetTooth\",\"pricePerNight\":6.0}],\"nomberOfStars\":3}",
         Serializer.dataToJson(validBed));
   }
 }

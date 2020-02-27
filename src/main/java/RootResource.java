@@ -9,6 +9,7 @@ import spark.RouteGroup;
 public class RootResource implements RouteGroup {
   public static final String ROOT_PATH = "/";
 
+
   @Override
   public void addRoutes() {
     get("/hello", this::helloWorld, new ObjectMapper()::writeValueAsString);

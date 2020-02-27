@@ -1,31 +1,23 @@
 package bed;
 
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.bed.BedDeserializer.JsonParserException;
 import exceptions.bed.BedEnumException;
+import java.io.IOException;
 
 public class BedDeserializer extends JsonDeserializer<Bed> {
-  private ObjectMapper mapper;
-
   BedDeserializer() {
     super();
   }
 
   @Override
   public Bed deserialize(JsonParser parser, DeserializationContext deserializer)
-      throws JsonParserException, BedEnumException {
+      throws IOException, BedEnumException {
     JsonNode bedNode;
 
-    try {
-      bedNode = parser.getCodec().readTree(parser);
-    } catch (Exception e) {
-      throw new JsonParserException();
-    }
+    bedNode = parser.getCodec().readTree(parser);
     Bed bed = new Bed();
 
     bed.setOwnerPublicKey(bedNode.get("ownerPublicKey").textValue());
@@ -57,8 +49,7 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
     BedPackage[] bedPackages = new BedPackage[packagesNode.size()];
     for (int i = 0; i < bedPackages.length; i++) {
 
-      BedPackage.Name name =
-          BedPackage.Name.valueOfLabel(packagesNode.get(i).get("name").textValue());
+      PackageName name = PackageName.valueOfLabel(packagesNode.get(i).get("name").textValue());
       double pricePerNight = packagesNode.get(i).get("pricePerNight").asDouble();
       BedPackage bedPackage = new BedPackage(name, pricePerNight);
       bedPackages[i] = bedPackage;

@@ -16,8 +16,7 @@ class BedServiceTest {
   int capacity = 950;
   BedPackage[] packages =
       new BedPackage[] {
-        new BedPackage(BedPackage.Name.BLOOD_THIRSTY, 12.5),
-        new BedPackage(BedPackage.Name.SWEET_TOOTH, 6)
+        new BedPackage(PackageName.BLOOD_THIRSTY, 12.5), new BedPackage(PackageName.SWEET_TOOTH, 6)
       };
 
   @BeforeEach

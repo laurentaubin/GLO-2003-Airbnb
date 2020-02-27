@@ -1,4 +1,4 @@
-package exceptions.bed.BedPackage;
+package exceptions.bed.PackageName;
 
 import exceptions.bed.BedEnumException;
 

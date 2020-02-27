@@ -1,3 +1,5 @@
+import bed.Bed;
+
 import static spark.Spark.*;
 
 public class Main {
@@ -6,5 +8,6 @@ public class Main {
     port(Server.getHerokuAssignedPort());
     Router.setUpRoutes();
     CORS.enable("*", Server.CORS_HEADERS, Server.CORS_METHODS);
+
   }
 }

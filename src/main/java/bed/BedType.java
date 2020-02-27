@@ -4,16 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum BedType {
   @JsonProperty("latex")
-  LATEX("latex"),
+  LATEX("latex", 250),
   @JsonProperty("memoryFoam")
-  MEMORY_FOAM("memoryFoam"),
+  MEMORY_FOAM("memory-foam", 500),
   @JsonProperty("springs")
-  SPRINGS("springs");
+  SPRINGS("springs", 750);
 
   private String label;
+  private int score;
 
-  BedType(String type) {
+  BedType(String type, int score) {
     this.label = type;
+    this.score = score;
   }
 
   public static BedType valueOfLabel(String type) {
@@ -23,6 +25,10 @@ public enum BedType {
       }
     }
     throw new IllegalArgumentException("Invalid bed type");
+  }
+
+  public int getScore() {
+    return this.score;
   }
 
   @Override

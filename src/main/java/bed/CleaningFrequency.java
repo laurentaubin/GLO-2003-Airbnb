@@ -4,18 +4,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum CleaningFrequency {
   @JsonProperty("weekly")
-  WEEKLY("weekly"),
+  WEEKLY("weekly", 0.5),
   @JsonProperty("monthly")
-  MONTHLY("monthly"),
+  MONTHLY("monthly", 1),
   @JsonProperty("annual")
-  ANNUAL("annual"),
+  ANNUAL("annual", 1.25),
   @JsonProperty("never")
-  NEVER("never");
+  NEVER("never", 2);
 
   private String label;
+  private double score;
 
-  CleaningFrequency(String frequency) {
+  CleaningFrequency(String frequency, double score) {
     this.label = frequency;
+    this.score = score;
   }
 
   public static CleaningFrequency valueOfLabel(String frequency) {
@@ -25,6 +27,10 @@ public enum CleaningFrequency {
       }
     }
     throw new IllegalArgumentException("Invalid cleaning frequency");
+  }
+
+  public double getScore() {
+    return this.score;
   }
 
   @Override

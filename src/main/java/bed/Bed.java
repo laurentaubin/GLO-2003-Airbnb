@@ -281,6 +281,7 @@ public class Bed {
     }
   }
 
+
   public Bed() {}
 
   public Bed(

@@ -1,5 +1,7 @@
 package bed;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Bed {
   private String ownerPublicKey;
   private String zipCode;
@@ -89,8 +91,11 @@ public class Bed {
   }
 
   public enum BedType {
+    @JsonProperty("latex")
     LATEX("latex", 250),
+    @JsonProperty("memoryFoam")
     MEMORY_FOAM("memory-foam", 500),
+    @JsonProperty("springs")
     SPRINGS("springs", 750);
 
     private String label;
@@ -121,9 +126,13 @@ public class Bed {
   }
 
   public enum CleaningFrequency {
+    @JsonProperty("weekly")
     WEEKLY("weekly", 0.5),
+    @JsonProperty("monthly")
     MONTHLY("monthly", 1),
+    @JsonProperty("annual")
     ANNUAL("annual", 1.25),
+    @JsonProperty("never")
     NEVER("never", 2);
 
     private String label;
@@ -154,15 +163,22 @@ public class Bed {
   }
 
   public enum BloodType {
+    @JsonProperty("O-")
     O_NEG("O-", 1.5),
+    @JsonProperty("O+")
     O_POS("O+", 1),
+    @JsonProperty("A-")
     A_NEG("A-", 0.6),
+    @JsonProperty("A+")
     A_POS("A+", 0.5),
+    @JsonProperty("B-")
     B_NEG("B-", 0.5),
+    @JsonProperty("B+")
     B_POS("B+", 0.4),
+    @JsonProperty("AB-")
     AB_NEG("AB-", 0.2),
+    @JsonProperty("AB+")
     AB_POS("AB+", 0.1);
-
     private String label;
     private double score;
 

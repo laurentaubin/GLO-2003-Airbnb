@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import java.io.IOException;
+import exceptions.BedEnumException;
+import exceptions.JsonParserException;
 
 public class BedDeserializer extends JsonDeserializer<Bed> {
   BedDeserializer() {
@@ -13,9 +14,14 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
 
   @Override
   public Bed deserialize(JsonParser parser, DeserializationContext deserializer)
-      throws IOException {
+      throws JsonParserException, BedEnumException {
+    JsonNode bedNode;
 
-    JsonNode bedNode = parser.getCodec().readTree(parser);
+    try {
+      bedNode = parser.getCodec().readTree(parser);
+    } catch (Exception e) {
+      throw new JsonParserException();
+    }
     Bed bed = new Bed();
 
     bed.setOwnerPublicKey(bedNode.get("ownerPublicKey").textValue());
@@ -28,7 +34,8 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
     BloodType[] bloodTypes = getBedBloodTypes(bedNode.get("bloodTypes"));
     bed.setBloodTypes(bloodTypes);
 
-    BedPackage[] bedPackages = getBedPackages(bedNode.get("packages"));
+    BedPackage[] bedPackages;
+    bedPackages = getBedPackages(bedNode.get("packages"));
     bed.setPackages(bedPackages);
 
     return bed;
@@ -42,7 +49,7 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
     return bloodTypes;
   }
 
-  private BedPackage[] getBedPackages(JsonNode packagesNode) {
+  private BedPackage[] getBedPackages(JsonNode packagesNode) throws BedEnumException {
     BedPackage[] bedPackages = new BedPackage[packagesNode.size()];
     for (int i = 0; i < bedPackages.length; i++) {
 

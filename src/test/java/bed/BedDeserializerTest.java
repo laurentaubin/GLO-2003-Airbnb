@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import exceptions.InvalidPackageNameException;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,7 @@ class BedDeserializerTest {
 
     Bed actualBed = this.mapper.readValue(json, Bed.class);
 
+    // TODO ajusté les assertEquals yen a calissement trop
     assertEquals(expectedBed.getOwnerPublicKey(), actualBed.getOwnerPublicKey());
     assertEquals(expectedBed.getZipCode(), actualBed.getZipCode());
     assertEquals(expectedBed.getBedType(), actualBed.getBedType());
@@ -52,22 +54,22 @@ class BedDeserializerTest {
   }
 
   @Test
-  void deserializeBed_withEmptyJson_shouldThrow() throws Exception {
+  void deserializeBed_withEmptyJson_shouldThrow() throws InvalidPackageNameException {
     String json = "{}";
 
-    // Throws a null pointer exception. Will eventually be a custom one.
     Exception exception =
-        assertThrows(Exception.class, () -> this.mapper.readValue(json, Bed.class));
+        assertThrows(
+            InvalidPackageNameException.class, () -> this.mapper.readValue(json, Bed.class));
   }
 
   @Test
-  void deserializeBed_withMissingJsonField_shouldThrow() throws Exception {
+  void deserializeBed_withMissingJsonField_shouldThrow() throws InvalidPackageNameException {
     // No zip code
     String json =
         "{\"ownerPublicKey\": \"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\", \"bedType\": \"latex\", \"cleaningFrequency\": \"annual\" , \"bloodTypes\": [\"O-\", \"AB+\"], \"capacity\": 234, \"packages\": [{\"name\": \"bloodthirsty\", \"pricePerNight\": 12.50}, {\"name\": \"sweetTooth\", \"pricePerNight\": 6}]}";
 
-    // Throws a null pointer exception. Will eventually be a custom one.
     Exception exception =
-        assertThrows(Exception.class, () -> this.mapper.readValue(json, Bed.class));
+        assertThrows(
+            InvalidPackageNameException.class, () -> this.mapper.readValue(json, Bed.class));
   }
 }

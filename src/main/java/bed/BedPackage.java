@@ -1,6 +1,7 @@
 package bed;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import exceptions.InvalidPackageNameException;
 
 public class BedPackage {
   private Name name;
@@ -36,13 +37,13 @@ public class BedPackage {
       this.label = label;
     }
 
-    public static Name valueOfLabel(String bedPackage) {
+    public static Name valueOfLabel(String bedPackage) throws InvalidPackageNameException {
       for (Name name : values()) {
         if (name.label.equals(bedPackage)) {
           return name;
         }
       }
-      throw new IllegalArgumentException("Invalid package name");
+      throw new InvalidPackageNameException("Invalid package name");
     }
 
     @Override

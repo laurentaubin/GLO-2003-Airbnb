@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import bed.*;
+import exceptions.UnserialiazableObjectException;
 import org.junit.jupiter.api.Test;
 
 public class SerializerTest {
@@ -56,7 +57,8 @@ public class SerializerTest {
   }
 
   @Test
-  void serialize_usingPrivateAttributeWithGetterObject_shouldEqualJson() {
+  void serialize_usingPrivateAttributeWithGetterObject_shouldEqualJson()
+      throws UnserialiazableObjectException {
     PrivateAttributeWithGetterObject privateAttributeWithGetterObject =
         new PrivateAttributeWithGetterObject();
     assertEquals(
@@ -71,7 +73,7 @@ public class SerializerTest {
   }
 
   @Test
-  void serialize_withDummyBedObject_shouldEqualJson() {
+  void serialize_withDummyBedObject_shouldEqualJson() throws UnserialiazableObjectException {
     Bed dummyBed = new Bed();
     assertEquals(
         "{\"ownerPublicKey\":null,\"zipCode\":null,\"bedType\":null,\"cleaningFrequency\":null,\"bloodTypes\":null,\"capacity\":0,\"packages\":null}",
@@ -79,7 +81,7 @@ public class SerializerTest {
   }
 
   @Test
-  void serialize_withValidBedObject_shouldEqualJson() {
+  void serialize_withValidBedObject_shouldEqualJson() throws UnserialiazableObjectException {
 
     Bed validBed =
         new Bed(

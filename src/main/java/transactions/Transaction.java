@@ -3,32 +3,33 @@ package transactions;
 import java.sql.Timestamp;
 
 public class Transaction {
-    private Timestamp timestamp;
+    private String timestamp;
     private String from_uuid;
     private String to_uuid;
-    private Double total;
+    private Number total;
     private String reason;
 
     @Override
     public String toString() {
         return "{" +
-                "timestamp:" + timestamp +
-                ", from_uuid:'" + from_uuid + '\'' +
-                ", to_uuid:'" + to_uuid + '\'' +
-                ", total:" + total +
-                ", reason:'" + reason + '\'' +
+                "timestamp: '" + timestamp + '\'' +
+                ", from_uuid: '" + from_uuid + '\'' +
+                ", to_uuid: '" + to_uuid + '\'' +
+                ", total: " + total +
+                ", reason: '" + reason + '\'' +
                 '}';
     }
 
-    public Timestamp getTimestamp() {
+
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
-    public Transaction(String from_uuid, String to_uuid, Double total, String reason, Timestamp timestamp) {
+    public Transaction(String from_uuid, String to_uuid, Number total, String reason, String timestamp) {
         this.timestamp = timestamp;
         this.from_uuid = from_uuid;
         this.to_uuid = to_uuid;
@@ -53,7 +54,7 @@ public class Transaction {
         this.to_uuid = to_uuid;
     }
 
-    public Double getTotal() {
+    public Number getTotal() {
         return total;
     }
 

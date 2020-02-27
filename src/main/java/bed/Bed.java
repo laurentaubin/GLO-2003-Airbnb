@@ -73,7 +73,7 @@ public class Bed {
     return (bloodTypeScore / this.bloodTypes.length);
   }
 
-  public int getNomberOfStars() {
+  public int getNumberOfStars() {
     try {
       double globalScore =
           this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();

@@ -1,4 +1,6 @@
-package exceptions;
+package exceptions.bed.BedPackage;
+
+import exceptions.bed.BedEnumException;
 
 public class InvalidPackageNameException extends BedEnumException {
   public InvalidPackageNameException() {

@@ -1,6 +1,7 @@
 package bed;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import exceptions.bed.BloodType.InvalidBloodTypeException;
 
 public enum BloodType {
   @JsonProperty("O-")
@@ -32,7 +33,7 @@ public enum BloodType {
         return bloodType;
       }
     }
-    throw new IllegalArgumentException("Invalid blood type");
+    throw new InvalidBloodTypeException();
   }
 
   @Override

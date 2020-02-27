@@ -1,4 +1,4 @@
-package exceptions;
+package exceptions.Serializer;
 
 public class UnserialiazableObjectException extends Exception {
   public UnserialiazableObjectException() {

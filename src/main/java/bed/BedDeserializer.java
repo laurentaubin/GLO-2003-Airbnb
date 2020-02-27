@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import exceptions.BedEnumException;
-import exceptions.JsonParserException;
+import exceptions.bed.BedDeserializer.JsonParserException;
+import exceptions.bed.BedEnumException;
 
 public class BedDeserializer extends JsonDeserializer<Bed> {
   BedDeserializer() {
@@ -49,7 +49,7 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
     return bloodTypes;
   }
 
-  private BedPackage[] getBedPackages(JsonNode packagesNode) throws BedEnumException {
+  private BedPackage[] getBedPackages(JsonNode packagesNode) {
     BedPackage[] bedPackages = new BedPackage[packagesNode.size()];
     for (int i = 0; i < bedPackages.length; i++) {
 

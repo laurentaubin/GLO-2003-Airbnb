@@ -1,7 +1,7 @@
 package bed;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import exceptions.InvalidPackageNameException;
+import exceptions.bed.BedPackage.InvalidPackageNameException;
 
 public class BedPackage {
   private Name name;

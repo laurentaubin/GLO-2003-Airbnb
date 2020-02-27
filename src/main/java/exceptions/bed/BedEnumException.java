@@ -1,4 +1,4 @@
-package exceptions;
+package exceptions.bed;
 
 public abstract class BedEnumException extends RuntimeException {
   public BedEnumException() {

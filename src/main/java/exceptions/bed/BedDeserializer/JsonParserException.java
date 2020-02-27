@@ -1,4 +1,4 @@
-package exceptions;
+package exceptions.bed.BedDeserializer;
 
 import java.io.IOException;
 

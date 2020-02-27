@@ -1,7 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import bed.*;
-import exceptions.UnserialiazableObjectException;
+import exceptions.Serializer.UnserialiazableObjectException;
 import org.junit.jupiter.api.Test;
 
 public class SerializerTest {
@@ -69,7 +69,8 @@ public class SerializerTest {
   @Test
   void serialize_usingInvalidPrivateAttributeObject_shouldThrow() {
     PrivateAttributeObject privateAttributeObject = new PrivateAttributeObject();
-    assertThrows(RuntimeException.class, () -> Serializer.dataToJson(privateAttributeObject));
+    assertThrows(
+        UnserialiazableObjectException.class, () -> Serializer.dataToJson(privateAttributeObject));
   }
 
   @Test

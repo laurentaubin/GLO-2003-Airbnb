@@ -1,5 +1,5 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.UnserialiazableObjectException;
+import exceptions.Serializer.UnserialiazableObjectException;
 
 public class Serializer {
   public static String dataToJson(Object data) throws UnserialiazableObjectException {
@@ -7,7 +7,8 @@ public class Serializer {
       ObjectMapper mapper = new ObjectMapper();
       return mapper.writeValueAsString(data);
     } catch (Exception e) {
-      throw new UnserialiazableObjectException("Champs privés sans getter/setter");
+      throw new UnserialiazableObjectException(
+          "Private object with no getter/setter causes this exception");
     }
   }
 }

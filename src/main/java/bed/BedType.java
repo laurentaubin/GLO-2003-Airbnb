@@ -32,6 +32,10 @@ public enum BedType {
     return this.score;
   }
 
+  public int getScore() {
+    return this.score;
+  }
+
   @Override
   public String toString() {
     return this.label;

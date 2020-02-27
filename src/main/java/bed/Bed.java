@@ -2,8 +2,6 @@ package bed;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.sql.SQLOutput;
-
 public class Bed {
   private String ownerPublicKey;
   private String zipCode;
@@ -79,7 +77,8 @@ public class Bed {
 
   public int getNomberOfStars() {
     try {
-      double globalScore = this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
+      double globalScore =
+          this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
       if (0 <= globalScore && globalScore < 100) {
         return 1;
       } else if (100 <= globalScore && globalScore < 187.5) {
@@ -91,8 +90,8 @@ public class Bed {
       } else {
         return 5;
       }
-    } catch(Exception e){
-        return -1;
+    } catch (Exception e) {
+      return -1;
     }
   }
 
@@ -158,7 +157,7 @@ public class Bed {
       throw new IllegalArgumentException("Invalid cleaning frequency");
     }
 
-    public double getScore (){
+    public double getScore() {
       return this.score;
     }
 

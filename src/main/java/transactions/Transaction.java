@@ -1,12 +1,35 @@
 package transactions;
 
+import java.sql.Timestamp;
+
 public class Transaction {
+    private Timestamp timestamp;
     private String from_uuid;
     private String to_uuid;
-    private float total;
+    private Double total;
     private String reason;
 
-    public Transaction(String from_uuid, String to_uuid, float total, String reason) {
+    @Override
+    public String toString() {
+        return "{" +
+                "timestamp:" + timestamp +
+                ", from_uuid:'" + from_uuid + '\'' +
+                ", to_uuid:'" + to_uuid + '\'' +
+                ", total:" + total +
+                ", reason:'" + reason + '\'' +
+                '}';
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Transaction(String from_uuid, String to_uuid, Double total, String reason, Timestamp timestamp) {
+        this.timestamp = timestamp;
         this.from_uuid = from_uuid;
         this.to_uuid = to_uuid;
         this.total = total;  //keep in mind only 2 digits... .2f marche pas
@@ -30,11 +53,11 @@ public class Transaction {
         this.to_uuid = to_uuid;
     }
 
-    public float getTotal() {
+    public Double getTotal() {
         return total;
     }
 
-    public void setTotal(float total) {
+    public void setTotal(Double total) {
         this.total = total;
     }
 

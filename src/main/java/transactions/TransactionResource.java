@@ -17,29 +17,13 @@ public class TransactionResource implements RouteGroup {
 
     public static TransactionService transactionService = new TransactionService();
 
+
     @Override
     public void addRoutes() {
-        get("/helloworld", ((request, response) -> {
+        get("/", ((request, response) -> {
             response.status(200);
             response.type("application/json");
-            return (transactionService.getTotalNumberOfTransactions());
+            return (transactionService.getListOfTransactions());
     }));
     }
-
-//    public static String dataToJson(Object data) {
-//        try {
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.enable(SerializationFeature.INDENT_OUTPUT);
-//            StringWriter sw = new StringWriter();
-//            mapper.writeValue(sw, data);
-//            return sw.toString();
-//        } catch (IOException e) {
-//            throw new RuntimeException("IOException from a StringWriter?");
-//        }
-//    }
-
-//    public Object helloWorld(Request request, Response response) {
-//        response.status(HttpStatus.OK_200);
-//        return "Hello World";
-//    }
 }

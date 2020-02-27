@@ -160,13 +160,13 @@ public class BedTest {
     Bed.BloodType[] bloodTypes = new Bed.BloodType[] {Bed.BloodType.AB_POS};
     int capacity = 950;
     Bed.BedPackage[] packages =
-            new Bed.BedPackage[] {
-                    new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
-                    new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
-            };
+        new Bed.BedPackage[] {
+          new Bed.BedPackage(Bed.BedPackage.Name.BLOOD_THIRSTY, 12.5),
+          new Bed.BedPackage(Bed.BedPackage.Name.SWEET_TOOTH, 6)
+        };
     Bed bedTest =
-            new Bed(
-                    ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
+        new Bed(
+            ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
 
     if (bedTest.getNomberOfStars() != 1) {
       throw new Exception("Le résultat calculé est incorrect");
@@ -175,8 +175,7 @@ public class BedTest {
 
   @Test
   void gettingStarRating_withEmptyBed_shouldNotThrow() throws Exception {
-    Bed bedTest =
-            new Bed();
+    Bed bedTest = new Bed();
 
     if (bedTest.getNomberOfStars() != -1) {
       throw new Exception("Le résultat calculé est incorrect");

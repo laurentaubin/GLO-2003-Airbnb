@@ -2,10 +2,6 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import bed.Bed.BedPackage;
-import bed.Bed.BedType;
-import bed.Bed.BloodType;
-import bed.Bed.CleaningFrequency;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

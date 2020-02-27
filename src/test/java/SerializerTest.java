@@ -1,18 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
-import bed.Bed;
-import bed.Bed.BedPackage;
-import bed.Bed.BedType;
-import bed.Bed.BloodType;
-import bed.Bed.CleaningFrequency;
+import bed.*;
 import org.junit.jupiter.api.Test;
-
-// TESTS :
-// dummy object should not throw
-// assert valid object to JSON
-// assert empty object to empty JSON
-
-// invalid object should throw
 
 public class SerializerTest {
 

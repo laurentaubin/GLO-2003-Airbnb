@@ -1,19 +1,19 @@
 package bed;
 
 public class Query {
-  private BedPackage bedPackage;
+  private PackageName packageName;
   private BedType bedType;
   private CleaningFrequency cleaningFrequency;
   private BloodType[] bloodTypes;
   private int minCapacity;
 
   public Query(
-      BedPackage bedPackage,
+      PackageName packageName,
       BedType bedType,
       CleaningFrequency cleaningFrequency,
       BloodType[] bloodTypes,
       int minCapacity) {
-    this.bedPackage = bedPackage;
+    this.packageName = packageName;
     this.bedType = bedType;
     this.cleaningFrequency = cleaningFrequency;
     this.bloodTypes = bloodTypes;
@@ -24,8 +24,8 @@ public class Query {
     return minCapacity;
   }
 
-  public BedPackage getBedPackage() {
-    return bedPackage;
+  public PackageName getPackageName() {
+    return packageName;
   }
 
   public BedType getBedType() {

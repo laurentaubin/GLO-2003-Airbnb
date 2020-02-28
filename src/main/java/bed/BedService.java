@@ -32,7 +32,8 @@ public class BedService {
   public List<Bed> Get(Query query) {
     ArrayList<Bed> filteredBeds = new ArrayList<>();
     for (Bed bed : getAllBeds()) {
-      if ((Arrays.asList(bed.getPackages()).contains(query.getBedPackage()))
+      if ((Arrays.asList(bed.getPackages())
+              .contains(query.getPackageName())) // check if bedpackage.name in there ////
           && (Arrays.asList(bed.getBloodTypes()).containsAll(Arrays.asList(query.getBloodTypes())))
           && (bed.getCleaningFrequency() == query.getCleaningFrequency())
           && (bed.getBedType() == query.getBedType())

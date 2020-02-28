@@ -1,11 +1,7 @@
 package bed;
 
 import exceptions.bed.BedService.InvalidUuidException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class BedService {
   private Map<String, Bed> beds = new HashMap<String, Bed>();
@@ -31,5 +27,19 @@ public class BedService {
 
   public List<Bed> getAllBeds() {
     return new ArrayList<Bed>(beds.values());
+  }
+
+  public List<Bed> Get(Query query) {
+    ArrayList<Bed> filteredBeds = new ArrayList<>();
+    for (Bed bed : getAllBeds()) {
+      if ((Arrays.asList(bed.getPackages()).contains(query.getBedPackage()))
+          && (Arrays.asList(bed.getBloodTypes()).containsAll(Arrays.asList(query.getBloodTypes())))
+          && (bed.getCleaningFrequency() == query.getCleaningFrequency())
+          && (bed.getBedType() == query.getBedType())
+          && (bed.getCapacity() >= query.getMinCapacity())) {
+        filteredBeds.add(bed);
+      }
+    }
+    return filteredBeds;
   }
 }

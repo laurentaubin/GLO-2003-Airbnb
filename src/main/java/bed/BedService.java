@@ -1,5 +1,6 @@
 package bed;
 
+import exceptions.bed.BedService.InvalidUuidException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +22,9 @@ public class BedService {
     return beds.size();
   }
 
-  public Bed getBedByUuid(String uuid) {
+  public Bed getBedByUuid(String uuid) throws InvalidUuidException {
     if (!beds.containsKey(uuid)) {
-      throw new IllegalArgumentException();
+      throw new InvalidUuidException();
     }
     return beds.get(uuid);
   }

@@ -2,6 +2,7 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import exceptions.bed.BedService.InvalidUuidException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +16,7 @@ class BedServiceTest {
   int capacity = 950;
   BedPackage[] packages =
       new BedPackage[] {
-        new BedPackage(BedPackage.Name.BLOOD_THIRSTY, 12.5),
-        new BedPackage(BedPackage.Name.SWEET_TOOTH, 6)
+        new BedPackage(PackageName.BLOOD_THIRSTY, 12.5), new BedPackage(PackageName.SWEET_TOOTH, 6)
       };
 
   @BeforeEach
@@ -59,7 +59,7 @@ class BedServiceTest {
   }
 
   @Test
-  void getBedByUuid_whenGettingBedWithValidUuid_shouldEqualSameBed() {
+  void getBedByUuid_whenGettingBedWithValidUuid_shouldEqualSameBed() throws InvalidUuidException {
     Bed bed =
         new Bed(
             this.ownerPublicKey,
@@ -86,6 +86,6 @@ class BedServiceTest {
             this.packages);
     this.bedService.addBed(bed);
     String invalidUuid = "";
-    assertThrows(IllegalArgumentException.class, () -> this.bedService.getBedByUuid(invalidUuid));
+    assertThrows(InvalidUuidException.class, () -> this.bedService.getBedByUuid(invalidUuid));
   }
 }

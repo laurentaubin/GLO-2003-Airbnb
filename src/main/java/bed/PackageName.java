@@ -23,7 +23,7 @@ public enum PackageName {
         return name;
       }
     }
-    throw new InvalidPackageNameException("Invalid package name");
+    throw new InvalidPackageNameException();
   }
 
   @Override

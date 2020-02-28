@@ -1,5 +1,7 @@
 package bed;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 
 public class BedTest {
@@ -18,8 +20,15 @@ public class BedTest {
           new BedPackage(PackageName.SWEET_TOOTH, 6)
         };
 
-    Bed bedTest =
-        new Bed(
-            ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
+    assertDoesNotThrow(
+        () ->
+            new Bed(
+                ownerPublicKey,
+                zipCode,
+                bedType,
+                cleaningFrequency,
+                bloodTypes,
+                capacity,
+                packages));
   }
 }

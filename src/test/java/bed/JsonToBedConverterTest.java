@@ -95,9 +95,8 @@ class JsonToBedConverterTest {
     String noZipCodeJson =
         "{\"ownerPublicKey\": \"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\", \"bedType\": \"latex\", \"cleaningFrequency\": \"annual\" , \"bloodTypes\": [\"O-\", \"AB+\"], \"capacity\": 234, \"packages\": [{\"name\": \"bloodthirsty\", \"pricePerNight\": 12.50}, {\"name\": \"sweetTooth\", \"pricePerNight\": 6}]}";
 
-    Exception exception =
-        assertThrows(
-            NullPointerException.class,
-            () -> this.jsonToBedConverter.generateBedFromJson(noZipCodeJson));
+    assertThrows(
+        NullPointerException.class,
+        () -> this.jsonToBedConverter.generateBedFromJson(noZipCodeJson));
   }
 }

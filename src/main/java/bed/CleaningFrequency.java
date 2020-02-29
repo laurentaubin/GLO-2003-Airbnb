@@ -38,6 +38,10 @@ public enum CleaningFrequency {
     return this.score;
   }
 
+  public double getScore() {
+    return this.score;
+  }
+
   @Override
   public String toString() {
     return this.label;

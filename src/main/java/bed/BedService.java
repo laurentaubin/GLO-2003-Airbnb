@@ -32,11 +32,11 @@ public class BedService {
   public ArrayList<Bed> Get(Query query) {
     ArrayList<Bed> filteredBeds = new ArrayList<>();
     for (Bed bed : getAllBeds()) {
-      if ((!Collections.disjoint(
-              query.getPackageNames(),
-              bed.getPackagesNames())) // any des packages dans query est dans bed.getpackages
-          && (Arrays.asList(bed.getBloodTypes())
-              .containsAll(Arrays.asList(query.getBloodTypes()))) //
+      Set<PackageName> bedPackagesNamesSet = new HashSet<>(Arrays.asList(bed.getPackagesNames()));
+      Set<PackageName> queryPackagesNamesSet =
+          new HashSet<>(Arrays.asList(query.getPackagesNames()));
+      if ((!Collections.disjoint(bedPackagesNamesSet, queryPackagesNamesSet))
+          && (Arrays.asList(bed.getBloodTypes()).containsAll(Arrays.asList(query.getBloodTypes())))
           && (Arrays.asList(query.getCleaningFrequencies()).contains(bed.getCleaningFrequency()))
           && (Arrays.asList(query.getBedTypes()).contains(bed.getBedType()))
           && (bed.getCapacity() >= query.getMinCapacity())) {

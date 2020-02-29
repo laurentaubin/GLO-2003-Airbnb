@@ -4,6 +4,13 @@ public class BedPackage {
   private PackageName name;
   private double pricePerNight;
 
+  BedPackage() {};
+
+  public BedPackage(PackageName name, double pricePerNight) {
+    this.setName(name);
+    this.setPricePerNight(pricePerNight);
+  }
+
   public PackageName getName() {
     return name;
   }
@@ -18,11 +25,6 @@ public class BedPackage {
 
   public void setPricePerNight(double pricePerNight) {
     this.pricePerNight = pricePerNight;
-  }
-
-  public BedPackage(PackageName name, double pricePerNight) {
-    this.setName(name);
-    this.setPricePerNight(pricePerNight);
   }
 
   @Override

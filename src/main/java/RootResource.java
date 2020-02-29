@@ -1,5 +1,6 @@
 import static spark.Spark.get;
 
+import bed.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;

@@ -1,6 +1,7 @@
 package bed;
 
 import static spark.Spark.get;
+import static spark.Spark.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -10,12 +11,27 @@ import spark.Response;
 import spark.RouteGroup;
 
 public class BedResource implements RouteGroup {
-  public static final String ROOT_PATH = "/";
+  public static final String ROOT_PATH = "/beds";
   private BedService bedService = new BedService();
 
   @Override
   public void addRoutes() {
-    get("/beds", this::getBeds, new ObjectMapper()::writeValueAsString);
+    get("", this::getBeds, new ObjectMapper()::writeValueAsString);
+
+    post(
+        "",
+        (request, response) -> {
+          try {
+            response.type("application/json");
+            ObjectMapper mapper = new ObjectMapper();
+            Bed bed = mapper.readValue(request.body(), Bed.class);
+            String uuid = bedService.addBed(bed);
+            return uuid;
+          } catch (Exception e) {
+            response.status(400);
+            return e.toString();
+          }
+        });
   }
 
   public Object getBeds(Request request, Response response) {

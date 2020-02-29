@@ -158,7 +158,7 @@ class BedServiceTest {
 
     for (Bed bed : filteredBeds) {
       assertEquals(bed.getBedType(), BedType.SPRINGS);
-      assertTrue(Arrays.asList(bed.getPackagesNames()).contains(PackageName.SWEET_TOOTH));
+      assertTrue(Arrays.asList(bed.packagesNames()).contains(PackageName.SWEET_TOOTH));
       assertTrue(Arrays.asList(bed.getBloodTypes()).contains(BloodType.O_NEG));
     }
     assertEquals(filteredBeds.size(), 2);

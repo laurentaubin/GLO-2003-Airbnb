@@ -32,7 +32,7 @@ public class BedService {
   public ArrayList<Bed> Get(Query query) {
     ArrayList<Bed> filteredBeds = new ArrayList<>();
     for (Bed bed : getAllBeds()) {
-      Set<PackageName> bedPackagesNamesSet = new HashSet<>(Arrays.asList(bed.getPackagesNames()));
+      Set<PackageName> bedPackagesNamesSet = new HashSet<>(Arrays.asList(bed.packagesNames()));
       Set<PackageName> queryPackagesNamesSet =
           new HashSet<>(Arrays.asList(query.getPackagesNames()));
       if ((!Collections.disjoint(bedPackagesNamesSet, queryPackagesNamesSet))

@@ -63,7 +63,7 @@ public class Bed {
     return packages;
   }
 
-  public PackageName[] getPackagesNames() {
+  public PackageName[] packagesNames() {
     ArrayList<PackageName> packageNamesList = new ArrayList<>();
     for (BedPackage bedPackage : getPackages()) {
       packageNamesList.add(bedPackage.getName());

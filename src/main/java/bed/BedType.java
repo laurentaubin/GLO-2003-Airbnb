@@ -7,7 +7,7 @@ public enum BedType {
   @JsonProperty("latex")
   LATEX("latex", 250),
   @JsonProperty("memoryFoam")
-  MEMORY_FOAM("memory-foam", 500),
+  MEMORY_FOAM("memoryFoam", 500),
   @JsonProperty("springs")
   SPRINGS("springs", 750);
 
@@ -26,14 +26,6 @@ public enum BedType {
       }
     }
     throw new InvalidBedTypeException();
-  }
-
-  public int getScore() {
-    return this.score;
-  }
-
-  public int getScore() {
-    return this.score;
   }
 
   public int getScore() {

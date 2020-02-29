@@ -5,6 +5,7 @@ import static spark.Spark.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.bed.BedService.InvalidUuidException;
+import exceptions.bed.InvalidOwnerKeyException;
 import java.util.ArrayList;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
@@ -14,6 +15,7 @@ import spark.RouteGroup;
 public class BedResource implements RouteGroup {
   public static final String ROOT_PATH = "/beds";
   private BedService bedService = new BedService();
+  private ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
   public void addRoutes() {
@@ -26,11 +28,20 @@ public class BedResource implements RouteGroup {
             response.type("application/json");
             ObjectMapper mapper = new ObjectMapper();
             Bed bed = mapper.readValue(request.body(), Bed.class);
+            if (!bedValidator.isPublicKeyValid(bed.getOwnerPublicKey())) {
+              throw new InvalidOwnerKeyException();
+            }
             String uuid = bedService.addBed(bed);
+            response.status(201);
+            response.header("Location", "/beds/:" + uuid);
             return uuid;
-          } catch (Exception e) {
-            response.status(400);
-            return e.toString();
+          } catch (InvalidOwnerKeyException e) {
+            ErrorPostResponse errorPostResponse = new ErrorPostResponse();
+            errorPostResponse.setError(PostStatusResponse.INVALID_PUBLIC_KEY);
+            errorPostResponse.setDescription(
+                "BiteCoins account public key should contain only "
+                    + "alphanumeric characters and have a 256-bits length");
+            return objectMapper.writeValueAsString(errorPostResponse);
           }
         });
 

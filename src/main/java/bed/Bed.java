@@ -1,5 +1,7 @@
 package bed;
 
+import java.util.ArrayList;
+
 public class Bed {
   private String ownerPublicKey;
   private String zipCode;
@@ -59,6 +61,14 @@ public class Bed {
 
   public BedPackage[] getPackages() {
     return packages;
+  }
+
+  public PackageName[] getPackagesNames() {
+    ArrayList<PackageName> packageNamesList = new ArrayList<>();
+    for (BedPackage bedPackage : getPackages()) {
+      packageNamesList.add(bedPackage.getName());
+    }
+    return packageNamesList.toArray(new PackageName[packageNamesList.size()]);
   }
 
   public void setPackages(BedPackage[] packages) {

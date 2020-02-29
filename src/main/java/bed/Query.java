@@ -34,7 +34,7 @@ public class Query {
       String[] bloodTypesStrings = _bloodTypes.split(",");
       ArrayList<BloodType> bloodTypesList = new ArrayList<>();
       for (String bloodType : bloodTypesStrings) {
-        bloodTypesList.add(BloodType.valueOf(bloodType));
+        bloodTypesList.add(BloodType.valueOfLabel(bloodType));
       }
       bloodTypes = bloodTypesList.toArray(new BloodType[bloodTypesStrings.length]);
     }
@@ -53,7 +53,7 @@ public class Query {
           };
     } else {
       cleaningFrequencies =
-          new CleaningFrequency[] {CleaningFrequency.valueOf(_cleaningFrequencies)};
+          new CleaningFrequency[] {CleaningFrequency.valueOfLabel(_cleaningFrequencies)};
     }
     return cleaningFrequencies;
   }
@@ -63,7 +63,7 @@ public class Query {
     if (_bedTypes.equals("empty")) {
       bedTypes = new BedType[] {BedType.LATEX, BedType.MEMORY_FOAM, BedType.SPRINGS};
     } else {
-      bedTypes = new BedType[] {BedType.valueOf(_bedTypes)};
+      bedTypes = new BedType[] {BedType.valueOfLabel(_bedTypes)};
     }
     return bedTypes;
   }
@@ -76,7 +76,7 @@ public class Query {
             PackageName.ALL_YOU_CAN_DRINK, PackageName.BLOOD_THIRSTY, PackageName.SWEET_TOOTH
           };
     } else {
-      packageNames = new PackageName[] {PackageName.valueOf(_packageNames)};
+      packageNames = new PackageName[] {PackageName.valueOfLabel(_packageNames)};
     }
     return packageNames;
   }

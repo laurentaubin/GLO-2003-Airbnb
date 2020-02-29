@@ -96,7 +96,7 @@ class BedServiceTest {
             350,
             packages4));
 
-    BloodType[] bloodTypes5 = new BloodType[] {BloodType.A_POS};
+    BloodType[] bloodTypes5 = new BloodType[] {BloodType.A_POS, BloodType.O_NEG};
     BedPackage[] packages5 = new BedPackage[] {new BedPackage(PackageName.SWEET_TOOTH, 1)};
     beds.add(
         new Bed(
@@ -137,11 +137,49 @@ class BedServiceTest {
   }
 
   @Test
-  void filterBeds_parameters_shouldFilterCorrectly() {} // //
+  void filterBeds_parameters1_shouldFilterCorrectly() {
+    createBeds();
+
+    Query query = new Query("empty", "memoryFoam", "empty", "empty", "0");
+    ArrayList<Bed> filteredBeds = this.bedService.Get(query);
+
+    for (Bed bed : filteredBeds) {
+      assertEquals(bed.getBedType(), BedType.MEMORY_FOAM);
+    }
+    assertEquals(filteredBeds.size(), 1);
+  }
+
+  @Test
+  void filterBeds_parameters2_shouldFilterCorrectly() {
+    createBeds();
+
+    Query query = new Query("sweetTooth", "springs", "empty", "O-", "0");
+    ArrayList<Bed> filteredBeds = this.bedService.Get(query);
+
+    for (Bed bed : filteredBeds) {
+      assertEquals(bed.getBedType(), BedType.SPRINGS);
+      assertTrue(Arrays.asList(bed.getPackagesNames()).contains(PackageName.SWEET_TOOTH));
+      assertTrue(Arrays.asList(bed.getBloodTypes()).contains(BloodType.O_NEG));
+    }
+    assertEquals(filteredBeds.size(), 2);
+  }
+
+  @Test
+  void filterBeds_parameters3_shouldFilterCorrectly() {
+    createBeds();
+
+    Query query = new Query("empty", "empty", "never", "empty", "400");
+    ArrayList<Bed> filteredBeds = this.bedService.Get(query);
+
+    for (Bed bed : filteredBeds) {
+      assertEquals(bed.getCleaningFrequency(), CleaningFrequency.NEVER);
+      assertTrue(bed.getCapacity() >= 400);
+    }
+    assertEquals(filteredBeds.size(), 2);
+  }
 
   @Test
   void filterBeds_noParameters_shouldReturnAllBeds() {
-
     Query query = new Query("empty", "empty", "empty", "empty", "0");
     assertEquals(this.bedService.Get(query), this.bedService.getAllBeds());
   }

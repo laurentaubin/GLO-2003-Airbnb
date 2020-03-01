@@ -1,6 +1,6 @@
 # Air bed and Bug on the Blockchain - GLO2003
 
-Air bed and Bug API
+Air bed and Bug API - http://glo2003.herokuapp.com/
 
 ## Table of content
 

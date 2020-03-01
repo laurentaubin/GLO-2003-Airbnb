@@ -1,10 +1,7 @@
 package bed;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import exceptions.bed.BedService.InvalidUuidException;
+import java.util.*;
 
 public class BedService {
   private Map<String, Bed> beds = new HashMap<String, Bed>();
@@ -21,14 +18,40 @@ public class BedService {
     return beds.size();
   }
 
-  public Bed getBedByUuid(String uuid) {
+  public Bed getBedByUuid(String uuid) throws InvalidUuidException {
     if (!beds.containsKey(uuid)) {
-      throw new IllegalArgumentException();
+      throw new InvalidUuidException();
     }
     return beds.get(uuid);
   }
 
-  public List<Bed> getAllBeds() {
+  public ArrayList<Bed> getAllBeds() {
     return new ArrayList<Bed>(beds.values());
+  }
+
+  private ArrayList<Bed> sortBeds(ArrayList<Bed> beds) {
+    Collections.sort(beds, new BedStarComparator());
+    Collections.reverse(beds);
+    return beds;
+  }
+
+  public ArrayList<Bed> Get(Query query) {
+    ArrayList<Bed> filteredBeds = new ArrayList<>();
+    for (Bed bed : getAllBeds()) {
+      Set<PackageName> bedPackagesNamesSet = new HashSet<>(Arrays.asList(bed.packagesNames()));
+      Set<PackageName> queryPackagesNamesSet =
+          new HashSet<>(Arrays.asList(query.getPackagesNames()));
+      if ((!Collections.disjoint(bedPackagesNamesSet, queryPackagesNamesSet))
+          && (Arrays.asList(bed.getBloodTypes()).containsAll(Arrays.asList(query.getBloodTypes())))
+          && (Arrays.asList(query.getCleaningFrequencies()).contains(bed.getCleaningFrequency()))
+          && (Arrays.asList(query.getBedTypes()).contains(bed.getBedType()))
+          && (bed.getCapacity() >= query.getMinCapacity())) {
+        filteredBeds.add(bed);
+      }
+    }
+
+    ArrayList<Bed> beds = sortBeds(filteredBeds);
+
+    return beds;
   }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import exceptions.bed.BedEnumException;
 import java.io.IOException;
 
 public class BedDeserializer extends JsonDeserializer<Bed> {
@@ -13,9 +14,10 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
 
   @Override
   public Bed deserialize(JsonParser parser, DeserializationContext deserializer)
-      throws IOException {
+      throws IOException, BedEnumException {
+    JsonNode bedNode;
 
-    JsonNode bedNode = parser.getCodec().readTree(parser);
+    bedNode = parser.getCodec().readTree(parser);
     Bed bed = new Bed();
 
     bed.setOwnerPublicKey(bedNode.get("ownerPublicKey").textValue());
@@ -28,7 +30,8 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
     BloodType[] bloodTypes = getBedBloodTypes(bedNode.get("bloodTypes"));
     bed.setBloodTypes(bloodTypes);
 
-    BedPackage[] bedPackages = getBedPackages(bedNode.get("packages"));
+    BedPackage[] bedPackages;
+    bedPackages = getBedPackages(bedNode.get("packages"));
     bed.setPackages(bedPackages);
 
     return bed;
@@ -46,8 +49,7 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
     BedPackage[] bedPackages = new BedPackage[packagesNode.size()];
     for (int i = 0; i < bedPackages.length; i++) {
 
-      BedPackage.Name name =
-          BedPackage.Name.valueOfLabel(packagesNode.get(i).get("name").textValue());
+      PackageName name = PackageName.valueOfLabel(packagesNode.get(i).get("name").textValue());
       double pricePerNight = packagesNode.get(i).get("pricePerNight").asDouble();
       BedPackage bedPackage = new BedPackage(name, pricePerNight);
       bedPackages[i] = bedPackage;

@@ -1,6 +1,6 @@
-import transactions.TransactionResource;
-
 import static spark.Spark.path;
+
+import transactions.TransactionResource;
 
 public class Router {
   public static void setUpRoutes() {

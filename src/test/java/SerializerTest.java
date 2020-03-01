@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import bed.*;
+import exceptions.Serializer.UnserialiazableObjectException;
 import org.junit.jupiter.api.Test;
 
 public class SerializerTest {
@@ -44,8 +45,7 @@ public class SerializerTest {
   int capacity = 950;
   BedPackage[] packages =
       new BedPackage[] {
-        new BedPackage(BedPackage.Name.BLOOD_THIRSTY, 12.5),
-        new BedPackage(BedPackage.Name.SWEET_TOOTH, 6)
+        new BedPackage(PackageName.BLOOD_THIRSTY, 12.5), new BedPackage(PackageName.SWEET_TOOTH, 6)
       };
 
   @Test
@@ -56,7 +56,8 @@ public class SerializerTest {
   }
 
   @Test
-  void serialize_usingPrivateAttributeWithGetterObject_shouldEqualJson() {
+  void serialize_usingPrivateAttributeWithGetterObject_shouldEqualJson()
+      throws UnserialiazableObjectException {
     PrivateAttributeWithGetterObject privateAttributeWithGetterObject =
         new PrivateAttributeWithGetterObject();
     assertEquals(
@@ -67,19 +68,21 @@ public class SerializerTest {
   @Test
   void serialize_usingInvalidPrivateAttributeObject_shouldThrow() {
     PrivateAttributeObject privateAttributeObject = new PrivateAttributeObject();
-    assertThrows(RuntimeException.class, () -> Serializer.dataToJson(privateAttributeObject));
+    assertThrows(
+        UnserialiazableObjectException.class, () -> Serializer.dataToJson(privateAttributeObject));
   }
 
   @Test
-  void serialize_withDummyBedObject_shouldEqualJson() {
+  void serialize_withDummyBedObject_shouldEqualJson() throws UnserialiazableObjectException {
     Bed dummyBed = new Bed();
+
     assertEquals(
-        "{\"ownerPublicKey\":null,\"zipCode\":null,\"bedType\":null,\"cleaningFrequency\":null,\"bloodTypes\":null,\"capacity\":0,\"packages\":null}",
+        "{\"ownerPublicKey\":null,\"zipCode\":null,\"bedType\":null,\"cleaningFrequency\":null,\"bloodTypes\":null,\"capacity\":0,\"packages\":null,\"numberOfStars\":-1}",
         Serializer.dataToJson(dummyBed));
   }
 
   @Test
-  void serialize_withValidBedObject_shouldEqualJson() {
+  void serialize_withValidBedObject_shouldEqualJson() throws UnserialiazableObjectException {
 
     Bed validBed =
         new Bed(
@@ -92,7 +95,7 @@ public class SerializerTest {
             this.packages);
 
     assertEquals(
-        "{\"ownerPublicKey\":\"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\",\"zipCode\":\"12345\",\"bedType\":\"latex\",\"cleaningFrequency\":\"monthly\",\"bloodTypes\":[\"O-\",\"AB+\"],\"capacity\":950,\"packages\":[{\"name\":\"bloodthirsty\",\"pricePerNight\":12.5},{\"name\":\"sweetTooth\",\"pricePerNight\":6.0}]}",
+        "{\"ownerPublicKey\":\"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\",\"zipCode\":\"12345\",\"bedType\":\"latex\",\"cleaningFrequency\":\"monthly\",\"bloodTypes\":[\"O-\",\"AB+\"],\"capacity\":950,\"packages\":[{\"name\":\"bloodthirsty\",\"pricePerNight\":12.5},{\"name\":\"sweetTooth\",\"pricePerNight\":6.0}],\"numberOfStars\":3}",
         Serializer.dataToJson(validBed));
   }
 }

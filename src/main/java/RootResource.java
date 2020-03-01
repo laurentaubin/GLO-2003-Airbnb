@@ -1,5 +1,6 @@
 import static spark.Spark.get;
 
+import bed.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
@@ -8,7 +9,6 @@ import spark.RouteGroup;
 
 public class RootResource implements RouteGroup {
   public static final String ROOT_PATH = "/";
-
 
   @Override
   public void addRoutes() {

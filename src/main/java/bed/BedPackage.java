@@ -1,16 +1,21 @@
 package bed;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class BedPackage {
-  private Name name;
+  private PackageName name;
   private double pricePerNight;
 
-  public Name getName() {
+  BedPackage() {};
+
+  public BedPackage(PackageName name, double pricePerNight) {
+    this.setName(name);
+    this.setPricePerNight(pricePerNight);
+  }
+
+  public PackageName getName() {
     return name;
   }
 
-  public void setName(Name name) {
+  public void setName(PackageName name) {
     this.name = name;
   }
 
@@ -20,40 +25,6 @@ public class BedPackage {
 
   public void setPricePerNight(double pricePerNight) {
     this.pricePerNight = pricePerNight;
-  }
-
-  public enum Name {
-    @JsonProperty("bloodthirsty")
-    BLOOD_THIRSTY("bloodthirsty"),
-    @JsonProperty("allYouCanDrink")
-    ALL_YOU_CAN_DRINK("allYouCanDrink"),
-    @JsonProperty("sweetTooth")
-    SWEET_TOOTH("sweetTooth");
-
-    private String label;
-
-    Name(String label) {
-      this.label = label;
-    }
-
-    public static Name valueOfLabel(String bedPackage) {
-      for (Name name : values()) {
-        if (name.label.equals(bedPackage)) {
-          return name;
-        }
-      }
-      throw new IllegalArgumentException("Invalid package name");
-    }
-
-    @Override
-    public String toString() {
-      return this.label;
-    }
-  }
-
-  public BedPackage(Name name, double pricePerNight) {
-    this.setName(name);
-    this.setPricePerNight(pricePerNight);
   }
 
   @Override

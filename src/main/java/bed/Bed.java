@@ -1,5 +1,7 @@
 package bed;
 
+import java.util.ArrayList;
+
 public class Bed {
   private String ownerPublicKey;
   private String zipCode;
@@ -61,8 +63,44 @@ public class Bed {
     return packages;
   }
 
+  public PackageName[] packagesNames() {
+    ArrayList<PackageName> packageNamesList = new ArrayList<>();
+    for (BedPackage bedPackage : getPackages()) {
+      packageNamesList.add(bedPackage.getName());
+    }
+    return packageNamesList.toArray(new PackageName[packageNamesList.size()]);
+  }
+
   public void setPackages(BedPackage[] packages) {
     this.packages = packages;
+  }
+
+  private double getGlobalBloodTypeScore() {
+    double bloodTypeScore = 0;
+    for (BloodType bloodType : this.bloodTypes) {
+      bloodTypeScore += bloodType.getScore();
+    }
+    return (bloodTypeScore / this.bloodTypes.length);
+  }
+
+  public int getNumberOfStars() {
+    try {
+      double globalScore =
+          this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
+      if (0 <= globalScore && globalScore < 100) {
+        return 1;
+      } else if (100 <= globalScore && globalScore < 187.5) {
+        return 2;
+      } else if (187.5 <= globalScore && globalScore < 300) {
+        return 3;
+      } else if (300 <= globalScore && globalScore < 500) {
+        return 4;
+      } else {
+        return 5;
+      }
+    } catch (Exception e) {
+      return -1;
+    }
   }
 
   public Bed() {}

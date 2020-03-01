@@ -1,72 +1,78 @@
 package transactions;
 
-import java.sql.Timestamp;
-
 public class Transaction {
-    private String timestamp;
-    private String from_uuid;
-    private String to_uuid;
-    private Number total;
-    private String reason;
+  private String timestamp;
+  private String from_uuid;
+  private String to_uuid;
+  private Number total;
+  private String reason;
 
-    @Override
-    public String toString() {
-        return "{" +
-                "timestamp: '" + timestamp + '\'' +
-                ", from_uuid: '" + from_uuid + '\'' +
-                ", to_uuid: '" + to_uuid + '\'' +
-                ", total: " + total +
-                ", reason: '" + reason + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "{"
+        + "timestamp: '"
+        + timestamp
+        + '\''
+        + ", from_uuid: '"
+        + from_uuid
+        + '\''
+        + ", to_uuid: '"
+        + to_uuid
+        + '\''
+        + ", total: "
+        + total
+        + ", reason: '"
+        + reason
+        + '\''
+        + '}';
+  }
 
+  public String getTimestamp() {
+    return timestamp;
+  }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
+  }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
+  public Transaction(
+      String from_uuid, String to_uuid, Number total, String reason, String timestamp) {
+    this.timestamp = timestamp;
+    this.from_uuid = from_uuid;
+    this.to_uuid = to_uuid;
+    this.total = total; // keep in mind only 2 digits... .2f marche pas
+    this.reason = reason;
+  }
 
-    public Transaction(String from_uuid, String to_uuid, Number total, String reason, String timestamp) {
-        this.timestamp = timestamp;
-        this.from_uuid = from_uuid;
-        this.to_uuid = to_uuid;
-        this.total = total;  //keep in mind only 2 digits... .2f marche pas
-        this.reason = reason;
-    }
+  public String getFrom_uuid() {
+    return from_uuid;
+  }
 
+  public void setFrom_uuid(String from_uuid) {
+    this.from_uuid = from_uuid;
+  }
 
-    public String getFrom_uuid() {
-        return from_uuid;
-    }
+  public String getTo_uuid() {
+    return to_uuid;
+  }
 
-    public void setFrom_uuid(String from_uuid) {
-        this.from_uuid = from_uuid;
-    }
+  public void setTo_uuid(String to_uuid) {
+    this.to_uuid = to_uuid;
+  }
 
-    public String getTo_uuid() {
-        return to_uuid;
-    }
+  public Number getTotal() {
+    return total;
+  }
 
-    public void setTo_uuid(String to_uuid) {
-        this.to_uuid = to_uuid;
-    }
+  public void setTotal(Double total) {
+    this.total = total;
+  }
 
-    public Number getTotal() {
-        return total;
-    }
+  public String getReason() {
+    return reason;
+  }
 
-    public void setTotal(Double total) {
-        this.total = total;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
+  public void setReason(String reason) {
+    this.reason = reason;
+  }
 }

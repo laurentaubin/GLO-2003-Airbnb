@@ -3,8 +3,14 @@ package bed;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import bed.response.ErrorPostResponse;
+import bed.response.PostStatusResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.bed.CleaningFrequency.InvalidCleaningFrequencyException;
+import exceptions.bed.InvalidCapacityException;
 import exceptions.bed.InvalidOwnerKeyException;
+import exceptions.bed.InvalidZipCodeException;
 import java.util.ArrayList;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
@@ -29,18 +35,22 @@ public class BedResource implements RouteGroup {
             Bed bed = mapper.readValue(request.body(), Bed.class);
             if (!bedValidator.isPublicKeyValid(bed.getOwnerPublicKey())) {
               throw new InvalidOwnerKeyException();
+            } else if (!bedValidator.isZipCodeValid(bed.getZipCode())) {
+              throw new InvalidZipCodeException();
+            } else if (!bedValidator.isCapacityValid(bed.getCapacity())) {
+              throw new InvalidCapacityException();
             }
+
             String uuid = bedService.addBed(bed);
             response.status(201);
             response.header("Location", "/beds/:" + uuid);
             return uuid;
           } catch (InvalidOwnerKeyException e) {
-            ErrorPostResponse errorPostResponse = new ErrorPostResponse();
-            errorPostResponse.setError(PostStatusResponse.INVALID_PUBLIC_KEY);
-            errorPostResponse.setDescription(
-                "BiteCoins account public key should contain only "
-                    + "alphanumeric characters and have a 256-bits length");
-            return objectMapper.writeValueAsString(errorPostResponse);
+            return invalidOwnerKeyErrorMessage();
+          } catch (InvalidZipCodeException e) {
+            return invalidZipCodeErrorMessage();
+          } catch (InvalidCleaningFrequencyException e) {
+            return invalidCleaningFrequencyErrorMessage();
           }
         });
   }
@@ -57,5 +67,29 @@ public class BedResource implements RouteGroup {
 
     response.status(HttpStatus.OK_200);
     return beds;
+  }
+
+  private String invalidOwnerKeyErrorMessage() throws JsonProcessingException {
+    ErrorPostResponse errorPostResponse = new ErrorPostResponse();
+    errorPostResponse.setError(PostStatusResponse.INVALID_PUBLIC_KEY);
+    errorPostResponse.setDescription(
+        "BiteCoins account public key should contain only "
+            + "alphanumeric characters and have a 256-bits length");
+    return objectMapper.writeValueAsString(errorPostResponse);
+  }
+
+  private String invalidZipCodeErrorMessage() throws JsonProcessingException {
+    ErrorPostResponse errorPostResponse = new ErrorPostResponse();
+    errorPostResponse.setError(PostStatusResponse.INVALID_ZIP_CODE);
+    errorPostResponse.setDescription("zip code should be a 5 digits number");
+    return objectMapper.writeValueAsString(errorPostResponse);
+  }
+
+  private String invalidCleaningFrequencyErrorMessage() throws JsonProcessingException {
+    ErrorPostResponse errorPostResponse = new ErrorPostResponse();
+    errorPostResponse.setError(PostStatusResponse.INVALID_CLEANING_FREQUENCY);
+    errorPostResponse.setDescription(
+        "cleaning frequency should be one of weekly, monthly, annual or never");
+    return objectMapper.writeValueAsString(errorPostResponse);
   }
 }

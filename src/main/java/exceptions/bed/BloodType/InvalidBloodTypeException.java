@@ -1,8 +1,6 @@
 package exceptions.bed.BloodType;
 
-import exceptions.bed.BedEnumException;
-
-public class InvalidBloodTypeException extends BedEnumException {
+public class InvalidBloodTypeException extends RuntimeException {
   public InvalidBloodTypeException() {
     super();
   }

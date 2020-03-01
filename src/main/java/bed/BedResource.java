@@ -3,7 +3,10 @@ package bed;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import bed.response.ErrorPostResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.BedException;
 import exceptions.bed.BedService.InvalidUuidException;
 import java.util.ArrayList;
 import org.eclipse.jetty.http.HttpStatus;
@@ -14,6 +17,9 @@ import spark.RouteGroup;
 public class BedResource implements RouteGroup {
   public static final String ROOT_PATH = "/beds";
   private BedService bedService = new BedService();
+  private JsonToBedConverter jsonToBedConverter = new JsonToBedConverter();
+  private ObjectMapper objectMapper = new ObjectMapper();
+  private BedValidator bedValidator = new BedValidator();
 
   @Override
   public void addRoutes() {
@@ -24,13 +30,14 @@ public class BedResource implements RouteGroup {
         (request, response) -> {
           try {
             response.type("application/json");
-            ObjectMapper mapper = new ObjectMapper();
-            Bed bed = mapper.readValue(request.body(), Bed.class);
+            Bed bed = jsonToBedConverter.generateBedFromJson(request.body());
+            bedValidator.validateBed(bed);
             String uuid = bedService.addBed(bed);
+            response.status(201);
+            response.header("Location", "/beds/:" + uuid);
             return uuid;
-          } catch (Exception e) {
-            response.status(400);
-            return e.toString();
+          } catch (BedException e) {
+            return generatePostErrorMessage(e);
           }
         });
 
@@ -67,5 +74,12 @@ public class BedResource implements RouteGroup {
 
     response.status(HttpStatus.OK_200);
     return beds;
+  }
+
+  private String generatePostErrorMessage(BedException e) throws JsonProcessingException {
+    ErrorPostResponse errorPostResponse = new ErrorPostResponse();
+    errorPostResponse.setError(e.getError());
+    errorPostResponse.setDescription(e.getDescription());
+    return objectMapper.writeValueAsString(errorPostResponse);
   }
 }

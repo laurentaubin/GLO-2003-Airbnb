@@ -1,6 +1,6 @@
 package exceptions.bed.BedService;
 
-public class InvalidUuidException extends Exception {
+public class InvalidUuidException extends RuntimeException {
   public InvalidUuidException() {
     super();
   }

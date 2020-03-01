@@ -1,10 +1,12 @@
 package exceptions.bed.PackageName;
 
-import exceptions.bed.BedEnumException;
+import exceptions.BedException;
 
-public class InvalidPackageNameException extends BedEnumException {
+public class InvalidPackageNameException extends BedException {
   public InvalidPackageNameException() {
-    super();
+    super(
+        "INVALID_PACKAGES",
+        "packages should be an array of package name with " + "its corresponding price per night");
   }
 
   public InvalidPackageNameException(String s) {

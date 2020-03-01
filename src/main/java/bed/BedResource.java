@@ -4,6 +4,7 @@ import static spark.Spark.get;
 import static spark.Spark.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.bed.BedService.InvalidUuidException;
 import java.util.ArrayList;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
@@ -32,6 +33,26 @@ public class BedResource implements RouteGroup {
             return e.toString();
           }
         });
+
+    get("/:uuid", this::getBed, new ObjectMapper()::writeValueAsString);
+  }
+
+  public Object getBed(Request request, Response response) {
+
+    String uuid = request.params(":uuid");
+
+    try {
+      Bed bed = this.bedService.getBedByUuid(uuid);
+      response.status(HttpStatus.OK_200);
+      return bed;
+
+    } catch (InvalidUuidException e) {
+      ErrorHandler error =
+          new ErrorHandler(
+              "BED_NOT_FOUND", String.format("bed with number %s could not be found", uuid));
+      response.status(HttpStatus.NOT_FOUND_404);
+      return error;
+    }
   }
 
   public Object getBeds(Request request, Response response) {

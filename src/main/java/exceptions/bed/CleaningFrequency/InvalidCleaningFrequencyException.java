@@ -1,8 +1,6 @@
 package exceptions.bed.CleaningFrequency;
 
-import exceptions.bed.BedEnumException;
-
-public class InvalidCleaningFrequencyException extends BedEnumException {
+public class InvalidCleaningFrequencyException extends RuntimeException {
   public InvalidCleaningFrequencyException() {
     super();
   }

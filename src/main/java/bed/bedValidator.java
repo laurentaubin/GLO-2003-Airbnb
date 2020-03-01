@@ -4,10 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 
 public class bedValidator {
   static boolean isPublicKeyValid(String publicKey) {
-    return StringUtils.isAlphanumeric(publicKey) && publicKey.length() == 25;
+    return StringUtils.isAlphanumeric(publicKey) && publicKey.length() == 64;
   }
 
-  static boolean isPostalCodeValid(String postalCode) {
+  static boolean isZipCodeValid(String postalCode) {
     return postalCode.length() == 5 && StringUtils.isNumeric(postalCode);
   }
 

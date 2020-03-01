@@ -1,4 +1,4 @@
-package bed;
+package bed.response;
 
 public enum PostStatusResponse {
   INVALID_PUBLIC_KEY("INVALID_PUBLIC_KEY"),

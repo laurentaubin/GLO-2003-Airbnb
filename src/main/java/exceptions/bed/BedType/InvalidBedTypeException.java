@@ -1,8 +1,6 @@
 package exceptions.bed.BedType;
 
-import exceptions.bed.BedEnumException;
-
-public class InvalidBedTypeException extends BedEnumException {
+public class InvalidBedTypeException extends RuntimeException {
   public InvalidBedTypeException() {
     super();
   }

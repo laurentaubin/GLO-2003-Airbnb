@@ -1,10 +1,10 @@
-package bed;
+package bed.response;
 
 public class ErrorPostResponse {
   private PostStatusResponse error;
   private String description;
 
-  ErrorPostResponse() {}
+  public ErrorPostResponse() {}
 
   ErrorPostResponse(PostStatusResponse error, String description) {
     this.error = error;

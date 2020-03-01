@@ -5,10 +5,10 @@ import exceptions.bed.InvalidOwnerKeyException;
 import exceptions.bed.InvalidZipCodeException;
 import org.apache.commons.lang3.StringUtils;
 
-class BedValidator {
-  BedValidator() {};
+public class BedValidator {
+  public BedValidator() {}
 
-  void validateBed(Bed bed) {
+  public void validateBed(Bed bed) {
     if (!isPublicKeyValid(bed.getOwnerPublicKey())) {
       throw new InvalidOwnerKeyException();
     } else if (!isZipCodeValid(bed.getZipCode())) {

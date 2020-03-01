@@ -1,5 +1,7 @@
 package transactions;
 
+import java.text.DecimalFormat;
+
 public class Transaction {
   private String timestamp;
   private String from_uuid;
@@ -37,10 +39,11 @@ public class Transaction {
 
   public Transaction(
       String from_uuid, String to_uuid, Number total, String reason, String timestamp) {
+    String new_total = new DecimalFormat("##.##").format(total);
     this.timestamp = timestamp;
     this.from_uuid = from_uuid;
     this.to_uuid = to_uuid;
-    this.total = total; // keep in mind only 2 digits... .2f marche pas
+    this.total = Float.parseFloat(new DecimalFormat("##.##").format(total));
     this.reason = reason;
   }
 

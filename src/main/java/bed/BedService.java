@@ -31,7 +31,7 @@ public class BedService {
 
   private ArrayList<Bed> sortBeds(ArrayList<Bed> beds) {
     Collections.sort(beds, new BedStarComparator());
-    // Collections.reverse(beds);
+    Collections.reverse(beds);
     return beds;
   }
 

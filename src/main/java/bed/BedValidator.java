@@ -37,10 +37,7 @@ public class BedValidator {
   private void isBedPackageValid(BedPackage[] givenBedPackages) {
     ArrayList<String> packageNameArrayList = new ArrayList<>();
     for (BedPackage bedPackage : givenBedPackages) {
-      System.out.println("\n");
       packageNameArrayList.add(bedPackage.getName().toString());
-      System.out.println(bedPackage.getName().toString());
-      System.out.println("\n");
     }
     if (packageNameArrayList.contains(PackageName.SWEET_TOOTH.toString())) {
       if (!packageNameArrayList.contains(PackageName.BLOOD_THIRSTY.toString())

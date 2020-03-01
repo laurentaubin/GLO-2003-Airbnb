@@ -1,21 +1,21 @@
 package bed.response;
 
 public class ErrorPostResponse {
-  private PostStatusResponse error;
+  private String error;
   private String description;
 
   public ErrorPostResponse() {}
 
-  ErrorPostResponse(PostStatusResponse error, String description) {
+  ErrorPostResponse(String error, String description) {
     this.error = error;
     this.description = description;
   }
 
-  public PostStatusResponse getError() {
+  public String getError() {
     return this.error;
   }
 
-  public void setError(PostStatusResponse error) {
+  public void setError(String error) {
     this.error = error;
   }
 

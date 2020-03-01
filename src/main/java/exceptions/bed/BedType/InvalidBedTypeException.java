@@ -1,8 +1,10 @@
 package exceptions.bed.BedType;
 
-public class InvalidBedTypeException extends RuntimeException {
+import exceptions.BedException;
+
+public class InvalidBedTypeException extends BedException {
   public InvalidBedTypeException() {
-    super();
+    super("INVALID_BED_TYPE", "bed type should be one of latex, memoryFoam or springs");
   }
 
   public InvalidBedTypeException(String s) {

@@ -1,8 +1,12 @@
 package exceptions.bed.BloodType;
 
-public class InvalidBloodTypeException extends RuntimeException {
+import exceptions.BedException;
+
+public class InvalidBloodTypeException extends BedException {
   public InvalidBloodTypeException() {
-    super();
+    super(
+        "INVALID_BLOOD_TYPES",
+        "blood types should be one or many of " + "O-, O+, AB-, AB+, B-, B+, A- or A+");
   }
 
   public InvalidBloodTypeException(String s) {

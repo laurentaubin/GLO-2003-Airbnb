@@ -1,7 +1,12 @@
 package exceptions.bed;
 
-public class InvalidOwnerKeyException extends RuntimeException {
+import exceptions.BedException;
+
+public class InvalidOwnerKeyException extends BedException {
   public InvalidOwnerKeyException() {
-    super();
+    super(
+        "INVALID_PUBLIC_KEY",
+        "BiteCoins account public key should contain only "
+            + "alphanumeric characters and have a 256-bits length");
   }
 }

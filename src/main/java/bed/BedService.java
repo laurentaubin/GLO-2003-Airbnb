@@ -29,6 +29,12 @@ public class BedService {
     return new ArrayList<Bed>(beds.values());
   }
 
+  private ArrayList<Bed> sortBeds(ArrayList<Bed> beds) {
+    Collections.sort(beds, new BedStarComparator());
+    Collections.reverse(beds);
+    return beds;
+  }
+
   public ArrayList<Bed> Get(Query query) {
     ArrayList<Bed> filteredBeds = new ArrayList<>();
     for (Bed bed : getAllBeds()) {
@@ -43,6 +49,9 @@ public class BedService {
         filteredBeds.add(bed);
       }
     }
-    return filteredBeds;
+
+    ArrayList<Bed> beds = sortBeds(filteredBeds);
+
+    return beds;
   }
 }

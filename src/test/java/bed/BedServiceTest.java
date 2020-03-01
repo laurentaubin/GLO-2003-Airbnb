@@ -114,6 +114,19 @@ class BedServiceTest {
   }
 
   @Test
+  void sortBeds_whenMultipleBeds_shouldBeSortedInDescendingStarsOrder() {
+    createBeds();
+    Query query = new Query("empty", "empty", "empty", "empty", "0");
+
+    ArrayList<Bed> sortedBeds = this.bedService.Get(query);
+
+    for (int i = 1; i < sortedBeds.size(); i++) {
+      assertTrue(sortedBeds.get(i - 1).getNumberOfStars() >= sortedBeds.get(i).getNumberOfStars());
+    }
+    assertEquals(sortedBeds.size(), 5);
+  }
+
+  @Test
   void filterBeds_whenNoBedWasAdded_shouldEqualEmptyArrayList() {
     Query query = new Query("empty", "empty", "empty", "empty", "0");
     assertEquals(this.bedService.Get(query), new ArrayList<Bed>());

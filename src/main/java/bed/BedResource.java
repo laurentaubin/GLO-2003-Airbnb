@@ -10,6 +10,7 @@ import exceptions.BedException;
 import exceptions.bed.BedService.InvalidUuidException;
 import exceptions.bed.MinimalCapacity.InvalidMinCapacityException;
 import java.util.ArrayList;
+import java.util.UUID;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
 import spark.Response;
@@ -33,7 +34,9 @@ public class BedResource implements RouteGroup {
             response.type("application/json");
             Bed bed = jsonToBedConverter.generateBedFromJson(request.body());
             bedValidator.validateBed(bed);
-            String uuid = bedService.addBed(bed);
+            String uuid = UUID.randomUUID().toString();
+            bed.setUuid(uuid);
+            bedService.addBed(bed, uuid);
             response.status(201);
             response.header("Location", "/beds/:" + uuid);
             return uuid;
@@ -78,8 +81,23 @@ public class BedResource implements RouteGroup {
       Query query = new Query(packageNames, bedTypes, cleaningFrequencies, bloodTypes, minCapacity);
       ArrayList<Bed> beds = this.bedService.Get(query);
 
+      ArrayList<BedsResponse> bedsResponses = new ArrayList<BedsResponse>();
+      for (Bed bed : beds) {
+        BedsResponse bedResponse =
+            new BedsResponse(
+                bed.fetchUuid(),
+                bed.getZipCode(),
+                bed.getBedType(),
+                bed.getCleaningFrequency(),
+                bed.getBloodTypes(),
+                bed.getCapacity(),
+                bed.getStars(),
+                bed.getPackages());
+        bedsResponses.add(bedResponse);
+      }
+
       response.status(HttpStatus.OK_200);
-      return beds;
+      return bedsResponses;
 
     } catch (BedException e) {
       ErrorGetResponse errorGetResponse = new ErrorGetResponse();

@@ -93,6 +93,7 @@ public class BedResource implements RouteGroup {
                 bed.getCapacity(),
                 bed.getStars(),
                 bed.getPackages());
+        bedsResponses.add(bedResponse);
       }
 
       response.status(HttpStatus.OK_200);

@@ -10,6 +10,7 @@ public class Bed {
   private BloodType[] bloodTypes;
   private int capacity;
   private BedPackage[] packages;
+  private String uuid;
 
   public String getOwnerPublicKey() {
     return ownerPublicKey;
@@ -121,5 +122,13 @@ public class Bed {
     this.setBloodTypes(bloodTypes);
     this.setCapacity(capacity);
     this.setPackages(packages);
+  }
+
+  public String fetchUuid() {
+    return uuid;
+  }
+
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
   }
 }

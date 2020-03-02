@@ -1,14 +1,14 @@
 package exceptions.bed;
 
-public abstract class BedEnumException extends RuntimeException {
+public class BedException extends RuntimeException {
   private String name;
   private String description;
 
-  public BedEnumException() {
+  public BedException() {
     super();
   }
 
-  public BedEnumException(String s) {
+  public BedException(String s) {
     super(s);
   }
 

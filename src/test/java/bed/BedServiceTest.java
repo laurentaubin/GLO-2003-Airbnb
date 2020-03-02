@@ -5,11 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import exceptions.bed.BedService.InvalidUuidException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class BedServiceTest {
-  private bed.BedService bedService;
+  private BedService bedService = BedService.getInstance();
   String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
   String zipCode = "12345";
   BedType bedType = BedType.LATEX;
@@ -23,7 +24,12 @@ class BedServiceTest {
 
   @BeforeEach
   void setUp() {
-    this.bedService = new bed.BedService();
+    this.bedService.clearAllBeds();
+  }
+
+  @AfterEach
+  void tearDown() {
+    bedService.clearAllBeds();
   }
 
   private void createBeds() {

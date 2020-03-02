@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.BedException;
 import exceptions.bed.BedService.InvalidUuidException;
+import exceptions.bed.MinimalCapacity.InvalidMinCapacityException;
 import java.util.ArrayList;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
@@ -16,7 +17,7 @@ import spark.RouteGroup;
 
 public class BedResource implements RouteGroup {
   public static final String ROOT_PATH = "/beds";
-  private BedService bedService = new BedService();
+  private BedService bedService = BedService.getInstance();
   private JsonToBedConverter jsonToBedConverter = new JsonToBedConverter();
   private ObjectMapper objectMapper = new ObjectMapper();
   private BedValidator bedValidator = new BedValidator();
@@ -62,18 +63,30 @@ public class BedResource implements RouteGroup {
     }
   }
 
-  public Object getBeds(Request request, Response response) {
+  public Object getBeds(Request request, Response response) throws JsonProcessingException {
+    try {
+      String packageNames = request.queryParamOrDefault("package", "empty");
+      String bedTypes = request.queryParamOrDefault("bedType", "empty");
+      String cleaningFrequencies = request.queryParamOrDefault("cleaningFreq", "empty");
+      String bloodTypes = request.queryParamOrDefault("bloodTypes", "empty");
+      String minCapacity = request.queryParamOrDefault("minCapacity", "0");
 
-    String packageNames = request.queryParamOrDefault("package", "empty");
-    String bedTypes = request.queryParamOrDefault("bedType", "empty");
-    String cleaningFrequencies = request.queryParamOrDefault("cleaningFreq", "empty");
-    String bloodTypes = request.queryParamOrDefault("bloodTypes", "empty");
-    String minCapacity = request.queryParamOrDefault("minCapacity", "0");
-    Query query = new Query(packageNames, bedTypes, cleaningFrequencies, bloodTypes, minCapacity);
-    ArrayList<Bed> beds = this.bedService.Get(query);
+      if (Integer.parseInt(minCapacity) < 0) {
+        throw new InvalidMinCapacityException();
+      }
 
-    response.status(HttpStatus.OK_200);
-    return beds;
+      Query query = new Query(packageNames, bedTypes, cleaningFrequencies, bloodTypes, minCapacity);
+      ArrayList<Bed> beds = this.bedService.Get(query);
+
+      response.status(HttpStatus.OK_200);
+      return beds;
+
+    } catch (BedException e) {
+      ErrorGetResponse errorGetResponse = new ErrorGetResponse();
+      errorGetResponse.setDescription(e.getDescription());
+      errorGetResponse.setError(e.getError());
+      return errorGetResponse;
+    }
   }
 
   private String generatePostErrorMessage(BedException e) throws JsonProcessingException {

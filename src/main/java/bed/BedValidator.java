@@ -5,6 +5,7 @@ import exceptions.bed.InvalidCapacityException;
 import exceptions.bed.InvalidOwnerKeyException;
 import exceptions.bed.InvalidSweetToothPackageException;
 import exceptions.bed.InvalidZipCodeException;
+import exceptions.bed.PackageName.InvalidPackageNameException;
 import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +36,9 @@ public class BedValidator {
   }
 
   public void validateBedPackage(BedPackage[] givenBedPackages) {
+    if (givenBedPackages.length == 0) {
+      throw new InvalidPackageNameException();
+    }
     ArrayList<String> packageNameArrayList = new ArrayList<>();
     for (BedPackage bedPackage : givenBedPackages) {
       packageNameArrayList.add(bedPackage.getName().toString());

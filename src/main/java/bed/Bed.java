@@ -12,7 +12,7 @@ public class Bed {
   private BedPackage[] packages;
   private String uuid;
 
-  public String getOwnerPublicKey() {
+  public String fetchOwnerPublicKey() {
     return ownerPublicKey;
   }
 

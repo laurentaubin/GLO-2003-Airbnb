@@ -77,7 +77,7 @@ public class SerializerTest {
     Bed dummyBed = new Bed();
 
     assertEquals(
-        "{\"zipCode\":null,\"bedType\":null,\"cleaningFrequency\":null,\"bloodTypes\":null,\"capacity\":0,\"packages\":null,\"numberOfStars\":-1}",
+        "{\"zipCode\":null,\"bedType\":null,\"cleaningFrequency\":null,\"bloodTypes\":null,\"capacity\":0,\"packages\":null,\"stars\":-1}",
         Serializer.dataToJson(dummyBed));
   }
 
@@ -95,7 +95,7 @@ public class SerializerTest {
             this.packages);
 
     assertEquals(
-        "{\"zipCode\":\"12345\",\"bedType\":\"latex\",\"cleaningFrequency\":\"monthly\",\"bloodTypes\":[\"O-\",\"AB+\"],\"capacity\":950,\"packages\":[{\"name\":\"bloodthirsty\",\"pricePerNight\":12.5},{\"name\":\"sweetTooth\",\"pricePerNight\":6.0}],\"numberOfStars\":3}",
+        "{\"zipCode\":\"12345\",\"bedType\":\"latex\",\"cleaningFrequency\":\"monthly\",\"bloodTypes\":[\"O-\",\"AB+\"],\"capacity\":950,\"packages\":[{\"name\":\"bloodthirsty\",\"pricePerNight\":12.5},{\"name\":\"sweetTooth\",\"pricePerNight\":6.0}],\"stars\":3}",
         Serializer.dataToJson(validBed));
   }
 }

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import exceptions.bed.BedService.InvalidUuidException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -115,7 +116,9 @@ class BedServiceTest {
             packages5));
 
     for (Bed bed : beds) {
-      this.bedService.addBed(bed);
+      String uuid = UUID.randomUUID().toString();
+      bed.setUuid(uuid);
+      this.bedService.addBed(bed, uuid);
     }
   }
 
@@ -210,7 +213,7 @@ class BedServiceTest {
 
   @Test
   void addBed_whenCreatingOneValidBed_shouldAddOneBedToHashMap() {
-    this.bedService.addBed(
+    Bed bed =
         new Bed(
             this.ownerPublicKey,
             this.zipCode,
@@ -218,7 +221,10 @@ class BedServiceTest {
             this.cleaningFrequency,
             this.bloodTypes,
             this.capacity,
-            this.packages));
+            this.packages);
+    String uuid = UUID.randomUUID().toString();
+    bed.setUuid(uuid);
+    this.bedService.addBed(bed, uuid);
     assertEquals(1, bedService.getTotalNumberOfBeds());
   }
 
@@ -233,7 +239,9 @@ class BedServiceTest {
             this.bloodTypes,
             this.capacity,
             this.packages);
-    this.bedService.addBed(bed);
+    String uuid = UUID.randomUUID().toString();
+    bed.setUuid(uuid);
+    this.bedService.addBed(bed, uuid);
     assertEquals(bed, this.bedService.getAllBeds().get(0));
   }
 
@@ -248,7 +256,9 @@ class BedServiceTest {
             this.bloodTypes,
             this.capacity,
             this.packages);
-    String uuid = this.bedService.addBed(bed);
+    String uuid = UUID.randomUUID().toString();
+    bed.setUuid(uuid);
+    this.bedService.addBed(bed, uuid);
     assertEquals(bed, this.bedService.getBedByUuid(uuid));
   }
 
@@ -263,7 +273,9 @@ class BedServiceTest {
             this.bloodTypes,
             this.capacity,
             this.packages);
-    this.bedService.addBed(bed);
+    String uuid = UUID.randomUUID().toString();
+    bed.setUuid(uuid);
+    this.bedService.addBed(bed, uuid);
     String invalidUuid = "";
     assertThrows(InvalidUuidException.class, () -> this.bedService.getBedByUuid(invalidUuid));
   }

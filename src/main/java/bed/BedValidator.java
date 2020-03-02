@@ -19,22 +19,22 @@ public class BedValidator {
     } else if (!isCapacityValid(bed.getCapacity())) {
       throw new InvalidCapacityException();
     }
-    isBedPackageValid(bed.getPackages());
+    validateBedPackage(bed.getPackages());
   }
 
-  private boolean isPublicKeyValid(String publicKey) {
+  public boolean isPublicKeyValid(String publicKey) {
     return StringUtils.isAlphanumeric(publicKey) && publicKey.length() == 64;
   }
 
-  private boolean isZipCodeValid(String postalCode) {
+  public boolean isZipCodeValid(String postalCode) {
     return postalCode.length() == 5 && StringUtils.isNumeric(postalCode);
   }
 
-  private boolean isCapacityValid(int capacity) {
+  public boolean isCapacityValid(int capacity) {
     return capacity > 0;
   }
 
-  private void isBedPackageValid(BedPackage[] givenBedPackages) {
+  public void validateBedPackage(BedPackage[] givenBedPackages) {
     ArrayList<String> packageNameArrayList = new ArrayList<>();
     for (BedPackage bedPackage : givenBedPackages) {
       packageNameArrayList.add(bedPackage.getName().toString());

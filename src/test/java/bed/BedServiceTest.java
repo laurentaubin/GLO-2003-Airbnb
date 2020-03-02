@@ -121,7 +121,7 @@ class BedServiceTest {
     ArrayList<Bed> sortedBeds = this.bedService.Get(query);
 
     for (int i = 1; i < sortedBeds.size(); i++) {
-      assertTrue(sortedBeds.get(i - 1).getNumberOfStars() >= sortedBeds.get(i).getNumberOfStars());
+      assertTrue(sortedBeds.get(i - 1).getStars() >= sortedBeds.get(i).getStars());
     }
     assertEquals(sortedBeds.size(), 5);
   }

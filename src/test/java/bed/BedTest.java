@@ -49,7 +49,7 @@ public class BedTest {
         new Bed(
             ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
 
-    if (bedTest.getNumberOfStars() != 3) {
+    if (bedTest.getStars() != 3) {
       throw new Exception("Le résultat calculé est incorrect");
     }
   }
@@ -71,7 +71,7 @@ public class BedTest {
         new Bed(
             ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
 
-    if (bedTest.getNumberOfStars() != 5) {
+    if (bedTest.getStars() != 5) {
       throw new Exception("Le résultat calculé est incorrect");
     }
   }
@@ -93,7 +93,7 @@ public class BedTest {
         new Bed(
             ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
 
-    if (bedTest.getNumberOfStars() != 1) {
+    if (bedTest.getStars() != 1) {
       throw new Exception("Le résultat calculé est incorrect");
     }
   }
@@ -102,7 +102,7 @@ public class BedTest {
   void gettingStarRating_withEmptyBed_shouldNotThrow() throws Exception {
     Bed bedTest = new Bed();
 
-    if (bedTest.getNumberOfStars() != -1) {
+    if (bedTest.getStars() != -1) {
       throw new Exception("Le résultat calculé est incorrect");
     }
   }

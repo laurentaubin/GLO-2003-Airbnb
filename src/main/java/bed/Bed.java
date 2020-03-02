@@ -10,8 +10,9 @@ public class Bed {
   private BloodType[] bloodTypes;
   private int capacity;
   private BedPackage[] packages;
+  private String uuid;
 
-  public String getOwnerPublicKey() {
+  public String fetchOwnerPublicKey() {
     return ownerPublicKey;
   }
 
@@ -83,7 +84,7 @@ public class Bed {
     return (bloodTypeScore / this.bloodTypes.length);
   }
 
-  public int getNumberOfStars() {
+  public int getStars() {
     try {
       double globalScore =
           this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
@@ -121,5 +122,13 @@ public class Bed {
     this.setBloodTypes(bloodTypes);
     this.setCapacity(capacity);
     this.setPackages(packages);
+  }
+
+  public String fetchUuid() {
+    return uuid;
+  }
+
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
   }
 }

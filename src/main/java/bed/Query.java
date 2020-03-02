@@ -34,7 +34,12 @@ public class Query {
       String[] bloodTypesStrings = _bloodTypes.split(",");
       ArrayList<BloodType> bloodTypesList = new ArrayList<>();
       for (String bloodType : bloodTypesStrings) {
-        bloodTypesList.add(BloodType.valueOfLabel(bloodType));
+        if (bloodType.charAt(bloodType.length() - 1) == ' ') {
+          bloodType = bloodType.substring(0, bloodType.length() - 1);
+          bloodTypesList.add(BloodType.valueOfLabel(bloodType + "+"));
+        } else {
+          bloodTypesList.add(BloodType.valueOfLabel(bloodType));
+        }
       }
       bloodTypes = bloodTypesList.toArray(new BloodType[bloodTypesStrings.length]);
     }

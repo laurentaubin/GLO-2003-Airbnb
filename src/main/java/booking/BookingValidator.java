@@ -1,6 +1,7 @@
 package booking;
 
 import bed.BedService;
+import exceptions.booking.ArrivalDate.InvalidArrivalDateException;
 import exceptions.booking.Booking.UnallowedBookingException;
 import exceptions.booking.BookingService.InvalidTenantPublicKeyException;
 import exceptions.booking.NumberOfNights.InvalidNumberOfNightsException;
@@ -18,19 +19,25 @@ public class BookingValidator {
       throw new UnallowedBookingException();
     } else if (!isNumberOfNightsValid(booking.getNumberOfNights())) {
       throw new InvalidNumberOfNightsException();
+    } else if (!isValidDateFormat(booking.getArrivalDate())) {
+      throw new InvalidArrivalDateException();
     }
   }
 
-  private boolean isTenantKeyValid(String publicKey) {
+  public boolean isTenantKeyValid(String publicKey) {
     return StringUtils.isAlphanumeric(publicKey) && publicKey.length() == 64;
   }
 
-  private boolean isTenantKeySameAsOwnerKey(String tenantKey, String bedNumber) {
-    String ownerKey = bedService.getBedByUuid(bedNumber).getOwnerPublicKey();
+  public boolean isTenantKeySameAsOwnerKey(String tenantKey, String bedNumber) {
+    String ownerKey = bedService.getBedByUuid(bedNumber).fetchOwnerPublicKey();
     return tenantKey.equals(ownerKey);
   }
 
-  private boolean isNumberOfNightsValid(Integer numberOfNights) {
+  public boolean isNumberOfNightsValid(Integer numberOfNights) {
     return numberOfNights >= 1 && numberOfNights <= 90;
+  }
+
+  public boolean isValidDateFormat(String date) {
+    return date.split("-")[0] != date;
   }
 }

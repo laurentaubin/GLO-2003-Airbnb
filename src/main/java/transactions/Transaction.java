@@ -39,7 +39,6 @@ public class Transaction {
 
   public Transaction(
       String from_uuid, String to_uuid, Number total, String reason, String timestamp) {
-    String new_total = new DecimalFormat("##.##").format(total);
     this.timestamp = timestamp;
     this.from_uuid = from_uuid;
     this.to_uuid = to_uuid;

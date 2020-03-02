@@ -1,8 +1,10 @@
 package exceptions.booking.ArrivalDate;
 
-public class InvalidArrivalDateException extends Exception {
+import exceptions.BookingException;
+
+public class InvalidArrivalDateException extends BookingException {
   public InvalidArrivalDateException() {
-    super();
+    super("INVALID-ARRIVAL-DATE", "Invalid date format: must be yyyy-mm-dd");
   }
 
   public InvalidArrivalDateException(String s) {

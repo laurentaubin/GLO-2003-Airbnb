@@ -12,7 +12,7 @@ public class TransactionResource implements RouteGroup {
   @Override
   public void addRoutes() {
     get(
-        "/",
+        "",
         ((request, response) -> {
           response.status(200);
           response.type("application/json");

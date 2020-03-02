@@ -16,8 +16,7 @@ public class BedService {
     return bedService;
   }
 
-  public String addBed(Bed bed) {
-    String uuid = UUID.randomUUID().toString();
+  public String addBed(Bed bed, String uuid) {
     beds.put(uuid, bed);
     return uuid;
   }
@@ -64,6 +63,10 @@ public class BedService {
 
     ArrayList<Bed> beds = sortBeds(filteredBeds);
 
+    return beds;
+  }
+
+  public Map<String, Bed> getBedsMap() {
     return beds;
   }
 }

@@ -5,8 +5,16 @@ import java.util.*;
 
 public class BedService {
   private Map<String, Bed> beds = new HashMap<String, Bed>();
+  private static BedService bedService = null;
 
-  public BedService() {};
+  private BedService() {};
+
+  public static BedService getInstance() {
+    if (bedService == null) {
+      bedService = new BedService();
+    }
+    return bedService;
+  }
 
   public String addBed(Bed bed) {
     String uuid = UUID.randomUUID().toString();
@@ -27,6 +35,10 @@ public class BedService {
 
   public ArrayList<Bed> getAllBeds() {
     return new ArrayList<Bed>(beds.values());
+  }
+
+  public void clearAllBeds() {
+    beds.clear();
   }
 
   private ArrayList<Bed> sortBeds(ArrayList<Bed> beds) {

@@ -16,7 +16,7 @@ import spark.RouteGroup;
 
 public class BedResource implements RouteGroup {
   public static final String ROOT_PATH = "/beds";
-  private BedService bedService = new BedService();
+  private BedService bedService = BedService.getInstance();
   private JsonToBedConverter jsonToBedConverter = new JsonToBedConverter();
   private ObjectMapper objectMapper = new ObjectMapper();
   private BedValidator bedValidator = new BedValidator();

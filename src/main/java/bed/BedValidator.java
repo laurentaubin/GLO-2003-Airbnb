@@ -12,7 +12,7 @@ public class BedValidator {
   public BedValidator() {}
 
   public void validateBed(Bed bed) {
-    if (!isPublicKeyValid(bed.getOwnerPublicKey())) {
+    if (!isPublicKeyValid(bed.fetchOwnerPublicKey())) {
       throw new InvalidOwnerKeyException();
     } else if (!isZipCodeValid(bed.getZipCode())) {
       throw new InvalidZipCodeException();

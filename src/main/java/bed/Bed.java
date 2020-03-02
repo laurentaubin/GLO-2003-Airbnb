@@ -11,7 +11,7 @@ public class Bed {
   private int capacity;
   private BedPackage[] packages;
 
-  public String getOwnerPublicKey() {
+  public String fetchOwnerPublicKey() {
     return ownerPublicKey;
   }
 

@@ -26,7 +26,7 @@ public class BookingValidator {
   }
 
   private boolean isTenantKeySameAsOwnerKey(String tenantKey, String bedNumber) {
-    String ownerKey = bedService.getBedByUuid(bedNumber).getOwnerPublicKey();
+    String ownerKey = bedService.getBedByUuid(bedNumber).fetchOwnerPublicKey();
     return tenantKey.equals(ownerKey);
   }
 

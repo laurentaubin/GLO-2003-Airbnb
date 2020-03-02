@@ -3,11 +3,14 @@ package booking;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import bed.BedPackage;
+import bed.BedService;
 import bed.ErrorHandler;
 import bed.response.ErrorPostResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.BookingException;
+import java.text.DecimalFormat;
 import spark.Request;
 import spark.Response;
 import spark.RouteGroup;
@@ -19,6 +22,7 @@ public class BookingResource implements RouteGroup {
   private ObjectMapper objectMapper = new ObjectMapper();
   private BookingValidator bookingValidator = new BookingValidator();
   private String bedNumber = "";
+  private BedService bedService = BedService.getInstance();
 
   @Override
   public void addRoutes() {
@@ -46,10 +50,27 @@ public class BookingResource implements RouteGroup {
 
   public Object getBooking(Request request, Response response) {
     String bookingUuid = request.params(":bookingUuid");
+    String bedNumber = request.params(":uuid");
+    Float total = 0.0f;
     try {
       Booking booking = this.bookingService.getBookingByUuid(bookingUuid);
+      BedPackage[] bedPackages = bedService.getBedByUuid(bedNumber).getPackages();
+      for (BedPackage bedPackage : bedPackages) {
+        if (bedPackage.getName().toString().equals(booking.getBedPackage())) {
+          Double pricePerNight = bedPackage.getPricePerNight();
+          total =
+              Float.parseFloat(
+                  new DecimalFormat("##.##").format(pricePerNight * booking.getNumberOfNights()));
+        }
+      }
+      BookingDummyObject bookingDummyObject =
+          new BookingDummyObject(
+              booking.getArrivalDate(),
+              booking.getNumberOfNights(),
+              booking.getBedPackage(),
+              total);
       response.status(200);
-      return booking;
+      return bookingDummyObject;
     } catch (exceptions.booking.BookingService.InvalidUuidException e) {
       ErrorHandler error =
           new ErrorHandler(
@@ -57,6 +78,8 @@ public class BookingResource implements RouteGroup {
               String.format("booking with number %s could not be found", bookingUuid));
       response.status(404);
       return error;
+    } catch (Exception e) {
+      return e.toString();
     }
   }
 

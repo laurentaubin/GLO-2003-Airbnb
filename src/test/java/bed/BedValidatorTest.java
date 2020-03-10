@@ -2,13 +2,25 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.bed.BedType.InvalidBedTypeException;
+import exceptions.bed.BloodType.InvalidBloodTypeException;
+import exceptions.bed.CleaningFrequency.InvalidCleaningFrequencyException;
 import exceptions.bed.InvalidAllYouCanDrinkException;
+import exceptions.bed.InvalidCapacityException;
+import exceptions.bed.InvalidOwnerKeyException;
 import exceptions.bed.InvalidSweetToothPackageException;
+import exceptions.bed.InvalidZipCodeException;
+import exceptions.bed.PackageName.InvalidPackageNameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class BedValidatorTest {
   private BedValidator bedValidator;
+  private String jsonString;
+  private ObjectMapper mapper = new ObjectMapper();
 
   @BeforeEach
   void setup() {
@@ -16,151 +28,486 @@ public class BedValidatorTest {
   }
 
   @Test
-  void isPublicKeyValid_whenValidKey_shouldBeTrue() {
+  void validateBed_whenCheckingValidJsonRequest_shouldNotThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertDoesNotThrow(() -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenPublicOwnerKeyIsMissing_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidOwnerKeyException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenPublicOwnerKeyIsNull_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": null,"
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidOwnerKeyException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenZipCodeIsMissing_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidZipCodeException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenZipCodeIsNull_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": null,"
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidZipCodeException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenBedTypeIsMissing_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidBedTypeException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenBedTypeIsNull_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": null, "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidBedTypeException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenCleaningFrequencyIsMissing_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(
+        InvalidCleaningFrequencyException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenCleaningFrequencyIsNull_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": null, "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(
+        InvalidCleaningFrequencyException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenBloodTypesIsMissing_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidBloodTypeException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenBloodTypesIsNull_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": null,"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidBloodTypeException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenCapacityIsMissing_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidCapacityException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenCapacityIsNull_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": null,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+    assertThrows(InvalidCapacityException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenPackagesIsMissing_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1"
+            + "}";
+    assertThrows(InvalidPackageNameException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenPackagesIsNull_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": null"
+            + "}";
+    assertThrows(InvalidPackageNameException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateOwnerPublicKey_whenKeyIsValid_shouldNotThrow() {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
-    assertTrue(this.bedValidator.isPublicKeyValid(ownerPublicKey));
+    assertDoesNotThrow(() -> bedValidator.validateOwnerPublicKey(ownerPublicKey));
   }
 
   @Test
-  void isPublicKeyValid_whenKeyShorterThan64Char_shouldBeFalse() {
-    String ownerPublicKey = "8F0436A6F049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
-    assertFalse(this.bedValidator.isPublicKeyValid(ownerPublicKey));
-    ownerPublicKey = "8F0436A6F049085B7F19AB73933973BF21276276F2EC7D122AB46A3A4E";
-    assertFalse(this.bedValidator.isPublicKeyValid(ownerPublicKey));
-    ownerPublicKey = "8F0436A6F049085B7F19AB7393397F2EC7D122AB46A3A4E";
-    assertFalse(this.bedValidator.isPublicKeyValid(ownerPublicKey));
+  void validateOwnerPublicKey_whenKeyShorterThan64Char_shouldThrow() {
+    String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC72AC110BB46A3A4E";
+    assertThrows(
+        InvalidOwnerKeyException.class, () -> bedValidator.validateOwnerPublicKey(ownerPublicKey));
   }
 
   @Test
-  void isPublicKeyValid_whenKeyLongerThan64Char_shouldBeFalse() {
+  void validateOwnerPublicKey_whenKeyLongerThan64Char_shouldThrow() {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BA3B46A3A4E";
-    assertFalse(this.bedValidator.isPublicKeyValid(ownerPublicKey));
-    ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7LSKJFDLKAJD122AC110BA3B46A3A4E";
-    assertFalse(this.bedValidator.isPublicKeyValid(ownerPublicKey));
+    assertThrows(
+        InvalidOwnerKeyException.class, () -> bedValidator.validateOwnerPublicKey(ownerPublicKey));
   }
 
   @Test
-  void isPublicKeyValid_whenKeyContainsSpecialCharacters_shouldBeFalse() {
+  void validateOwnerPublicKey_whenKeyContainsSpecialCharacters_shouldThrow() {
     String ownerPublicKey = "8F0436A6FB049&85B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
-    assertFalse(this.bedValidator.isPublicKeyValid(ownerPublicKey));
+    assertThrows(
+        InvalidOwnerKeyException.class, () -> bedValidator.validateOwnerPublicKey(ownerPublicKey));
   }
 
   @Test
-  void isZipCodeValid_whenValidZipCode_shouldBeTrue() {
+  void validateZipCode_whenZipCodeIsValid_shouldNotThrow() {
     String zipCode = "12345";
-    assertTrue(this.bedValidator.isZipCodeValid(zipCode));
-    zipCode = "76321";
-    assertTrue(this.bedValidator.isZipCodeValid(zipCode));
-    zipCode = "23429";
-    assertTrue(this.bedValidator.isZipCodeValid(zipCode));
+    assertDoesNotThrow(() -> bedValidator.validateZipCode(zipCode));
   }
 
   @Test
-  void isZipCodeValid_whenZipCodeContainsLetters_shouldBeFalse() {
+  void validateZipCode_whenZipCodeContainsLetters_shouldThrow() {
     String zipCode = "12A45";
-    assertFalse(this.bedValidator.isZipCodeValid(zipCode));
-    zipCode = "1C1B5";
-    assertFalse(this.bedValidator.isZipCodeValid(zipCode));
+    assertThrows(InvalidZipCodeException.class, () -> bedValidator.validateZipCode(zipCode));
   }
 
   @Test
-  void isZipCodeValid_whenZipCodeLessThanFiveNumbers_shouldBeFalse() {
+  void validateZipCode_whenZipCodeIsLessThanFiveNumbers_shouldThrow() {
     String zipCode = "1234";
-    assertFalse(this.bedValidator.isZipCodeValid(zipCode));
+    assertThrows(InvalidZipCodeException.class, () -> bedValidator.validateZipCode(zipCode));
   }
 
   @Test
-  void isZipCodeValid_whenZipCodeMoreThanFiveNumbers_shouldBeFalse() {
+  void validateZipCode_whenZipCodeIsMoreThanFiveNumbers_shouldThrow() {
     String zipCode = "123456";
-    assertFalse(this.bedValidator.isZipCodeValid(zipCode));
+    assertThrows(InvalidZipCodeException.class, () -> bedValidator.validateZipCode(zipCode));
   }
 
   @Test
-  void isCapacityValid_whenCapacityIsPositive_shouldBeTrue() {
-    int capacity = 1;
-    assertTrue(this.bedValidator.isCapacityValid(capacity));
-    capacity = 902;
-    assertTrue(this.bedValidator.isCapacityValid(capacity));
+  void validateCapacity_whenCapacityIsValid_shouldNotThrow() throws JsonProcessingException {
+    String capacityString = "{\"capacity\": 1}";
+    JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
+    assertDoesNotThrow(() -> bedValidator.validateCapacity(capacityNode));
   }
 
   @Test
-  void isCapacityValid_whenCapacityIsNegative_shouldBeFalse() {
-    int capacity = -1;
-    assertFalse(this.bedValidator.isCapacityValid(capacity));
+  void validateCapacity_whenNegativeCapacity_shouldThrow() throws JsonProcessingException {
+    String capacityString = "{\"capacity\": -1}";
+    JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
+    assertThrows(InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode));
   }
 
   @Test
-  void isBedPackageValid_whenOfferingSweetToothWithAllOtherPackage_shouldNotThrow() {
-    BedPackage[] bedPackages = new BedPackage[3];
-    bedPackages[0] = new BedPackage(PackageName.SWEET_TOOTH, 0);
-    bedPackages[1] = new BedPackage(PackageName.ALL_YOU_CAN_DRINK, 0);
-    bedPackages[2] = new BedPackage(PackageName.BLOOD_THIRSTY, 0);
-    assertDoesNotThrow(
-        () -> {
-          this.bedValidator.validateBedPackage(bedPackages);
-        });
+  void validateCapacity_whenCapacityIsDoubleType_shouldThrow() throws JsonProcessingException {
+    String capacityString = "{\"capacity\": 12.25}";
+    JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
+    assertThrows(InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode));
   }
 
   @Test
-  void isBedPackageValid_whenOfferingSweetToothWithoutOtherPackages_shouldThrow() {
-    BedPackage[] bedPackages = new BedPackage[1];
-    bedPackages[0] = new BedPackage(PackageName.SWEET_TOOTH, 0);
+  void validateCapacity_whenCapacityValueIsAString_shouldThrow() throws JsonProcessingException {
+    String capacityString = "{\"capacity\": \"1\"}";
+    JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
+    assertThrows(InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode));
+  }
+
+  @Test
+  void validateBedType_whenBedTypeIsUnknown_shouldThrow() {
+    String unknownBedType = "laex";
+    assertThrows(InvalidBedTypeException.class, () -> bedValidator.validateBedType(unknownBedType));
+  }
+
+  @Test
+  void validateCleaningFrequency_whenCleaningFrequencyIsUnknown_shouldThrow() {
+    String unknownCleaningFrequency = "anual";
+    assertThrows(
+        InvalidCleaningFrequencyException.class,
+        () -> bedValidator.validateCleaningFrequency(unknownCleaningFrequency));
+  }
+
+  @Test
+  void validateBloodTypes_whenBloodTypeIsNotAnArray_shouldThrow() throws JsonProcessingException {
+    String bloodTypes = "{\"bloodTypes\": \"O+\"}";
+    JsonNode bloodTypesNode = mapper.readTree(bloodTypes).get("bloodTypes");
+    assertThrows(
+        InvalidBloodTypeException.class, () -> bedValidator.validateBloodTypes(bloodTypesNode));
+  }
+
+  @Test
+  void validateBloodTypes_whenArrayIsEmpty_shouldThrow() throws JsonProcessingException {
+    String bloodTypes = "{\"bloodTypes\": []}";
+    JsonNode bloodTypesNode = mapper.readTree(bloodTypes).get("bloodTypes");
+    assertThrows(
+        InvalidBloodTypeException.class, () -> bedValidator.validateBloodTypes(bloodTypesNode));
+  }
+
+  @Test
+  void validateBloodTypes_whenBloodTypesIsUnknown_shouldThrow() throws JsonProcessingException {
+    String bloodTypes = "{\"bloodTypes\": [\"OA\"]}";
+    JsonNode bloodTypesNode = mapper.readTree(bloodTypes).get("bloodTypes");
+    assertThrows(
+        InvalidBloodTypeException.class, () -> bedValidator.validateBloodTypes(bloodTypesNode));
+  }
+
+  @Test
+  void validateBedPackages_whenPackagesIsNotAnArray_shouldThrow() throws JsonProcessingException {
+    String packages = "{\"packages\": \"bloodThirsty, pricePerNight: 1.00\"}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
+    assertThrows(
+        InvalidPackageNameException.class, () -> bedValidator.validateBedPackages(packagesNode));
+  }
+
+  @Test
+  void validateBedPackages_whenPackageIsWithoutName_shouldThrow() throws JsonProcessingException {
+    String packages = "{\"packages\": [{\"pricePerNight\": 12.25}]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
+    assertThrows(
+        InvalidPackageNameException.class, () -> bedValidator.validateBedPackages(packagesNode));
+  }
+
+  @Test
+  void validateBedPackages_whenPackageIsWithoutPricePerNight_shouldThrow()
+      throws JsonProcessingException {
+    String packages = "{\"packages\": [{\"name\":\"bloodThirsty\"}]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
+    assertThrows(
+        InvalidPackageNameException.class, () -> bedValidator.validateBedPackages(packagesNode));
+  }
+
+  @Test
+  void validateBedPackages_whenOfferingSweetToothWithAllOtherPackages_shouldNotThrow()
+      throws JsonProcessingException {
+    String packages =
+        "{\"packages\": [{\"name\":\"sweetTooth\", \"pricePerNight\":12.25},"
+            + "{\"name\":\"allYouCanDrink\", \"pricePerNight\":7.75},"
+            + "{\"name\":\"bloodthirsty\", \"pricePerNight\":2.33}"
+            + "]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
+    assertDoesNotThrow(() -> bedValidator.validateBedPackages(packagesNode));
+  }
+
+  @Test
+  void validateBedPackages_whenOfferingSweetToothWithoutOtherPackages_shouldThrow()
+      throws JsonProcessingException {
+    String packages = "{\"packages\": [{\"name\":\"sweetTooth\", \"pricePerNight\":12.25}" + "]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
     assertThrows(
         InvalidSweetToothPackageException.class,
-        () -> {
-          this.bedValidator.validateBedPackage(bedPackages);
-        });
+        () -> bedValidator.validateBedPackages(packagesNode));
   }
 
   @Test
-  void isBedPackageValid_whenOfferingSweetToothWithoutBloodthirsty_shouldThrow() {
-    BedPackage[] bedPackages = new BedPackage[2];
-    bedPackages[0] = new BedPackage(PackageName.SWEET_TOOTH, 0);
-    bedPackages[1] = new BedPackage(PackageName.ALL_YOU_CAN_DRINK, 0);
+  void validateBedPackages_whenOfferingSweetToothWithoutAllYouCanDrink_shouldThrow()
+      throws JsonProcessingException {
+    String packages =
+        "{\"packages\": [{\"name\":\"sweetTooth\", \"pricePerNight\":12.25},"
+            + "{\"name\":\"bloodthirsty\", \"pricePerNight\":2.33}"
+            + "]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
     assertThrows(
         InvalidSweetToothPackageException.class,
-        () -> {
-          this.bedValidator.validateBedPackage(bedPackages);
-        });
+        () -> bedValidator.validateBedPackages(packagesNode));
   }
 
   @Test
-  void isBedPackageValid_whenOfferingSweetToothWithoutAllYouCanDrink_shouldThrow() {
-    BedPackage[] bedPackages = new BedPackage[2];
-    bedPackages[0] = new BedPackage(PackageName.SWEET_TOOTH, 0);
-    bedPackages[1] = new BedPackage(PackageName.BLOOD_THIRSTY, 0);
+  void validateBedPackages_whenOfferingSweetToothWithoutBloodThirsty_shouldThrow()
+      throws JsonProcessingException {
+    String packages =
+        "{\"packages\": [{\"name\":\"sweetTooth\", \"pricePerNight\":12.25},"
+            + "{\"name\":\"allYouCanDrink\", \"pricePerNight\":2.33}"
+            + "]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
     assertThrows(
         InvalidSweetToothPackageException.class,
-        () -> {
-          this.bedValidator.validateBedPackage(bedPackages);
-        });
+        () -> bedValidator.validateBedPackages(packagesNode));
   }
 
   @Test
-  void isBedPackageValid_whenOfferingAllYouCanDrinkWithBloodThirsty_shouldNotThrow() {
-    BedPackage[] bedPackages = new BedPackage[2];
-    bedPackages[0] = new BedPackage(PackageName.ALL_YOU_CAN_DRINK, 0);
-    bedPackages[1] = new BedPackage(PackageName.BLOOD_THIRSTY, 0);
-    assertDoesNotThrow(
-        () -> {
-          this.bedValidator.validateBedPackage(bedPackages);
-        });
+  void validateBedPackages_whenOfferingAllYouCanDrinkWithBloodThirsty_shouldNotThrow()
+      throws JsonProcessingException {
+    String packages =
+        "{\"packages\": [{\"name\":\"allYouCanDrink\", \"pricePerNight\":12.25},"
+            + "{\"name\":\"bloodthirsty\", \"pricePerNight\":2.33}"
+            + "]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
+    assertDoesNotThrow(() -> bedValidator.validateBedPackages(packagesNode));
   }
 
   @Test
-  void isBedPackageValid_whenOfferingAllYouCanDrinkWithoutBloothirsty_shouldThrow() {
-    BedPackage[] bedPackages = new BedPackage[1];
-    bedPackages[0] = new BedPackage(PackageName.ALL_YOU_CAN_DRINK, 0);
+  void validateBedPackages_whenOfferingAllYouCanDrinkWithoutBloodThirsty_shouldThrow()
+      throws JsonProcessingException {
+    String packages = "{\"packages\": [{\"name\":\"allYouCanDrink\", \"pricePerNight\":12.25}]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
     assertThrows(
-        InvalidAllYouCanDrinkException.class,
-        () -> {
-          this.bedValidator.validateBedPackage(bedPackages);
-        });
+        InvalidAllYouCanDrinkException.class, () -> bedValidator.validateBedPackages(packagesNode));
   }
 
   @Test
-  void isBedPackageValid_whenOfferingBloodThirstyAlone_shouldNotThrow() {
-    BedPackage[] bedPackages = new BedPackage[1];
-    bedPackages[0] = new BedPackage(PackageName.BLOOD_THIRSTY, 0);
+  void validateBedPackages_whenOnlyOfferingBloodthirsty_shouldNotThrow()
+      throws JsonProcessingException {
+    String packages = "{\"packages\": [{\"name\":\"bloodthirsty\", \"pricePerNight\":12.25}]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
+    assertDoesNotThrow(() -> bedValidator.validateBedPackages(packagesNode));
+  }
+
+  @Test
+  void validateBedPackages_whenPackagesArrayIsEmpty_shouldThrow() throws JsonProcessingException {
+    String packages = "{\"packages\": []}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
+    assertThrows(
+        InvalidPackageNameException.class, () -> bedValidator.validateBedPackages(packagesNode));
+  }
+
+  @Test
+  void validateBedPackages_whenOnePackagesIsPresentMoreThanOnce_shouldThrow()
+      throws JsonProcessingException {
+    String packages =
+        "{\"packages\": [{\"name\":\"bloodthirsty\", \"pricePerNight\":12.25},"
+            + "{\"name\":\"bloodthirsty\", \"pricePerNight\":12.25}"
+            + "]}";
+    JsonNode packagesNode = mapper.readTree(packages).get("packages");
+    assertThrows(
+        InvalidPackageNameException.class, () -> bedValidator.validateBedPackages(packagesNode));
   }
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.bed.BedType.InvalidBedTypeException;
 import exceptions.bed.BloodType.InvalidBloodTypeException;
 import exceptions.bed.CleaningFrequency.InvalidCleaningFrequencyException;
+import exceptions.bed.ExceedingAccommodationCapacityException;
 import exceptions.bed.InvalidAllYouCanDrinkException;
 import exceptions.bed.InvalidCapacityException;
 import exceptions.bed.InvalidOwnerKeyException;
@@ -62,7 +63,7 @@ public class BedValidator {
     if (!bedNode.has(CAPACITY) || bedNode.get(CAPACITY).isNull()) {
       throw new InvalidCapacityException();
     } else {
-      validateCapacity(bedNode.get(CAPACITY));
+      validateCapacity(bedNode.get(CAPACITY), bedNode.get(BED_TYPE).textValue());
     }
     if (!bedNode.has(PACKAGES) || bedNode.get(PACKAGES).isNull()) {
       throw new InvalidPackageNameException();
@@ -102,13 +103,23 @@ public class BedValidator {
     }
   }
 
-  public void validateCapacity(JsonNode capacityNode) {
+  public void validateCapacity(JsonNode capacityNode, String bedType) {
     if (!capacityNode.isInt()) {
       throw new InvalidCapacityException();
     } else {
       int capacity = capacityNode.asInt();
       if (capacity <= 0) {
         throw new InvalidCapacityException();
+      } else {
+        if (bedType.equals(BedType.LATEX.toString()) && capacity > BedType.LATEX.getMaxCapacity()) {
+          throw new ExceedingAccommodationCapacityException();
+        } else if (bedType.equals(BedType.MEMORY_FOAM.toString())
+            && capacity > BedType.MEMORY_FOAM.getMaxCapacity()) {
+          throw new ExceedingAccommodationCapacityException();
+        } else if (bedType.equals(BedType.SPRINGS.toString())
+            && capacity > BedType.SPRINGS.getMaxCapacity()) {
+          throw new ExceedingAccommodationCapacityException();
+        }
       }
     }
   }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.bed.BedType.InvalidBedTypeException;
 import exceptions.bed.BloodType.InvalidBloodTypeException;
 import exceptions.bed.CleaningFrequency.InvalidCleaningFrequencyException;
+import exceptions.bed.ExceedingAccommodationCapacityException;
 import exceptions.bed.InvalidAllYouCanDrinkException;
 import exceptions.bed.InvalidCapacityException;
 import exceptions.bed.InvalidOwnerKeyException;
@@ -327,29 +328,69 @@ public class BedValidatorTest {
   @Test
   void validateCapacity_whenCapacityIsValid_shouldNotThrow() throws JsonProcessingException {
     String capacityString = "{\"capacity\": 1}";
+    String bedType = BedType.LATEX.toString();
     JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
-    assertDoesNotThrow(() -> bedValidator.validateCapacity(capacityNode));
+    assertDoesNotThrow(() -> bedValidator.validateCapacity(capacityNode, bedType));
   }
 
   @Test
   void validateCapacity_whenNegativeCapacity_shouldThrow() throws JsonProcessingException {
     String capacityString = "{\"capacity\": -1}";
+    String bedType = BedType.LATEX.toString();
     JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
-    assertThrows(InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode));
+    assertThrows(
+        InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode, bedType));
   }
 
   @Test
   void validateCapacity_whenCapacityIsDoubleType_shouldThrow() throws JsonProcessingException {
     String capacityString = "{\"capacity\": 12.25}";
+    String bedType = BedType.LATEX.toString();
     JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
-    assertThrows(InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode));
+    assertThrows(
+        InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode, bedType));
   }
 
   @Test
   void validateCapacity_whenCapacityValueIsAString_shouldThrow() throws JsonProcessingException {
     String capacityString = "{\"capacity\": \"1\"}";
+    String bedType = BedType.LATEX.toString();
     JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
-    assertThrows(InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode));
+    assertThrows(
+        InvalidCapacityException.class, () -> bedValidator.validateCapacity(capacityNode, bedType));
+  }
+
+  @Test
+  void validateCapacity_whenCapacityExceedsLatexAccommodation_shouldThrow()
+      throws JsonProcessingException {
+    String capacityString = "{\"capacity\": 401}";
+    String bedType = BedType.LATEX.toString();
+    JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
+    assertThrows(
+        ExceedingAccommodationCapacityException.class,
+        () -> bedValidator.validateCapacity(capacityNode, bedType));
+  }
+
+  @Test
+  void validateCapacity_whenCapacityExccedsMemoryFoamAccommodation_shouldThrow()
+      throws JsonProcessingException {
+    String capacityString = "{\"capacity\": 800}";
+    String bedType = BedType.MEMORY_FOAM.toString();
+    JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
+    assertThrows(
+        ExceedingAccommodationCapacityException.class,
+        () -> bedValidator.validateCapacity(capacityNode, bedType));
+  }
+
+  @Test
+  void validateCapacity_whenCapacityExceedsSpringsAccomodation_shouldThrow()
+      throws JsonProcessingException {
+    String capacityString = "{\"capacity\": 1004}";
+    String bedType = BedType.SPRINGS.toString();
+    JsonNode capacityNode = mapper.readTree(capacityString).get("capacity");
+    assertThrows(
+        ExceedingAccommodationCapacityException.class,
+        () -> bedValidator.validateCapacity(capacityNode, bedType));
   }
 
   @Test

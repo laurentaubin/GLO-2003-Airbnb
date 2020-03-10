@@ -5,18 +5,20 @@ import exceptions.bed.BedType.InvalidBedTypeException;
 
 public enum BedType {
   @JsonProperty("latex")
-  LATEX("latex", 250),
+  LATEX("latex", 250, 400),
   @JsonProperty("memoryFoam")
-  MEMORY_FOAM("memoryFoam", 500),
+  MEMORY_FOAM("memoryFoam", 500, 700),
   @JsonProperty("springs")
-  SPRINGS("springs", 750);
+  SPRINGS("springs", 750, 1000);
 
   private String label;
   private int score;
+  private int maxCapacity;
 
-  BedType(String type, int score) {
+  BedType(String type, int score, int maxCapacity) {
     this.label = type;
     this.score = score;
+    this.maxCapacity = maxCapacity;
   }
 
   public static BedType valueOfLabel(String type) {
@@ -30,6 +32,10 @@ public enum BedType {
 
   public int getScore() {
     return this.score;
+  }
+
+  public int getMaxCapacity() {
+    return this.maxCapacity;
   }
 
   @Override

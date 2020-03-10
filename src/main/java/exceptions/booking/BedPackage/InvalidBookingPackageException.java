@@ -1,10 +1,11 @@
 package exceptions.booking.BedPackage;
 
-import exceptions.BedException;
+import exceptions.BookingException;
 
-public class InvalidBookingPackageException extends BedException {
+public class InvalidBookingPackageException extends BookingException {
   public InvalidBookingPackageException() {
     super(
-        "PACKAGE_NOT_AVAILABE", "package should be one of bloodthirty, allYouCanDrink, sweetTooth");
+        "PACKAGE_NOT_AVAILABLE",
+        "package should be one of bloodthirsty, allYouCanDrink, sweetTooth");
   }
 }

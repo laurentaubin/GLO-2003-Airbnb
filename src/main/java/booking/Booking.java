@@ -1,5 +1,9 @@
 package booking;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class Booking {
   private String tenantPublicKey;
   private String arrivalDate;
@@ -47,5 +51,11 @@ public class Booking {
 
   public String getBedPackage() {
     return bedPackage;
+  }
+
+  public String calculateDepartureDate() throws ParseException {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDate localDate = LocalDate.parse(this.arrivalDate);
+    return localDate.plusDays(this.numberOfNights).format(formatter);
   }
 }

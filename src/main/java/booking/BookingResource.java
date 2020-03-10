@@ -33,15 +33,12 @@ public class BookingResource implements RouteGroup {
             String bedNumber = request.params(":uuid");
             bookingValidator.validateBooking(request.body(), bedNumber);
             Booking booking = jsonToBookingConverter.generateBookingFromJson(request.body());
-            System.out.println("\n\n\n" + request.body() + "\n\n\n");
             String bookingUuid = bookingService.addBooking(booking);
             response.status(201);
-            response.header("Location", "/beds/:" + bedNumber + "/bookings/:" + bookingUuid);
+            response.header("Location", "/beds/" + bedNumber + "/bookings/" + bookingUuid);
             return bookingUuid;
           } catch (BookingException e) {
             return generatePostErrorMessage(e);
-          } catch (Exception e) {
-            return e.toString();
           }
         });
 
@@ -51,13 +48,13 @@ public class BookingResource implements RouteGroup {
   public Object getBooking(Request request, Response response) {
     String bookingUuid = request.params(":bookingUuid");
     String bedNumber = request.params(":uuid");
-    Float total = 0.0f;
+    float total = 0.0f;
     try {
       Booking booking = this.bookingService.getBookingByUuid(bookingUuid);
       BedPackage[] bedPackages = bedService.getBedByUuid(bedNumber).getPackages();
       for (BedPackage bedPackage : bedPackages) {
         if (bedPackage.getName().toString().equals(booking.getBedPackage())) {
-          Double pricePerNight = bedPackage.getPricePerNight();
+          double pricePerNight = bedPackage.getPricePerNight();
           total =
               Float.parseFloat(
                   new DecimalFormat("##.##").format(pricePerNight * booking.getNumberOfNights()));

@@ -38,6 +38,10 @@ public enum BloodType {
     throw new InvalidBloodTypeException();
   }
 
+  public String getLabel() {
+    return this.label;
+  }
+
   public double getScore() {
     return this.score;
   }

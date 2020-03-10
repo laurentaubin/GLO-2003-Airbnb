@@ -32,8 +32,8 @@ public class BedResource implements RouteGroup {
         (request, response) -> {
           try {
             response.type("application/json");
+            bedValidator.validateBed(request.body());
             Bed bed = jsonToBedConverter.generateBedFromJson(request.body());
-            bedValidator.validateBed(bed);
             String uuid = UUID.randomUUID().toString();
             bed.setUuid(uuid);
             bedService.addBed(bed, uuid);
@@ -41,6 +41,7 @@ public class BedResource implements RouteGroup {
             response.header("Location", "/beds/:" + uuid);
             return uuid;
           } catch (BedException e) {
+            response.status(400);
             return generatePostErrorMessage(e);
           }
         });

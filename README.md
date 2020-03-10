@@ -49,11 +49,11 @@ The project is configured to be verified and formatted before each commit using 
 
 Manual code formatting
 
-    mvn git-code-format:format-code -DglobPattern=**/*
+    mvn git-code-format:format-code -"Dgcf.globPattern=**/*"
 
 Manuel code format validation
     
-    mvn git-code-format:validate-code-format -DglobPattern=**/*
+    mvn git-code-format:validate-code-format -"Dgcf.globPattern=**/*"
 
 ## Code of Conduct
 

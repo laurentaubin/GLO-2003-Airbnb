@@ -93,9 +93,7 @@ public class BedValidator {
   }
 
   public void validateBloodTypes(JsonNode bloodTypesNode) {
-    if (!bloodTypesNode.isArray()) {
-      throw new InvalidBloodTypeException();
-    } else if (bloodTypesNode.size() == 0) {
+    if (!bloodTypesNode.isArray() || bloodTypesNode.size() == 0) {
       throw new InvalidBloodTypeException();
     }
     for (int i = 0; i < bloodTypesNode.size(); i++) {
@@ -111,61 +109,58 @@ public class BedValidator {
       if (capacity <= 0) {
         throw new InvalidCapacityException();
       } else {
-        if (bedType.equals(BedType.LATEX.toString()) && capacity > BedType.LATEX.getMaxCapacity()) {
-          throw new ExceedingAccommodationCapacityException();
-        } else if (bedType.equals(BedType.MEMORY_FOAM.toString())
-            && capacity > BedType.MEMORY_FOAM.getMaxCapacity()) {
-          throw new ExceedingAccommodationCapacityException();
-        } else if (bedType.equals(BedType.SPRINGS.toString())
-            && capacity > BedType.SPRINGS.getMaxCapacity()) {
+        if (isCapacityExceedingMaximumAccommodation(capacity, bedType)) {
           throw new ExceedingAccommodationCapacityException();
         }
       }
     }
   }
 
+  private boolean isCapacityExceedingMaximumAccommodation(int capacity, String bedType) {
+    if (bedType.equals(BedType.LATEX.toString()) && capacity > BedType.LATEX.getMaxCapacity()) {
+      return true;
+    } else if (bedType.equals(BedType.MEMORY_FOAM.toString())
+        && capacity > BedType.MEMORY_FOAM.getMaxCapacity()) {
+      return true;
+    } else if (bedType.equals(BedType.SPRINGS.toString())
+        && capacity > BedType.SPRINGS.getMaxCapacity()) {
+      return true;
+    }
+    return false;
+  }
+
   public void validateBedPackages(JsonNode packagesNode) {
 
-    if (!packagesNode.isArray()) {
-      throw new InvalidPackageNameException();
-    } else if (packagesNode.size() == 0) {
+    if (!packagesNode.isArray() || packagesNode.size() == 0) {
       throw new InvalidPackageNameException();
     } else {
       ArrayList<String> packageNameArrayList = new ArrayList<>();
       for (int i = 0; i < packagesNode.size(); i++) {
-        if (!packagesNode.get(i).has(NAME) || !packagesNode.get(i).has(PRICE_PER_NIGHT)) {
+        if (!packagesNode.get(i).has(NAME)
+            || !packagesNode.get(i).has(PRICE_PER_NIGHT)
+            || !packagesNode.get(i).get(PRICE_PER_NIGHT).isNumber()
+            || packagesNode.get(i).get(PRICE_PER_NIGHT).asDouble() <= 0
+            || doesPricePerNightHaveMoreThanTwoDecimals(
+                packagesNode.get(i).get(PRICE_PER_NIGHT).toString())) {
           throw new InvalidPackageNameException();
-        } else if (!packagesNode.get(i).get(PRICE_PER_NIGHT).isNumber()) {
-          throw new InvalidPackageNameException();
-        } else if (packagesNode.get(i).get(PRICE_PER_NIGHT).asDouble() <= 0) {
-          throw new InvalidPackageNameException();
-        }
-        String pricePerNightAsString = packagesNode.get(i).get("pricePerNight").toString();
-
-        int dotIndex = pricePerNightAsString.indexOf(".");
-        if (dotIndex > 0) {
-          String pricePerNightCents = pricePerNightAsString.substring(dotIndex + 1);
-          if (pricePerNightCents.length() > 2) {
-            throw new InvalidPackageNameException();
-          }
         }
         PackageName.valueOfLabel(packagesNode.get(i).get("name").textValue());
         packageNameArrayList.add(packagesNode.get(i).get("name").textValue());
       }
-      if (packageNameArrayList.contains(PackageName.SWEET_TOOTH.toString())) {
-        if (!packageNameArrayList.contains(PackageName.BLOOD_THIRSTY.toString())
-            || !packageNameArrayList.contains(PackageName.ALL_YOU_CAN_DRINK.toString())) {
-          throw new InvalidSweetToothPackageException();
-        }
-      } else if (packageNameArrayList.contains(PackageName.ALL_YOU_CAN_DRINK.toString())) {
-        if (!packageNameArrayList.contains(PackageName.BLOOD_THIRSTY.toString())) {
-          throw new InvalidAllYouCanDrinkException();
-        }
-      }
+      validatePresenceOfNecessaryPackage(packageNameArrayList);
       if (isPackagePresentMoreThanOnce(packageNameArrayList)) {
         throw new InvalidPackageNameException();
       }
     }
+  }
+
+  private boolean doesPricePerNightHaveMoreThanTwoDecimals(String pricePerNightAsString) {
+    int dotIndex = pricePerNightAsString.indexOf(".");
+    if (dotIndex > 0) {
+      String pricePerNightCents = pricePerNightAsString.substring(dotIndex + 1);
+      return pricePerNightCents.length() > 2;
+    }
+    return false;
   }
 
   private boolean isPackagePresentMoreThanOnce(ArrayList<String> packageNameArrayList) {
@@ -176,5 +171,18 @@ public class BedValidator {
       }
     }
     return false;
+  }
+
+  private void validatePresenceOfNecessaryPackage(ArrayList<String> packageNameArrayList) {
+    if (packageNameArrayList.contains(PackageName.SWEET_TOOTH.toString())) {
+      if (!packageNameArrayList.contains(PackageName.BLOOD_THIRSTY.toString())
+          || !packageNameArrayList.contains(PackageName.ALL_YOU_CAN_DRINK.toString())) {
+        throw new InvalidSweetToothPackageException();
+      }
+    } else if (packageNameArrayList.contains(PackageName.ALL_YOU_CAN_DRINK.toString())) {
+      if (!packageNameArrayList.contains(PackageName.BLOOD_THIRSTY.toString())) {
+        throw new InvalidAllYouCanDrinkException();
+      }
+    }
   }
 }

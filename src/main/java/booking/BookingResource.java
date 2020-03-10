@@ -17,11 +17,10 @@ import spark.RouteGroup;
 
 public class BookingResource implements RouteGroup {
   public static final String ROOT_PATH = "/beds/:uuid/bookings";
-  private BookingService bookingService = new BookingService();
+  private BookingService bookingService = BookingService.getInstance();
   private JsonToBookingConverter jsonToBookingConverter = new JsonToBookingConverter();
   private ObjectMapper objectMapper = new ObjectMapper();
   private BookingValidator bookingValidator = new BookingValidator();
-  private String bedNumber = "";
   private BedService bedService = BedService.getInstance();
 
   @Override
@@ -31,12 +30,13 @@ public class BookingResource implements RouteGroup {
         (request, response) -> {
           try {
             response.type("application/json");
-            bedNumber = request.params(":uuid");
+            String bedNumber = request.params(":uuid");
+            bookingValidator.validateBooking(request.body(), bedNumber);
             Booking booking = jsonToBookingConverter.generateBookingFromJson(request.body());
-            bookingValidator.validateBooking(booking, bedNumber);
+            System.out.println("\n\n\n" + request.body() + "\n\n\n");
             String bookingUuid = bookingService.addBooking(booking);
             response.status(201);
-            response.header("Location", "/beds/:uuid/bookings/:" + bookingUuid);
+            response.header("Location", "/beds/:" + bedNumber + "/bookings/:" + bookingUuid);
             return bookingUuid;
           } catch (BookingException e) {
             return generatePostErrorMessage(e);
@@ -69,7 +69,7 @@ public class BookingResource implements RouteGroup {
               booking.getNumberOfNights(),
               booking.getBedPackage(),
               total);
-      response.status(200);
+      response.status(201);
       return bookingDummyObject;
     } catch (exceptions.booking.BookingService.InvalidUuidException e) {
       ErrorHandler error =
@@ -78,8 +78,6 @@ public class BookingResource implements RouteGroup {
               String.format("booking with number %s could not be found", bookingUuid));
       response.status(404);
       return error;
-    } catch (Exception e) {
-      return e.toString();
     }
   }
 

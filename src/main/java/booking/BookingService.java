@@ -5,8 +5,16 @@ import java.util.*;
 
 public class BookingService {
   private Map<String, Booking> bookings = new HashMap<String, Booking>();
+  private static BookingService bookingService = null;
 
-  public BookingService() {};
+  private BookingService() {};
+
+  public static BookingService getInstance() {
+    if (bookingService == null) {
+      bookingService = new BookingService();
+    }
+    return bookingService;
+  }
 
   public String addBooking(Booking booking) {
     String bookingUuid = UUID.randomUUID().toString();
@@ -27,5 +35,9 @@ public class BookingService {
 
   public List<Booking> getAllBookings() {
     return new ArrayList<Booking>(bookings.values());
+  }
+
+  public void clearAll() {
+    bookings.clear();
   }
 }

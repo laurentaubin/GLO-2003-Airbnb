@@ -36,6 +36,10 @@ public class BedService {
     return new ArrayList<Bed>(beds.values());
   }
 
+  public void removeBed(String uuid) {
+    this.beds.remove(uuid);
+  }
+
   public void clearAllBeds() {
     beds.clear();
   }

@@ -21,7 +21,7 @@ public class JsonToBookingConverterTest {
           + " \"ownerPublicKey\": \"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\","
           + " \"arrivalDate\": \"2020-05-21\", "
           + "\"numberOfNights\": \"3\" ,"
-          + " \"bedPackage\": \"allYouCanDrink\"}";
+          + " \"package\": \"allYouCanDrink\"}";
 
   @Test
   void deserializeBooking_withValidJson_shouldEqualTenantPublicKey() throws IOException {
@@ -70,7 +70,7 @@ public class JsonToBookingConverterTest {
     String noTenantPublicKeyJson =
         "{\"arrivalDate\": \"2020-05-21\", "
             + "\"numberOfNights\": \"3\" ,"
-            + " \"bedPackage\": \"allYouCanDrink\"}";
+            + " \"package\": \"allYouCanDrink\"}";
 
     assertThrows(
         NullPointerException.class,

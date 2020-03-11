@@ -17,11 +17,10 @@ import spark.RouteGroup;
 
 public class BookingResource implements RouteGroup {
   public static final String ROOT_PATH = "/beds/:uuid/bookings";
-  private BookingService bookingService = new BookingService();
+  private BookingService bookingService = BookingService.getInstance();
   private JsonToBookingConverter jsonToBookingConverter = new JsonToBookingConverter();
   private ObjectMapper objectMapper = new ObjectMapper();
   private BookingValidator bookingValidator = new BookingValidator();
-  private String bedNumber = "";
   private BedService bedService = BedService.getInstance();
 
   @Override
@@ -31,17 +30,16 @@ public class BookingResource implements RouteGroup {
         (request, response) -> {
           try {
             response.type("application/json");
-            bedNumber = request.params(":uuid");
+            String bedNumber = request.params(":uuid");
+            bookingValidator.validateBooking(request.body(), bedNumber);
             Booking booking = jsonToBookingConverter.generateBookingFromJson(request.body());
-            bookingValidator.validateBooking(booking, bedNumber);
             String bookingUuid = bookingService.addBooking(booking);
+            bookingService.addBookingForSpecificBed(bedNumber, booking);
             response.status(201);
-            response.header("Location", "/beds/:uuid/bookings/:" + bookingUuid);
+            response.header("Location", "/beds/" + bedNumber + "/bookings/" + bookingUuid);
             return bookingUuid;
           } catch (BookingException e) {
             return generatePostErrorMessage(e);
-          } catch (Exception e) {
-            return e.toString();
           }
         });
 
@@ -51,13 +49,13 @@ public class BookingResource implements RouteGroup {
   public Object getBooking(Request request, Response response) {
     String bookingUuid = request.params(":bookingUuid");
     String bedNumber = request.params(":uuid");
-    Float total = 0.0f;
+    float total = 0.0f;
     try {
       Booking booking = this.bookingService.getBookingByUuid(bookingUuid);
       BedPackage[] bedPackages = bedService.getBedByUuid(bedNumber).getPackages();
       for (BedPackage bedPackage : bedPackages) {
         if (bedPackage.getName().toString().equals(booking.getBedPackage())) {
-          Double pricePerNight = bedPackage.getPricePerNight();
+          double pricePerNight = bedPackage.getPricePerNight();
           total =
               Float.parseFloat(
                   new DecimalFormat("##.##").format(pricePerNight * booking.getNumberOfNights()));
@@ -69,7 +67,7 @@ public class BookingResource implements RouteGroup {
               booking.getNumberOfNights(),
               booking.getBedPackage(),
               total);
-      response.status(200);
+      response.status(201);
       return bookingDummyObject;
     } catch (exceptions.booking.BookingService.InvalidUuidException e) {
       ErrorHandler error =
@@ -78,8 +76,6 @@ public class BookingResource implements RouteGroup {
               String.format("booking with number %s could not be found", bookingUuid));
       response.status(404);
       return error;
-    } catch (Exception e) {
-      return e.toString();
     }
   }
 

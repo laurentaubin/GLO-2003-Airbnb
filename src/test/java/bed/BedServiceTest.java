@@ -279,4 +279,24 @@ class BedServiceTest {
     String invalidUuid = "";
     assertThrows(InvalidUuidException.class, () -> this.bedService.getBedByUuid(invalidUuid));
   }
+
+  @Test
+  void removeBed_whenGivingValidUUID_shouldWork() {
+    assertEquals(0, bedService.getTotalNumberOfBeds());
+    Bed bed =
+        new Bed(
+            this.ownerPublicKey,
+            this.zipCode,
+            this.bedType,
+            this.cleaningFrequency,
+            this.bloodTypes,
+            this.capacity,
+            this.packages);
+    String uuid = UUID.randomUUID().toString();
+    bed.setUuid(uuid);
+    this.bedService.addBed(bed, uuid);
+    assertEquals(1, bedService.getTotalNumberOfBeds());
+    bedService.removeBed(uuid);
+    assertEquals(0, bedService.getTotalNumberOfBeds());
+  }
 }

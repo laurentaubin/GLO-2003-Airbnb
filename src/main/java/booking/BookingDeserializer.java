@@ -19,11 +19,10 @@ public class BookingDeserializer extends JsonDeserializer<Booking> {
 
     bookingNode = parser.getCodec().readTree(parser);
     Booking booking = new Booking();
-
     booking.setTenantPublicKey(bookingNode.get("tenantPublicKey").textValue());
     booking.setArrivalDate(bookingNode.get("arrivalDate").textValue());
     booking.setNumberOfNights(bookingNode.get("numberOfNights").asInt());
-    booking.setBedPackage(bookingNode.get("bedPackage").textValue());
+    booking.setBedPackage(bookingNode.get("package").textValue());
 
     return booking;
   }

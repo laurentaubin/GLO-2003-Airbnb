@@ -67,6 +67,7 @@ public class BookingValidatorTest {
   @AfterEach
   void cleanUp() {
     this.bedService.removeBed(this.uuid);
+    this.bookingService.clearAll();
   }
 
   @Test

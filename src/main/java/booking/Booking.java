@@ -9,6 +9,8 @@ public class Booking {
   private String arrivalDate;
   private Integer numberOfNights;
   private String bedPackage;
+  private String bedUuid;
+  private String departureDate;
 
   public Booking() {}
 

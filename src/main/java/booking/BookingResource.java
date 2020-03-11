@@ -34,6 +34,7 @@ public class BookingResource implements RouteGroup {
             bookingValidator.validateBooking(request.body(), bedNumber);
             Booking booking = jsonToBookingConverter.generateBookingFromJson(request.body());
             String bookingUuid = bookingService.addBooking(booking);
+            bookingService.addBookingForSpecificBed(bedNumber, booking);
             response.status(201);
             response.header("Location", "/beds/" + bedNumber + "/bookings/" + bookingUuid);
             return bookingUuid;

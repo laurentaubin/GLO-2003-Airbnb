@@ -38,7 +38,7 @@ public class BedResource implements RouteGroup {
             bed.setUuid(uuid);
             bedService.addBed(bed, uuid);
             response.status(201);
-            response.header("Location", "/beds/:" + uuid);
+            response.header("Location", "/beds/" + uuid);
             return uuid;
           } catch (BedException e) {
             response.status(400);

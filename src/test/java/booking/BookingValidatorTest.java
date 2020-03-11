@@ -13,10 +13,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.booking.ArrivalDate.InvalidArrivalDateException;
+import exceptions.booking.BedAlreadyBookedException;
 import exceptions.booking.BedPackage.InvalidBookingPackageException;
 import exceptions.booking.BedPackage.PackageNotAvailableException;
 import exceptions.booking.BookingService.InvalidTenantPublicKeyException;
 import exceptions.booking.NumberOfNights.InvalidNumberOfNightsException;
+import java.io.IOException;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,11 +27,12 @@ import org.junit.jupiter.api.Test;
 public class BookingValidatorTest {
   private BookingValidator bookingValidator;
   private BedService bedService = BedService.getInstance();
+  private BookingService bookingService = BookingService.getInstance();
   private String uuid = UUID.randomUUID().toString();
   private ObjectMapper mapper = new ObjectMapper();
 
   @BeforeEach
-  void setup() {
+  void setup() throws IOException {
     this.bookingValidator = new BookingValidator();
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     String zipCode = "12345";
@@ -47,6 +50,18 @@ public class BookingValidatorTest {
             ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
     bed.setUuid(this.uuid);
     this.bedService.addBed(bed, this.uuid);
+
+    String firstReservationJson =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-21\","
+            + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    Booking firstBooking =
+        new JsonToBookingConverter().generateBookingFromJson(firstReservationJson);
+    this.bookingService.addBooking(firstBooking);
+    this.bookingService.addBookingForSpecificBed(this.uuid, firstBooking);
   }
 
   @AfterEach
@@ -215,26 +230,27 @@ public class BookingValidatorTest {
 
   @Test
   void validateArrivalDate_whenArrivalDateIsFormattedCorrectly_shouldNotThrow() {
-    assertDoesNotThrow(() -> bookingValidator.validateArrivalDate("2021-10-02"));
+    assertDoesNotThrow(() -> bookingValidator.validateArrivalDateFormat("2021-10-02"));
   }
 
   @Test
   void validateArrivalDate_whenArrivalDateIsNotFormattedCorrectly_shouldThrow() {
     assertThrows(
         InvalidArrivalDateException.class,
-        () -> bookingValidator.validateArrivalDate("2021-28-02"));
+        () -> bookingValidator.validateArrivalDateFormat("2021-28-02"));
     assertThrows(
         InvalidArrivalDateException.class,
-        () -> bookingValidator.validateArrivalDate("2021/02/28"));
+        () -> bookingValidator.validateArrivalDateFormat("2021/02/28"));
     assertThrows(
-        InvalidArrivalDateException.class, () -> bookingValidator.validateArrivalDate("21-02-28"));
+        InvalidArrivalDateException.class,
+        () -> bookingValidator.validateArrivalDateFormat("21-02-28"));
   }
 
   @Test
   void validateArrivalDate_whemArrivalDateIsInThePast_shouldThrow() {
     assertThrows(
         InvalidArrivalDateException.class,
-        () -> bookingValidator.validateArrivalDate("2020-02-28"));
+        () -> bookingValidator.validateArrivalDateFormat("2020-02-28"));
   }
 
   @Test
@@ -301,5 +317,105 @@ public class BookingValidatorTest {
     assertThrows(
         PackageNotAvailableException.class,
         () -> bookingValidator.validateBedPackage(askedPackage, this.uuid));
+  }
+
+  @Test
+  void validateIfThereIsConflictWithOtherBooking_whenThereIsNoConflict_shouldNotThrow()
+      throws IOException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-25\","
+            + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertDoesNotThrow(
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
+  }
+
+  @Test
+  void validateIfThereIsConflictWithOtherBooking_whenArrivalDateIsIncludedInDateRange_shouldThrow()
+      throws JsonProcessingException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-23\","
+            + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertThrows(
+        BedAlreadyBookedException.class,
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
+  }
+
+  @Test
+  void
+      validateIfThereIsConflictWithOtherBooking_whenDepartureDateIsIncludedInDateRange_shouldThrow()
+          throws JsonProcessingException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-19\","
+            + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertThrows(
+        BedAlreadyBookedException.class,
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
+  }
+
+  @Test
+  void validateIfThereIsConflictWithOtherBooking_whenBookingIsOverlappingDateRange_shouldThrow()
+      throws JsonProcessingException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-18\","
+            + "\"numberOfNights\": 10,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertThrows(
+        BedAlreadyBookedException.class,
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
+  }
+
+  @Test
+  void validateIfThereIsConflictWithOtherBooking_whenAllDatesAreTheSame_shouldThrow()
+      throws JsonProcessingException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-21\","
+            + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertThrows(
+        BedAlreadyBookedException.class,
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
   }
 }

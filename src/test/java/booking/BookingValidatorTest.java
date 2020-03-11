@@ -321,13 +321,34 @@ public class BookingValidatorTest {
   }
 
   @Test
-  void validateIfThereIsConflictWithOtherBooking_whenThereIsNoConflict_shouldNotThrow()
-      throws IOException {
+  void
+      validateIfThereIsConflictWithOtherBooking_whenThereIsNoConflictAndAfterOtherBooking_shouldNotThrow()
+          throws IOException {
     String secondReservation =
         "{"
             + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
             + "\"arrivalDate\": \"2021-05-25\","
             + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertDoesNotThrow(
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
+  }
+
+  @Test
+  void
+      validateIfThereIsConflictWithOtherBooking_whenThereIsNoConflictAndBeforeOtherBooking_shouldNotThrow()
+          throws JsonProcessingException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-15\","
+            + "\"numberOfNights\": 4,"
             + "\"package\": \"allYouCanDrink\""
             + "}";
     JsonNode secondBookingNode = mapper.readTree(secondReservation);
@@ -408,6 +429,67 @@ public class BookingValidatorTest {
             + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
             + "\"arrivalDate\": \"2021-05-21\","
             + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertThrows(
+        BedAlreadyBookedException.class,
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
+  }
+
+  @Test
+  void
+      validateIfThereIsConflictWithOtherBooking_whenAskedArrivalDateIsTheSameAsOtherBookingDepartureDate_shouldNotThrow()
+          throws JsonProcessingException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-24\","
+            + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertDoesNotThrow(
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
+  }
+
+  @Test
+  void
+      validateIfThereIsConflictWithOtherBooking_whenAskedDepartureDateIsTheSameAsOtherBookingArrivalDate_shouldNotThrow()
+          throws JsonProcessingException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-18\","
+            + "\"numberOfNights\": 3,"
+            + "\"package\": \"allYouCanDrink\""
+            + "}";
+    JsonNode secondBookingNode = mapper.readTree(secondReservation);
+    String arrivalDate = secondBookingNode.get("arrivalDate").textValue();
+    int numberOfNights = secondBookingNode.get("numberOfNights").asInt();
+    assertDoesNotThrow(
+        () ->
+            bookingValidator.validateIfThereIsConflictWithAnotherReservation(
+                arrivalDate, numberOfNights, this.uuid));
+  }
+
+  @Test
+  void
+      validateIfThereIsConflictWithOtherBooking_whenAskedBookingIsCompletelyIncludedInOtherDateRange_shouldThrow()
+          throws JsonProcessingException {
+    String secondReservation =
+        "{"
+            + "\"tenantPublicKey\": \"72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC\","
+            + "\"arrivalDate\": \"2021-05-22\","
+            + "\"numberOfNights\": 1,"
             + "\"package\": \"allYouCanDrink\""
             + "}";
     JsonNode secondBookingNode = mapper.readTree(secondReservation);

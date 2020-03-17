@@ -1,13 +1,15 @@
 package booking;
 
+import java.math.BigDecimal;
+
 public class BookingDummyObject {
   private String arrivalDate;
   private Integer numberOfNights;
   private String bedPackage;
-  private Float total;
+  private BigDecimal total;
 
   public BookingDummyObject(
-      String arrivalDate, Integer numberOfNights, String bedPackage, Float total) {
+      String arrivalDate, Integer numberOfNights, String bedPackage, BigDecimal total) {
     this.arrivalDate = arrivalDate;
     this.numberOfNights = numberOfNights;
     this.bedPackage = bedPackage;
@@ -38,11 +40,11 @@ public class BookingDummyObject {
     this.bedPackage = bedPackage;
   }
 
-  public Float getTotal() {
+  public BigDecimal getTotal() {
     return this.total;
   }
 
-  public void setTotal(Float total) {
+  public void setTotal(BigDecimal total) {
     this.total = total;
   }
 }

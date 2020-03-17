@@ -1,8 +1,8 @@
 package exceptions.booking.ArrivalDate;
 
-import exceptions.BookingException;
+import exceptions.BedException;
 
-public class InvalidArrivalDateException extends BookingException {
+public class InvalidArrivalDateException extends BedException {
   public InvalidArrivalDateException() {
     super("INVALID-ARRIVAL-DATE", "Invalid date format: must be yyyy-mm-dd");
   }

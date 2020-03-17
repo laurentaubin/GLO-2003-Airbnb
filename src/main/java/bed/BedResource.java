@@ -7,7 +7,6 @@ import bed.response.ErrorPostResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.BedException;
-import exceptions.bed.BedService.InvalidUuidException;
 import exceptions.bed.MinimalCapacity.InvalidMinCapacityException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public class BedResource implements RouteGroup {
 
   @Override
   public void addRoutes() {
-    get("", this::getBeds, new ObjectMapper()::writeValueAsString);
+    get("", this::getBeds);
 
     post(
         "",
@@ -46,36 +45,34 @@ public class BedResource implements RouteGroup {
           }
         });
 
-    get("/:uuid", this::getBed, new ObjectMapper()::writeValueAsString);
+    get("/:uuid", (this::getBed));
   }
 
-  public Object getBed(Request request, Response response) {
+  public Object getBed(Request request, Response response) throws JsonProcessingException {
 
     String uuid = request.params(":uuid");
 
     try {
       Bed bed = this.bedService.getBedByUuid(uuid);
       response.status(HttpStatus.OK_200);
-      return bed;
+      return objectMapper.writeValueAsString(bed);
 
-    } catch (InvalidUuidException e) {
-      ErrorHandler error =
-          new ErrorHandler(
-              "BED_NOT_FOUND", String.format("bed with number %s could not be found", uuid));
-      response.status(HttpStatus.NOT_FOUND_404);
-      return error;
+    } catch (BedException e) {
+      response.status(404);
+      return generatePostErrorMessage(e);
     }
   }
 
   public Object getBeds(Request request, Response response) throws JsonProcessingException {
+    response.type("application/json");
     try {
       String packageNames = request.queryParamOrDefault("package", "empty");
       String bedTypes = request.queryParamOrDefault("bedType", "empty");
       String cleaningFrequencies = request.queryParamOrDefault("cleaningFreq", "empty");
       String bloodTypes = request.queryParamOrDefault("bloodTypes", "empty");
-      String minCapacity = request.queryParamOrDefault("minCapacity", "0");
+      String minCapacity = request.queryParamOrDefault("minCapacity", "1");
 
-      if (Integer.parseInt(minCapacity) < 0) {
+      if (minCapacity.indexOf('.') != -1 || Integer.parseInt(minCapacity) <= 0) {
         throw new InvalidMinCapacityException();
       }
 
@@ -98,13 +95,11 @@ public class BedResource implements RouteGroup {
       }
 
       response.status(HttpStatus.OK_200);
-      return bedsResponses;
+      return objectMapper.writeValueAsString(bedsResponses);
 
     } catch (BedException e) {
-      ErrorGetResponse errorGetResponse = new ErrorGetResponse();
-      errorGetResponse.setDescription(e.getDescription());
-      errorGetResponse.setError(e.getError());
-      return errorGetResponse;
+      response.status(400);
+      return generatePostErrorMessage(e);
     }
   }
 

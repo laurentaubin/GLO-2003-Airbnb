@@ -5,12 +5,11 @@ import static spark.Spark.post;
 
 import bed.BedPackage;
 import bed.BedService;
-import bed.ErrorHandler;
 import bed.response.ErrorPostResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.BookingException;
-import java.text.DecimalFormat;
+import exceptions.BedException;
+import java.math.BigDecimal;
 import spark.Request;
 import spark.Response;
 import spark.RouteGroup;
@@ -38,7 +37,7 @@ public class BookingResource implements RouteGroup {
             response.status(201);
             response.header("Location", "/beds/" + bedNumber + "/bookings/" + bookingUuid);
             return bookingUuid;
-          } catch (BookingException e) {
+          } catch (BedException e) {
             return generatePostErrorMessage(e);
           }
         });
@@ -46,40 +45,30 @@ public class BookingResource implements RouteGroup {
     get("/:bookingUuid", this::getBooking, new ObjectMapper()::writeValueAsString);
   }
 
-  public Object getBooking(Request request, Response response) {
+  public Object getBooking(Request request, Response response) throws JsonProcessingException {
     String bookingUuid = request.params(":bookingUuid");
     String bedNumber = request.params(":uuid");
-    float total = 0.0f;
     try {
       Booking booking = this.bookingService.getBookingByUuid(bookingUuid);
       BedPackage[] bedPackages = bedService.getBedByUuid(bedNumber).getPackages();
-      for (BedPackage bedPackage : bedPackages) {
-        if (bedPackage.getName().toString().equals(booking.getBedPackage())) {
-          double pricePerNight = bedPackage.getPricePerNight();
-          total =
-              Float.parseFloat(
-                  new DecimalFormat("##.##").format(pricePerNight * booking.getNumberOfNights()));
-        }
-      }
+      BookingTotalPriceCalculator priceCalculator =
+          new BookingTotalPriceCalculator(bedPackages, booking);
+      BigDecimal total = priceCalculator.getTotalWithDiscount();
       BookingDummyObject bookingDummyObject =
           new BookingDummyObject(
               booking.getArrivalDate(),
               booking.getNumberOfNights(),
               booking.getBedPackage(),
               total);
-      response.status(201);
+      response.status(200);
       return bookingDummyObject;
-    } catch (exceptions.booking.BookingService.InvalidUuidException e) {
-      ErrorHandler error =
-          new ErrorHandler(
-              "BOOKING_NOT_FOUND",
-              String.format("booking with number %s could not be found", bookingUuid));
+    } catch (BedException e) {
       response.status(404);
-      return error;
+      return generatePostErrorMessage(e);
     }
   }
 
-  private String generatePostErrorMessage(BookingException e) throws JsonProcessingException {
+  private String generatePostErrorMessage(BedException e) throws JsonProcessingException {
     ErrorPostResponse errorPostResponse = new ErrorPostResponse();
     errorPostResponse.setError(e.getError());
     errorPostResponse.setDescription(e.getDescription());

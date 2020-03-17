@@ -1,8 +1,8 @@
 package exceptions.booking;
 
-import exceptions.BookingException;
+import exceptions.BedException;
 
-public class BedAlreadyBookedException extends BookingException {
+public class BedAlreadyBookedException extends BedException {
   public BedAlreadyBookedException() {
     super("BED_ALREADY_BOOKED", "bed is already booked for selected dates");
   }

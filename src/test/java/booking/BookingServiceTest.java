@@ -3,7 +3,7 @@ package booking;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import exceptions.booking.BookingService.InvalidUuidException;
+import exceptions.booking.BookingNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,8 +47,7 @@ public class BookingServiceTest {
   }
 
   @Test
-  void getBookingByUuid_whenGettingBookingWithValidUuid_shouldEqualSameBooking()
-      throws InvalidUuidException {
+  void getBookingByUuid_whenGettingBookingWithValidUuid_shouldEqualSameBooking() {
     Booking booking =
         new Booking(this.tenantPublicKey, this.arrivalDate, this.numberOfNights, this.bedPackage);
     String uuid = this.bookingService.addBooking(booking);
@@ -62,6 +61,6 @@ public class BookingServiceTest {
     String uuid = this.bookingService.addBooking(booking);
     String invalidUuid = "";
     assertThrows(
-        InvalidUuidException.class, () -> this.bookingService.getBookingByUuid(invalidUuid));
+        BookingNotFoundException.class, () -> this.bookingService.getBookingByUuid(invalidUuid));
   }
 }

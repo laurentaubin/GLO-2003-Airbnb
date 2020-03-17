@@ -1,11 +1,9 @@
 package exceptions.bed.MinimalCapacity;
 
-public class InvalidMinCapacityException extends exceptions.BedException {
+import exceptions.BedException;
+
+public class InvalidMinCapacityException extends BedException {
   public InvalidMinCapacityException() {
     super("INVALID_MINIMAL_CAPACITY", "minimal capacity should be a positive number");
-  }
-
-  public InvalidMinCapacityException(String s) {
-    super(s);
   }
 }

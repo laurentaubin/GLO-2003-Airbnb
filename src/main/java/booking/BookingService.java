@@ -1,6 +1,7 @@
 package booking;
 
-import exceptions.booking.BookingService.InvalidUuidException;
+import exceptions.BedException;
+import exceptions.booking.BookingNotFoundException;
 import java.util.*;
 
 public class BookingService {
@@ -37,9 +38,9 @@ public class BookingService {
     return bookings.size();
   }
 
-  public Booking getBookingByUuid(String uuid) throws InvalidUuidException {
+  public Booking getBookingByUuid(String uuid) throws BedException {
     if (!bookings.containsKey(uuid)) {
-      throw new InvalidUuidException();
+      throw new BookingNotFoundException(uuid);
     }
     return bookings.get(uuid);
   }
@@ -59,5 +60,9 @@ public class BookingService {
   public void clearAll() {
     bookings.clear();
     bookingsForSpecificBed.clear();
+  }
+
+  public Map<String, Booking> getBookingMap() {
+    return this.bookings;
   }
 }

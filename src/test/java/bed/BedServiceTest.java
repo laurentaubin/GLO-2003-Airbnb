@@ -2,7 +2,7 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import exceptions.bed.BedService.InvalidUuidException;
+import exceptions.booking.BedNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
@@ -246,7 +246,7 @@ class BedServiceTest {
   }
 
   @Test
-  void getBedByUuid_whenGettingBedWithValidUuid_shouldEqualSameBed() throws InvalidUuidException {
+  void getBedByUuid_whenGettingBedWithValidUuid_shouldEqualSameBed() {
     Bed bed =
         new Bed(
             this.ownerPublicKey,
@@ -277,7 +277,7 @@ class BedServiceTest {
     bed.setUuid(uuid);
     this.bedService.addBed(bed, uuid);
     String invalidUuid = "";
-    assertThrows(InvalidUuidException.class, () -> this.bedService.getBedByUuid(invalidUuid));
+    assertThrows(BedNotFoundException.class, () -> this.bedService.getBedByUuid(invalidUuid));
   }
 
   @Test

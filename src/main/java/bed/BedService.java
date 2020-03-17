@@ -1,6 +1,6 @@
 package bed;
 
-import exceptions.bed.BedService.InvalidUuidException;
+import exceptions.booking.BedNotFoundException;
 import java.util.*;
 
 public class BedService {
@@ -25,9 +25,9 @@ public class BedService {
     return beds.size();
   }
 
-  public Bed getBedByUuid(String uuid) throws InvalidUuidException {
+  public Bed getBedByUuid(String uuid) throws BedNotFoundException {
     if (!beds.containsKey(uuid)) {
-      throw new InvalidUuidException();
+      throw new BedNotFoundException(uuid);
     }
     return beds.get(uuid);
   }

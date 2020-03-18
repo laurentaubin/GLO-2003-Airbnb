@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import exceptions.booking.BookingEnumException;
 import java.io.IOException;
 
 public class BookingDeserializer extends JsonDeserializer<Booking> {
@@ -14,7 +13,7 @@ public class BookingDeserializer extends JsonDeserializer<Booking> {
 
   @Override
   public Booking deserialize(JsonParser parser, DeserializationContext deserializer)
-      throws IOException, BookingEnumException {
+      throws IOException {
     JsonNode bookingNode;
 
     bookingNode = parser.getCodec().readTree(parser);

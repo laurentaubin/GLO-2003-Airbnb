@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import exceptions.bed.BedEnumException;
 import java.io.IOException;
 
 public class BedDeserializer extends JsonDeserializer<Bed> {
@@ -14,7 +13,7 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
 
   @Override
   public Bed deserialize(JsonParser parser, DeserializationContext deserializer)
-      throws IOException, BedEnumException {
+      throws IOException {
     JsonNode bedNode;
 
     bedNode = parser.getCodec().readTree(parser);

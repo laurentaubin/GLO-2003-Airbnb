@@ -8,8 +8,4 @@ public class InvalidCleaningFrequencyException extends BedException {
         "INVALID_CLEANING_FREQUENCY",
         "cleaning frequency should be one of weekly, monthly," + " annual or never");
   }
-
-  public InvalidCleaningFrequencyException(String s) {
-    super(s);
-  }
 }

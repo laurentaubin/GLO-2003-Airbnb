@@ -30,7 +30,6 @@ public class BedResource implements RouteGroup {
         "",
         (request, response) -> {
           try {
-            response.type("application/json");
             bedValidator.validateBed(request.body());
             Bed bed = jsonToBedConverter.generateBedFromJson(request.body());
             String uuid = UUID.randomUUID().toString();
@@ -64,7 +63,6 @@ public class BedResource implements RouteGroup {
   }
 
   public Object getBeds(Request request, Response response) throws JsonProcessingException {
-    response.type("application/json");
     try {
       String packageNames = request.queryParamOrDefault("package", "empty");
       String bedTypes = request.queryParamOrDefault("bedType", "empty");

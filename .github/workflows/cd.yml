@@ -1,4 +1,4 @@
-name: MasterCD
+name: cd
 on:
   push:
     branches:

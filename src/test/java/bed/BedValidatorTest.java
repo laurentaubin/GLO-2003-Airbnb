@@ -2,19 +2,19 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import bed.exception.ExceedingAccommodationCapacityException;
+import bed.exception.InvalidAllYouCanDrinkException;
+import bed.exception.InvalidBedTypeException;
+import bed.exception.InvalidBloodTypeException;
+import bed.exception.InvalidCapacityException;
+import bed.exception.InvalidCleaningFrequencyException;
+import bed.exception.InvalidOwnerKeyException;
+import bed.exception.InvalidPackageNameException;
+import bed.exception.InvalidSweetToothPackageException;
+import bed.exception.InvalidZipCodeException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.bed.BedType.InvalidBedTypeException;
-import exceptions.bed.BloodType.InvalidBloodTypeException;
-import exceptions.bed.CleaningFrequency.InvalidCleaningFrequencyException;
-import exceptions.bed.ExceedingAccommodationCapacityException;
-import exceptions.bed.InvalidAllYouCanDrinkException;
-import exceptions.bed.InvalidCapacityException;
-import exceptions.bed.InvalidOwnerKeyException;
-import exceptions.bed.InvalidSweetToothPackageException;
-import exceptions.bed.InvalidZipCodeException;
-import exceptions.bed.PackageName.InvalidPackageNameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

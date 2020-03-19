@@ -2,7 +2,7 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import exceptions.bed.BedType.InvalidBedTypeException;
+import bed.exception.InvalidBedTypeException;
 import org.junit.jupiter.api.Test;
 
 class BedTypeTest {

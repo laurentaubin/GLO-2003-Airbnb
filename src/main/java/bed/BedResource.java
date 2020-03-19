@@ -8,12 +8,11 @@ import bed.booking.BookingResponse;
 import bed.booking.BookingService;
 import bed.booking.BookingValidator;
 import bed.booking.JsonToBookingConverter;
+import bed.booking.exception.BookingNotFoundException;
+import bed.exception.InvalidMinCapacityException;
 import bed.response.ErrorPostResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.BedException;
-import exceptions.bed.MinimalCapacity.InvalidMinCapacityException;
-import exceptions.booking.BedNotFoundException;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.eclipse.jetty.http.HttpStatus;
@@ -47,8 +46,8 @@ public class BedResource implements RouteGroup {
             bedService.addBed(bed, uuid);
             response.status(201);
             response.header("Location", "/beds/" + uuid);
-            return objectMapper.writeValueAsString(uuid);
-          } catch (BedException e) {
+            return uuid;
+          } catch (AirbnbException e) {
             response.status(400);
             return generatePostErrorMessage(e);
           }
@@ -70,7 +69,7 @@ public class BedResource implements RouteGroup {
             response.status(201);
             response.header("Location", "/beds/" + bed.getUuid() + "/bookings/" + bookingUuid);
             return objectMapper.writeValueAsString(bookingUuid);
-          } catch (BedException e) {
+          } catch (AirbnbException e) {
             return generatePostErrorMessage(e);
           }
         });
@@ -85,7 +84,7 @@ public class BedResource implements RouteGroup {
       response.status(HttpStatus.OK_200);
       return objectMapper.writeValueAsString(bedResponse);
 
-    } catch (BedException e) {
+    } catch (AirbnbException e) {
       response.status(404);
       return generatePostErrorMessage(e);
     }
@@ -124,13 +123,13 @@ public class BedResource implements RouteGroup {
       response.status(HttpStatus.OK_200);
       return objectMapper.writeValueAsString(bedsResponses);
 
-    } catch (BedException e) {
+    } catch (AirbnbException e) {
       response.status(400);
       return generatePostErrorMessage(e);
     }
   }
 
-  private String generatePostErrorMessage(BedException e) throws JsonProcessingException {
+  private String generatePostErrorMessage(AirbnbException e) throws JsonProcessingException {
     ErrorPostResponse errorPostResponse = new ErrorPostResponse();
     errorPostResponse.setError(e.getError());
     errorPostResponse.setDescription(e.getDescription());
@@ -144,7 +143,7 @@ public class BedResource implements RouteGroup {
               request.params(":uuid"), request.params(":bookingUuid"));
       response.status(200);
       return objectMapper.writeValueAsString(booking);
-    } catch (BedException e) {
+    } catch (AirbnbException e) {
       response.status(404);
       return generatePostErrorMessage(e);
     }
@@ -156,10 +155,10 @@ public class BedResource implements RouteGroup {
           this.bedService.getAllBookingsForBed(request.params(":uuid"));
       response.status(200);
       return objectMapper.writeValueAsString(bookings);
-    } catch (BedNotFoundException e) {
+    } catch (BookingNotFoundException e) {
       response.status(404);
       return generatePostErrorMessage(e);
-    } catch (BedException e) {
+    } catch (AirbnbException e) {
       response.status(400);
       return generatePostErrorMessage(e);
     }

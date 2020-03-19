@@ -1,8 +1,8 @@
-package exceptions.bed;
+package bed.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidAllYouCanDrinkException extends BedException {
+public class InvalidAllYouCanDrinkException extends AirbnbException {
   public InvalidAllYouCanDrinkException() {
     super(
         "CANT_OFFER_ALL_YOU_CAN_DRINK_PACKAGE",

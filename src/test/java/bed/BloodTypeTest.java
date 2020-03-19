@@ -2,7 +2,7 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import exceptions.bed.BloodType.InvalidBloodTypeException;
+import bed.exception.InvalidBloodTypeException;
 import org.junit.jupiter.api.Test;
 
 class BloodTypeTest {

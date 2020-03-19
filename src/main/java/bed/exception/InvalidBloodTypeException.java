@@ -1,8 +1,8 @@
-package exceptions.bed.BloodType;
+package bed.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidBloodTypeException extends BedException {
+public class InvalidBloodTypeException extends AirbnbException {
   public InvalidBloodTypeException() {
     super(
         "INVALID_BLOOD_TYPES",

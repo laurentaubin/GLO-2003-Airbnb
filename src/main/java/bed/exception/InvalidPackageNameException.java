@@ -1,8 +1,8 @@
-package exceptions.bed.PackageName;
+package bed.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidPackageNameException extends BedException {
+public class InvalidPackageNameException extends AirbnbException {
   public InvalidPackageNameException() {
     super(
         "INVALID_PACKAGES",

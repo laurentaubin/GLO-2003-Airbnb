@@ -2,7 +2,7 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import exceptions.booking.BedNotFoundException;
+import bed.booking.exception.BedNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;

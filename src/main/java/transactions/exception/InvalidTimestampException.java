@@ -1,6 +1,4 @@
-package exceptions.Transactions;
-
-import exceptions.TransactionException;
+package transactions.exception;
 
 public class InvalidTimestampException extends TransactionException {
   public InvalidTimestampException() {

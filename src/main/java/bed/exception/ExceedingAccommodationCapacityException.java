@@ -1,8 +1,8 @@
-package exceptions.bed;
+package bed.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class ExceedingAccommodationCapacityException extends BedException {
+public class ExceedingAccommodationCapacityException extends AirbnbException {
   public ExceedingAccommodationCapacityException() {
     super(
         "EXCEEDING_ACCOMODATION_CAPACITY",

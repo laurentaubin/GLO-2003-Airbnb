@@ -3,7 +3,7 @@ package bed;
 import bed.booking.Booking;
 import bed.booking.BookingResponse;
 import bed.booking.BookingTotalPriceCalculator;
-import exceptions.booking.BedNotFoundException;
+import bed.booking.exception.BedNotFoundException;
 import java.math.BigDecimal;
 import java.util.*;
 

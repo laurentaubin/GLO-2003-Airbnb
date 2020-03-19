@@ -2,7 +2,7 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import exceptions.bed.CleaningFrequency.InvalidCleaningFrequencyException;
+import bed.exception.InvalidCleaningFrequencyException;
 import org.junit.jupiter.api.Test;
 
 class CleaningFrequencyTest {

@@ -1,7 +1,7 @@
 package bed.booking;
 
-import exceptions.BedException;
-import exceptions.booking.BookingNotFoundException;
+import bed.AirbnbException;
+import bed.booking.exception.BookingNotFoundException;
 import java.util.*;
 
 public class BookingService {
@@ -38,7 +38,7 @@ public class BookingService {
     return bookings.size();
   }
 
-  public Booking getBookingByUuid(String uuid) throws BedException {
+  public Booking getBookingByUuid(String uuid) throws AirbnbException {
     if (!bookings.containsKey(uuid)) {
       throw new BookingNotFoundException(uuid);
     }

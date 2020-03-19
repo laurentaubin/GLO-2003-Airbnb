@@ -1,8 +1,8 @@
-package exceptions.bed;
+package bed.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidOwnerKeyException extends BedException {
+public class InvalidOwnerKeyException extends AirbnbException {
   public InvalidOwnerKeyException() {
     super(
         "INVALID_PUBLIC_KEY",

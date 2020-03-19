@@ -1,8 +1,8 @@
-package exceptions.booking.BookingService;
+package bed.booking.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidTenantPublicKeyException extends BedException {
+public class InvalidTenantPublicKeyException extends AirbnbException {
   public InvalidTenantPublicKeyException() {
     super(
         "INVALID_PUBLIC_KEY",

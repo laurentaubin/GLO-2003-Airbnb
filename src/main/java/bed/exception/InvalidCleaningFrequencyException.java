@@ -1,8 +1,8 @@
-package exceptions.bed.CleaningFrequency;
+package bed.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidCleaningFrequencyException extends BedException {
+public class InvalidCleaningFrequencyException extends AirbnbException {
   public InvalidCleaningFrequencyException() {
     super(
         "INVALID_CLEANING_FREQUENCY",

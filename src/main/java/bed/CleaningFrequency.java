@@ -1,7 +1,7 @@
 package bed;
 
+import bed.exception.InvalidCleaningFrequencyException;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import exceptions.bed.CleaningFrequency.InvalidCleaningFrequencyException;
 
 public enum CleaningFrequency {
   @JsonProperty("weekly")

@@ -1,8 +1,8 @@
-package exceptions.booking.NumberOfNights;
+package bed.booking.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidNumberOfNightsException extends BedException {
+public class InvalidNumberOfNightsException extends AirbnbException {
   public InvalidNumberOfNightsException() {
     super("INVALID_NUMBER_OF_NIGHTS", "number of nights should be a number between 1 and 90");
   }

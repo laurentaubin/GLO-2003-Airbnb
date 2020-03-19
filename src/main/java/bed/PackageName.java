@@ -1,7 +1,7 @@
 package bed;
 
+import bed.exception.InvalidPackageNameException;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import exceptions.bed.PackageName.InvalidPackageNameException;
 
 public enum PackageName {
   @JsonProperty("bloodthirsty")

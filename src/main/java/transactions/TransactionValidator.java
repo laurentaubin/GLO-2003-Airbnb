@@ -1,7 +1,7 @@
 package transactions;
 
-import exceptions.Transactions.InvalidTimestampException;
 import java.math.BigDecimal;
+import transactions.exception.InvalidTimestampException;
 
 public class TransactionValidator {
   public TransactionValidator() {}

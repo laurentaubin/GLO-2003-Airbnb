@@ -1,7 +1,7 @@
 package bed.booking;
 
 import bed.BedPackage;
-import exceptions.booking.NumberOfNights.InvalidNumberOfNightsException;
+import bed.booking.exception.InvalidNumberOfNightsException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 

@@ -1,8 +1,8 @@
-package exceptions.booking.BedPackage;
+package bed.booking.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidBookingPackageException extends BedException {
+public class InvalidBookingPackageException extends AirbnbException {
   public InvalidBookingPackageException() {
     super(
         "PACKAGE_NOT_AVAILABLE",

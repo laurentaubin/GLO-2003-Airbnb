@@ -2,7 +2,7 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import exceptions.bed.PackageName.InvalidPackageNameException;
+import bed.exception.InvalidPackageNameException;
 import org.junit.jupiter.api.Test;
 
 class PackageNameTest {

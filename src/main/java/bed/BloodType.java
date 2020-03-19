@@ -1,7 +1,7 @@
 package bed;
 
+import bed.exception.InvalidBloodTypeException;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import exceptions.bed.BloodType.InvalidBloodTypeException;
 
 public enum BloodType {
   @JsonProperty("O-")

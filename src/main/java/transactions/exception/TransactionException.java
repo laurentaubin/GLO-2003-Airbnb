@@ -1,18 +1,18 @@
-package exceptions;
+package transactions.exception;
 
-public abstract class BedException extends RuntimeException {
+public abstract class TransactionException extends RuntimeException {
   private String error;
   private String description;
 
-  public BedException() {
+  public TransactionException() {
     super();
   };
 
-  public BedException(String s) {
+  public TransactionException(String s) {
     super(s);
   }
 
-  public BedException(String error, String description) {
+  public TransactionException(String error, String description) {
     this.error = error;
     this.description = description;
   }

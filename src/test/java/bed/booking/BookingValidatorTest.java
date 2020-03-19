@@ -9,15 +9,16 @@ import bed.BedType;
 import bed.BloodType;
 import bed.CleaningFrequency;
 import bed.PackageName;
+import bed.booking.exception.BedAlreadyBookedException;
+import bed.booking.exception.InvalidArrivalDateException;
+import bed.booking.exception.InvalidBookingPackageException;
+import bed.booking.exception.InvalidNumberOfNightsException;
+import bed.booking.exception.InvalidTenantPublicKeyException;
+import bed.booking.exception.PackageNotAvailableException;
+import bed.booking.exception.UnallowedBookingException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.booking.ArrivalDate.InvalidArrivalDateException;
-import exceptions.booking.BedAlreadyBookedException;
-import exceptions.booking.BedPackage.InvalidBookingPackageException;
-import exceptions.booking.BedPackage.PackageNotAvailableException;
-import exceptions.booking.BookingService.InvalidTenantPublicKeyException;
-import exceptions.booking.NumberOfNights.InvalidNumberOfNightsException;
 import java.io.IOException;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -221,9 +222,9 @@ public class BookingValidatorTest {
 
   @Test
   void validateTenantPublicKey_whenTenantPublicKeyIsTheSameAsOwner_shouldThrow() {
-    String tenantPublicKey = this.uuid;
+    String tenantPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     assertThrows(
-        InvalidTenantPublicKeyException.class,
+        UnallowedBookingException.class,
         () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.bed));
   }
 

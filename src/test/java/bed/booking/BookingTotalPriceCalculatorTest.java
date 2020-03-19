@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import bed.BedPackage;
 import bed.PackageName;
-import exceptions.booking.NumberOfNights.InvalidNumberOfNightsException;
+import bed.booking.exception.InvalidNumberOfNightsException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.BeforeAll;

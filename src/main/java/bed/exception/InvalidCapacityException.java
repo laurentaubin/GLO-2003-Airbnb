@@ -1,8 +1,8 @@
-package exceptions.bed;
+package bed.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidCapacityException extends BedException {
+public class InvalidCapacityException extends AirbnbException {
   public InvalidCapacityException() {
     super(
         "INVALID_CAPACITY",

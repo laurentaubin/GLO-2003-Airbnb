@@ -1,8 +1,8 @@
-package exceptions.bed;
+package bed.exception;
 
-import exceptions.BedException;
+import bed.AirbnbException;
 
-public class InvalidSweetToothPackageException extends BedException {
+public class InvalidSweetToothPackageException extends AirbnbException {
 
   public InvalidSweetToothPackageException() {
     super(

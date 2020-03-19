@@ -3,15 +3,16 @@ package bed.booking;
 import bed.Bed;
 import bed.BedPackage;
 import bed.BedService;
+import bed.booking.exception.BedAlreadyBookedException;
+import bed.booking.exception.InvalidArrivalDateException;
+import bed.booking.exception.InvalidBookingPackageException;
+import bed.booking.exception.InvalidNumberOfNightsException;
+import bed.booking.exception.InvalidTenantPublicKeyException;
+import bed.booking.exception.PackageNotAvailableException;
+import bed.booking.exception.UnallowedBookingException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.booking.ArrivalDate.InvalidArrivalDateException;
-import exceptions.booking.BedAlreadyBookedException;
-import exceptions.booking.BedPackage.InvalidBookingPackageException;
-import exceptions.booking.BedPackage.PackageNotAvailableException;
-import exceptions.booking.BookingService.InvalidTenantPublicKeyException;
-import exceptions.booking.NumberOfNights.InvalidNumberOfNightsException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -92,11 +93,21 @@ public class BookingValidator {
   }
 
   public void validateTenantPublicKey(String tenantPublicKey, Bed bed) {
-    String ownerPublicKey = bed.getOwnerPublicKey();
-    if (!StringUtils.isAlphanumeric(tenantPublicKey)
-        || tenantPublicKey.length() != 64
-        || tenantPublicKey.equals(ownerPublicKey)) {
+    validateTenantPublicKeyFormat(tenantPublicKey);
+    validateTenantPublicKeyIsNotTheSameAsOwnerPublicKey(tenantPublicKey, bed);
+  }
+
+  private void validateTenantPublicKeyFormat(String tenantPublicKey) {
+    if (!StringUtils.isAlphanumeric(tenantPublicKey) || tenantPublicKey.length() != 64) {
       throw new InvalidTenantPublicKeyException();
+    }
+  }
+
+  private void validateTenantPublicKeyIsNotTheSameAsOwnerPublicKey(
+      String tenantPublicKey, Bed bed) {
+    String ownerPublicKey = bed.getOwnerPublicKey();
+    if (tenantPublicKey.equals(ownerPublicKey)) {
+      throw new UnallowedBookingException();
     }
   }
 

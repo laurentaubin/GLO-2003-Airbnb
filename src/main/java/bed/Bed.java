@@ -1,7 +1,7 @@
 package bed;
 
 import bed.booking.Booking;
-import exceptions.booking.BookingNotFoundException;
+import bed.booking.exception.BookingNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

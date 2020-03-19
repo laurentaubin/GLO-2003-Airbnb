@@ -1,7 +1,7 @@
 package bed;
 
+import bed.exception.InvalidBedTypeException;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import exceptions.bed.BedType.InvalidBedTypeException;
 
 public enum BedType {
   @JsonProperty("latex")

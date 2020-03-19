@@ -1,4 +1,4 @@
-package booking;
+package bed.booking;
 
 import exceptions.BedException;
 import exceptions.booking.BookingNotFoundException;

@@ -1,4 +1,4 @@
-package booking;
+package bed.booking;
 
 import java.text.ParseException;
 import java.time.LocalDate;

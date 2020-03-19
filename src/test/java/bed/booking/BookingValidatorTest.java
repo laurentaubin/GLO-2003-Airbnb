@@ -1,4 +1,4 @@
-package booking;
+package bed.booking;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 
 public class BookingValidatorTest {
   private BookingValidator bookingValidator;
+  private Bed bed;
   private BedService bedService = BedService.getInstance();
-  private BookingService bookingService = BookingService.getInstance();
   private String uuid = UUID.randomUUID().toString();
   private ObjectMapper mapper = new ObjectMapper();
 
@@ -45,7 +45,7 @@ public class BookingValidatorTest {
           new BedPackage(PackageName.ALL_YOU_CAN_DRINK, 6)
         };
     int capacity = 950;
-    Bed bed =
+    this.bed =
         new Bed(
             ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
     bed.setUuid(this.uuid);
@@ -60,14 +60,12 @@ public class BookingValidatorTest {
             + "}";
     Booking firstBooking =
         new JsonToBookingConverter().generateBookingFromJson(firstReservationJson);
-    this.bookingService.addBooking(firstBooking);
-    this.bookingService.addBookingForSpecificBed(this.uuid, firstBooking);
+    bed.addBooking(firstBooking);
   }
 
   @AfterEach
   void cleanUp() {
     this.bedService.removeBed(this.uuid);
-    this.bookingService.clearAll();
   }
 
   @Test
@@ -79,7 +77,7 @@ public class BookingValidatorTest {
             + "\"numberOfNights\": 3,"
             + "\"package\": \"allYouCanDrink\""
             + "}";
-    assertDoesNotThrow(() -> bookingValidator.validateBooking(jsonString, this.uuid));
+    assertDoesNotThrow(() -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
@@ -92,7 +90,7 @@ public class BookingValidatorTest {
             + "}";
     assertThrows(
         InvalidTenantPublicKeyException.class,
-        () -> bookingValidator.validateBooking(jsonString, this.uuid));
+        () -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
@@ -106,7 +104,7 @@ public class BookingValidatorTest {
             + "}";
     assertThrows(
         InvalidTenantPublicKeyException.class,
-        () -> bookingValidator.validateBooking(jsonString, this.uuid));
+        () -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
@@ -119,7 +117,7 @@ public class BookingValidatorTest {
             + "}";
     assertThrows(
         InvalidArrivalDateException.class,
-        () -> bookingValidator.validateBooking(jsonString, this.uuid));
+        () -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
@@ -133,7 +131,7 @@ public class BookingValidatorTest {
             + "}";
     assertThrows(
         InvalidArrivalDateException.class,
-        () -> bookingValidator.validateBooking(jsonString, this.uuid));
+        () -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
@@ -146,7 +144,7 @@ public class BookingValidatorTest {
             + "}";
     assertThrows(
         InvalidNumberOfNightsException.class,
-        () -> bookingValidator.validateBooking(jsonString, this.uuid));
+        () -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
@@ -160,7 +158,7 @@ public class BookingValidatorTest {
             + "}";
     assertThrows(
         InvalidNumberOfNightsException.class,
-        () -> bookingValidator.validateBooking(jsonString, this.uuid));
+        () -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
@@ -173,7 +171,7 @@ public class BookingValidatorTest {
             + "}";
     assertThrows(
         InvalidBookingPackageException.class,
-        () -> bookingValidator.validateBooking(jsonString, this.uuid));
+        () -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
@@ -187,13 +185,13 @@ public class BookingValidatorTest {
             + "}";
     assertThrows(
         InvalidBookingPackageException.class,
-        () -> bookingValidator.validateBooking(jsonString, this.uuid));
+        () -> bookingValidator.validateBooking(jsonString, this.bed));
   }
 
   @Test
   void validateTenantPublicKey_whenTenantPublicKeyIsValid_shouldNotThrow() {
     String tenantPublicKey = "72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC";
-    assertDoesNotThrow(() -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.uuid));
+    assertDoesNotThrow(() -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.bed));
   }
 
   @Test
@@ -201,7 +199,7 @@ public class BookingValidatorTest {
     String tenantPublicKey = "72001343BA93508E74E3B593C2016D0434CF0AA76CB3DF64F93170D60EC";
     assertThrows(
         InvalidTenantPublicKeyException.class,
-        () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.uuid));
+        () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.bed));
   }
 
   @Test
@@ -210,7 +208,7 @@ public class BookingValidatorTest {
         "72001343BA93508E74E3B593C2JKBASHJFASDBL016D0434CF0AA76CB3DF64F93170D60EC";
     assertThrows(
         InvalidTenantPublicKeyException.class,
-        () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.uuid));
+        () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.bed));
   }
 
   @Test
@@ -218,7 +216,7 @@ public class BookingValidatorTest {
     String tenantPublicKey = "72001343&A93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC";
     assertThrows(
         InvalidTenantPublicKeyException.class,
-        () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.uuid));
+        () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.bed));
   }
 
   @Test
@@ -226,7 +224,7 @@ public class BookingValidatorTest {
     String tenantPublicKey = this.uuid;
     assertThrows(
         InvalidTenantPublicKeyException.class,
-        () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.uuid));
+        () -> bookingValidator.validateTenantPublicKey(tenantPublicKey, this.bed));
   }
 
   @Test
@@ -301,7 +299,7 @@ public class BookingValidatorTest {
   @Test
   void validatePackage_whenPackageIsValid_shouldNotThrow() {
     String bedPackage = "allYouCanDrink";
-    assertDoesNotThrow(() -> bookingValidator.validateBedPackage(bedPackage, this.uuid));
+    assertDoesNotThrow(() -> bookingValidator.validateBedPackage(bedPackage, this.bed));
   }
 
   @Test
@@ -309,7 +307,7 @@ public class BookingValidatorTest {
     String askedPackage = "sweetTooth";
     assertThrows(
         PackageNotAvailableException.class,
-        () -> bookingValidator.validateBedPackage(askedPackage, this.uuid));
+        () -> bookingValidator.validateBedPackage(askedPackage, this.bed));
   }
 
   @Test
@@ -317,7 +315,7 @@ public class BookingValidatorTest {
     String askedPackage = "unknown";
     assertThrows(
         PackageNotAvailableException.class,
-        () -> bookingValidator.validateBedPackage(askedPackage, this.uuid));
+        () -> bookingValidator.validateBedPackage(askedPackage, this.bed));
   }
 
   @Test
@@ -337,7 +335,7 @@ public class BookingValidatorTest {
     assertDoesNotThrow(
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 
   @Test
@@ -357,7 +355,7 @@ public class BookingValidatorTest {
     assertDoesNotThrow(
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 
   @Test
@@ -377,7 +375,7 @@ public class BookingValidatorTest {
         BedAlreadyBookedException.class,
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 
   @Test
@@ -398,7 +396,7 @@ public class BookingValidatorTest {
         BedAlreadyBookedException.class,
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 
   @Test
@@ -418,7 +416,7 @@ public class BookingValidatorTest {
         BedAlreadyBookedException.class,
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 
   @Test
@@ -438,7 +436,7 @@ public class BookingValidatorTest {
         BedAlreadyBookedException.class,
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 
   @Test
@@ -458,7 +456,7 @@ public class BookingValidatorTest {
     assertDoesNotThrow(
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 
   @Test
@@ -478,7 +476,7 @@ public class BookingValidatorTest {
     assertDoesNotThrow(
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 
   @Test
@@ -499,6 +497,6 @@ public class BookingValidatorTest {
         BedAlreadyBookedException.class,
         () ->
             bookingValidator.validateIfThereIsConflictWithAnotherReservation(
-                arrivalDate, numberOfNights, this.uuid));
+                arrivalDate, numberOfNights, this.bed));
   }
 }

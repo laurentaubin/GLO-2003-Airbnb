@@ -1,6 +1,6 @@
 package bed;
 
-public class BedsResponse {
+public class BedResponse {
   private String bedNumber;
   private String zipCode;
   private BedType bedType;
@@ -10,7 +10,7 @@ public class BedsResponse {
   private BedPackage[] packages;
   private int stars;
 
-  public BedsResponse(
+  public BedResponse(
       String bedNumber,
       String zipCode,
       BedType bedType,

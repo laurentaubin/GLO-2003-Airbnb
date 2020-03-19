@@ -1,4 +1,4 @@
-package booking;
+package bed.booking;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

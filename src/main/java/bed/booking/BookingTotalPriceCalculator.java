@@ -1,4 +1,4 @@
-package booking;
+package bed.booking;
 
 import bed.BedPackage;
 import exceptions.booking.NumberOfNights.InvalidNumberOfNightsException;

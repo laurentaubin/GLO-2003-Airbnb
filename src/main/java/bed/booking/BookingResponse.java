@@ -1,14 +1,14 @@
-package booking;
+package bed.booking;
 
 import java.math.BigDecimal;
 
-public class BookingDummyObject {
+public class BookingResponse {
   private String arrivalDate;
   private Integer numberOfNights;
   private String bedPackage;
   private BigDecimal total;
 
-  public BookingDummyObject(
+  public BookingResponse(
       String arrivalDate, Integer numberOfNights, String bedPackage, BigDecimal total) {
     this.arrivalDate = arrivalDate;
     this.numberOfNights = numberOfNights;

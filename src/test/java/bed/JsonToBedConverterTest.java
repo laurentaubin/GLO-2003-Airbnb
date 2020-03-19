@@ -29,7 +29,7 @@ class JsonToBedConverterTest {
 
     Bed actualBed = this.jsonToBedConverter.generateBedFromJson(bedJson);
 
-    assertEquals(expectedBed.fetchOwnerPublicKey(), actualBed.fetchOwnerPublicKey());
+    assertEquals(expectedBed.getOwnerPublicKey(), actualBed.getOwnerPublicKey());
   }
 
   @Test

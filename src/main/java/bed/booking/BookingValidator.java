@@ -1,5 +1,6 @@
-package booking;
+package bed.booking;
 
+import bed.Bed;
 import bed.BedPackage;
 import bed.BedService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,13 +30,13 @@ public class BookingValidator {
 
   public BookingValidator() {}
 
-  public void validateBooking(String bookingRequest, String bedNumber)
+  public void validateBooking(String bookingRequest, Bed bed)
       throws JsonProcessingException, ParseException {
     JsonNode bookingNode = mapper.readTree(bookingRequest);
     if (!isTenantPublicKeyPresent(bookingNode) || isTenantPublicKeyNull(bookingNode)) {
       throw new InvalidTenantPublicKeyException();
     } else {
-      validateTenantPublicKey(bookingNode.get(TENANT_PUBLIC_KEY).textValue(), bedNumber);
+      validateTenantPublicKey(bookingNode.get(TENANT_PUBLIC_KEY).textValue(), bed);
     }
     if (!isNumberOfNightsPresent(bookingNode) || isNumberOfNightsNull(bookingNode)) {
       throw new InvalidNumberOfNightsException();
@@ -49,12 +50,12 @@ public class BookingValidator {
       validateIfThereIsConflictWithAnotherReservation(
           bookingNode.get(ARRIVAL_DATE).textValue(),
           bookingNode.get(NUMBER_OF_NIGHTS).asInt(),
-          bedNumber);
+          bed);
     }
     if (!isPackagePresent(bookingNode) || isPackageNull(bookingNode)) {
       throw new InvalidBookingPackageException();
     } else {
-      validateBedPackage(bookingNode.get("package").textValue(), bedNumber);
+      validateBedPackage(bookingNode.get("package").textValue(), bed);
     }
   }
 
@@ -90,8 +91,8 @@ public class BookingValidator {
     return bookingNode.get(PACKAGE).isNull();
   }
 
-  public void validateTenantPublicKey(String tenantPublicKey, String bedNumber) {
-    String ownerPublicKey = bedService.getBedByUuid(bedNumber).fetchOwnerPublicKey();
+  public void validateTenantPublicKey(String tenantPublicKey, Bed bed) {
+    String ownerPublicKey = bed.getOwnerPublicKey();
     if (!StringUtils.isAlphanumeric(tenantPublicKey)
         || tenantPublicKey.length() != 64
         || tenantPublicKey.equals(ownerPublicKey)) {
@@ -120,8 +121,8 @@ public class BookingValidator {
     }
   }
 
-  public void validateBedPackage(String askedPackage, String uuid) {
-    BedPackage[] offeredPackages = this.bedService.getBedByUuid(uuid).getPackages();
+  public void validateBedPackage(String askedPackage, Bed bed) {
+    BedPackage[] offeredPackages = bed.getPackages();
     ArrayList<String> offeredPackagesName = new ArrayList<>();
     for (BedPackage offeredPackage : offeredPackages) {
       offeredPackagesName.add(offeredPackage.getName().toString());
@@ -132,16 +133,14 @@ public class BookingValidator {
   }
 
   public void validateIfThereIsConflictWithAnotherReservation(
-      String arrivalDate, int numberOfNightsAsked, String bedNumber) throws ParseException {
-    ArrayList<Booking> bookings =
-        BookingService.getInstance().getAllBookingsForSpecificBed(bedNumber);
+      String arrivalDate, int numberOfNightsAsked, Bed bed) throws ParseException {
+    ArrayList<Booking> bookings = bed.getAllBookings();
     LocalDate askedArrivalDate = LocalDate.parse(arrivalDate);
     LocalDate askedDepartureDate = askedArrivalDate.plusDays(numberOfNightsAsked);
     for (Booking booking : bookings) {
       LocalDate bookingArrivalDate = LocalDate.parse(booking.getArrivalDate());
       LocalDate bookingDepartureDate = LocalDate.parse(booking.calculateDepartureDate());
 
-      // La date d'arrivée ou de départ est entre les dates d'une autre réservation
       if (isAskedArrivalDateIncludedInDateRange(
               askedArrivalDate, bookingArrivalDate, bookingDepartureDate)
           || isAskedDepartureDateIncludedInDateRange(
@@ -149,7 +148,6 @@ public class BookingValidator {
         throw new BedAlreadyBookedException();
       }
 
-      // La date d'arrivée est de départ englobe une réservation
       if (isAskedArrivalDateOutsideDateRange(askedArrivalDate, bookingArrivalDate)
           && isAskedDepartureDateOutsideDateRange(askedDepartureDate, bookingDepartureDate)) {
         throw new BedAlreadyBookedException();

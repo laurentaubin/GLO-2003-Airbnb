@@ -1,6 +1,10 @@
 package bed;
 
+import bed.booking.Booking;
+import bed.booking.BookingResponse;
+import bed.booking.BookingTotalPriceCalculator;
 import exceptions.booking.BedNotFoundException;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class BedService {
@@ -32,8 +36,55 @@ public class BedService {
     return beds.get(uuid);
   }
 
+  public BedResponse getBedResponseByUuid(String uuid) {
+    Bed bed = this.getBedByUuid(uuid);
+    BedResponse bedResponse =
+        new BedResponse(
+            bed.getUuid(),
+            bed.getZipCode(),
+            bed.getBedType(),
+            bed.getCleaningFrequency(),
+            bed.getBloodTypes(),
+            bed.getCapacity(),
+            bed.getStars(),
+            bed.getPackages());
+    return bedResponse;
+  }
+
+  public BookingResponse getBookingResponseByUuid(String bedUuid, String bookingUuid) {
+    Bed bed = this.getBedByUuid(bedUuid);
+    Booking booking = bed.getBookingByUuid(bookingUuid);
+    BedPackage[] bedPackages = bed.getPackages();
+    BookingTotalPriceCalculator priceCalculator =
+        new BookingTotalPriceCalculator(bedPackages, booking);
+    BigDecimal total = priceCalculator.getTotalWithDiscount();
+    BookingResponse bookingResponse =
+        new BookingResponse(
+            booking.getArrivalDate(), booking.getNumberOfNights(), booking.getBedPackage(), total);
+    return bookingResponse;
+  }
+
   public ArrayList<Bed> getAllBeds() {
     return new ArrayList<Bed>(beds.values());
+  }
+
+  public ArrayList<BookingResponse> getAllBookingsForBed(String bedUuid) {
+    Bed bed = this.getBedByUuid(bedUuid);
+    BedPackage[] bedPackages = bed.getPackages();
+    ArrayList<BookingResponse> bookings = new ArrayList<>();
+    for (Booking booking : bed.getAllBookings()) {
+      BookingTotalPriceCalculator priceCalculator =
+          new BookingTotalPriceCalculator(bedPackages, booking);
+      BigDecimal total = priceCalculator.getTotalWithDiscount();
+      BookingResponse bookingResponse =
+          new BookingResponse(
+              booking.getArrivalDate(),
+              booking.getNumberOfNights(),
+              booking.getBedPackage(),
+              total);
+      bookings.add(bookingResponse);
+    }
+    return bookings;
   }
 
   public void removeBed(String uuid) {
@@ -67,10 +118,6 @@ public class BedService {
 
     ArrayList<Bed> beds = sortBeds(filteredBeds);
 
-    return beds;
-  }
-
-  public Map<String, Bed> getBedsMap() {
     return beds;
   }
 }

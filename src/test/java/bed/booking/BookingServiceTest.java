@@ -1,4 +1,4 @@
-package booking;
+package bed.booking;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class BookingServiceTest {
-  private booking.BookingService bookingService;
+  private bed.booking.BookingService bookingService;
   private String tenantPublicKey =
       "72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC";
   private String arrivalDate = "2020-05-21";

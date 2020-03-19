@@ -3,11 +3,17 @@ package bed;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import bed.booking.Booking;
+import bed.booking.BookingResponse;
+import bed.booking.BookingService;
+import bed.booking.BookingValidator;
+import bed.booking.JsonToBookingConverter;
 import bed.response.ErrorPostResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.BedException;
 import exceptions.bed.MinimalCapacity.InvalidMinCapacityException;
+import exceptions.booking.BedNotFoundException;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.eclipse.jetty.http.HttpStatus;
@@ -21,6 +27,10 @@ public class BedResource implements RouteGroup {
   private JsonToBedConverter jsonToBedConverter = new JsonToBedConverter();
   private ObjectMapper objectMapper = new ObjectMapper();
   private BedValidator bedValidator = new BedValidator();
+
+  private BookingService bookingService = BookingService.getInstance();
+  private JsonToBookingConverter jsonToBookingConverter = new JsonToBookingConverter();
+  private BookingValidator bookingValidator = new BookingValidator();
 
   @Override
   public void addRoutes() {
@@ -37,7 +47,7 @@ public class BedResource implements RouteGroup {
             bedService.addBed(bed, uuid);
             response.status(201);
             response.header("Location", "/beds/" + uuid);
-            return uuid;
+            return objectMapper.writeValueAsString(uuid);
           } catch (BedException e) {
             response.status(400);
             return generatePostErrorMessage(e);
@@ -45,6 +55,25 @@ public class BedResource implements RouteGroup {
         });
 
     get("/:uuid", (this::getBed));
+
+    get("/:uuid/bookings", this::getAllBookings);
+
+    get("/:uuid/bookings/:bookingUuid", this::getBooking);
+    post(
+        "/:uuid/bookings",
+        (request, response) -> {
+          try {
+            Bed bed = this.bedService.getBedByUuid(request.params(":uuid"));
+            bookingValidator.validateBooking(request.body(), bed);
+            Booking booking = jsonToBookingConverter.generateBookingFromJson(request.body());
+            String bookingUuid = bed.addBooking(booking);
+            response.status(201);
+            response.header("Location", "/beds/" + bed.getUuid() + "/bookings/" + bookingUuid);
+            return objectMapper.writeValueAsString(bookingUuid);
+          } catch (BedException e) {
+            return generatePostErrorMessage(e);
+          }
+        });
   }
 
   public Object getBed(Request request, Response response) throws JsonProcessingException {
@@ -52,9 +81,9 @@ public class BedResource implements RouteGroup {
     String uuid = request.params(":uuid");
 
     try {
-      Bed bed = this.bedService.getBedByUuid(uuid);
+      BedResponse bedResponse = this.bedService.getBedResponseByUuid(uuid);
       response.status(HttpStatus.OK_200);
-      return objectMapper.writeValueAsString(bed);
+      return objectMapper.writeValueAsString(bedResponse);
 
     } catch (BedException e) {
       response.status(404);
@@ -77,11 +106,11 @@ public class BedResource implements RouteGroup {
       Query query = new Query(packageNames, bedTypes, cleaningFrequencies, bloodTypes, minCapacity);
       ArrayList<Bed> beds = this.bedService.Get(query);
 
-      ArrayList<BedsResponse> bedsResponses = new ArrayList<BedsResponse>();
+      ArrayList<BedResponse> bedsResponses = new ArrayList<BedResponse>();
       for (Bed bed : beds) {
-        BedsResponse bedResponse =
-            new BedsResponse(
-                bed.fetchUuid(),
+        BedResponse bedResponse =
+            new BedResponse(
+                bed.getUuid(),
                 bed.getZipCode(),
                 bed.getBedType(),
                 bed.getCleaningFrequency(),
@@ -106,5 +135,33 @@ public class BedResource implements RouteGroup {
     errorPostResponse.setError(e.getError());
     errorPostResponse.setDescription(e.getDescription());
     return objectMapper.writeValueAsString(errorPostResponse);
+  }
+
+  public Object getBooking(Request request, Response response) throws JsonProcessingException {
+    try {
+      BookingResponse booking =
+          this.bedService.getBookingResponseByUuid(
+              request.params(":uuid"), request.params(":bookingUuid"));
+      response.status(200);
+      return objectMapper.writeValueAsString(booking);
+    } catch (BedException e) {
+      response.status(404);
+      return generatePostErrorMessage(e);
+    }
+  }
+
+  public Object getAllBookings(Request request, Response response) throws JsonProcessingException {
+    try {
+      ArrayList<BookingResponse> bookings =
+          this.bedService.getAllBookingsForBed(request.params(":uuid"));
+      response.status(200);
+      return objectMapper.writeValueAsString(bookings);
+    } catch (BedNotFoundException e) {
+      response.status(404);
+      return generatePostErrorMessage(e);
+    } catch (BedException e) {
+      response.status(400);
+      return generatePostErrorMessage(e);
+    }
   }
 }

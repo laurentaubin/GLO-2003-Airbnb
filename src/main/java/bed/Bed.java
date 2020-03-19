@@ -1,6 +1,11 @@
 package bed;
 
+import bed.booking.Booking;
+import exceptions.booking.BookingNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Bed {
   private String ownerPublicKey;
@@ -11,8 +16,29 @@ public class Bed {
   private int capacity;
   private BedPackage[] packages;
   private String uuid;
+  private Map<String, Booking> bookings = new HashMap<>();
 
-  public String fetchOwnerPublicKey() {
+  public Bed() {}
+
+  public Bed(
+      String ownerPublicKey,
+      String zipCode,
+      BedType bedType,
+      CleaningFrequency cleaningFrequency,
+      BloodType[] bloodTypes,
+      int capacity,
+      BedPackage[] packages) {
+
+    this.setOwnerPublicKey(ownerPublicKey);
+    this.setZipCode(zipCode);
+    this.setBedType(bedType);
+    this.setCleaningFrequency(cleaningFrequency);
+    this.setBloodTypes(bloodTypes);
+    this.setCapacity(capacity);
+    this.setPackages(packages);
+  }
+
+  public String getOwnerPublicKey() {
     return ownerPublicKey;
   }
 
@@ -104,31 +130,28 @@ public class Bed {
     }
   }
 
-  public Bed() {}
-
-  public Bed(
-      String ownerPublicKey,
-      String zipCode,
-      BedType bedType,
-      CleaningFrequency cleaningFrequency,
-      BloodType[] bloodTypes,
-      int capacity,
-      BedPackage[] packages) {
-
-    this.setOwnerPublicKey(ownerPublicKey);
-    this.setZipCode(zipCode);
-    this.setBedType(bedType);
-    this.setCleaningFrequency(cleaningFrequency);
-    this.setBloodTypes(bloodTypes);
-    this.setCapacity(capacity);
-    this.setPackages(packages);
-  }
-
-  public String fetchUuid() {
+  public String getUuid() {
     return uuid;
   }
 
   public void setUuid(String uuid) {
     this.uuid = uuid;
+  }
+
+  public String addBooking(Booking booking) {
+    String bookingUuid = UUID.randomUUID().toString();
+    bookings.put(bookingUuid, booking);
+    return bookingUuid;
+  }
+
+  public Booking getBookingByUuid(String uuid) {
+    if (!bookings.containsKey(uuid)) {
+      throw new BookingNotFoundException(uuid);
+    }
+    return bookings.get(uuid);
+  }
+
+  public ArrayList<Booking> getAllBookings() {
+    return new ArrayList<>(bookings.values());
   }
 }

@@ -1,4 +1,4 @@
-package booking;
+package bed.booking;
 
 import static org.junit.jupiter.api.Assertions.*;
 

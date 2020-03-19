@@ -1,4 +1,4 @@
-package booking;
+package bed.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -8,7 +8,7 @@ public class JsonToBookingConverter {
 
   private ObjectMapper mapper;
 
-  JsonToBookingConverter() {
+  public JsonToBookingConverter() {
     mapper = new ObjectMapper();
     SimpleModule module = new SimpleModule("BookingDeserializer");
     module.addDeserializer(Booking.class, new BookingDeserializer());

@@ -1,6 +1,6 @@
 package bed.booking;
 
-import java.text.ParseException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -9,8 +9,12 @@ public class Booking {
   private String arrivalDate;
   private Integer numberOfNights;
   private String bedPackage;
+  private BookingStatus bookingStatus;
+  private BigDecimal total;
 
-  public Booking() {}
+  public Booking() {
+    this.setBookingStatusAsBooked();
+  }
 
   public Booking(
       String tenantPublicKey, String arrivalDate, Integer numberOfNights, String bedPackage) {
@@ -19,6 +23,7 @@ public class Booking {
     this.setArrivalDate(arrivalDate);
     this.setNumberOfNights(numberOfNights);
     this.setBedPackage(bedPackage);
+    this.setBookingStatusAsBooked();
   }
 
   public void setTenantPublicKey(String tenantPublicKey) {
@@ -53,9 +58,29 @@ public class Booking {
     return bedPackage;
   }
 
-  public String calculateDepartureDate() throws ParseException {
+  public String calculateDepartureDate() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     LocalDate localDate = LocalDate.parse(this.arrivalDate);
     return localDate.plusDays(this.numberOfNights).format(formatter);
+  }
+
+  public String getBookingStatus() {
+    return this.bookingStatus.getLabel();
+  }
+
+  public void setBookingStatusAsBooked() {
+    this.bookingStatus = BookingStatus.BOOKED;
+  }
+
+  public void cancelBooking() {
+    this.bookingStatus = BookingStatus.CANCELED;
+  }
+
+  public BigDecimal getTotal() {
+    return this.total;
+  }
+
+  public void setTotal(BigDecimal total) {
+    this.total = total;
   }
 }

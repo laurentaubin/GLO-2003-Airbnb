@@ -2,6 +2,8 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import bed.booking.Booking;
+import bed.booking.BookingStatus;
 import bed.booking.exception.BedNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +24,20 @@ class BedServiceTest {
       new BedPackage[] {
         new BedPackage(PackageName.BLOOD_THIRSTY, 12.5), new BedPackage(PackageName.SWEET_TOOTH, 6)
       };
+  private Bed bed;
+  private String bedUuid = UUID.randomUUID().toString();
 
   @BeforeEach
   void setUp() {
-    this.bedService.clearAllBeds();
+    this.bed =
+        new Bed(
+            this.ownerPublicKey,
+            this.zipCode,
+            this.bedType,
+            this.cleaningFrequency,
+            this.bloodTypes,
+            this.capacity,
+            this.packages);
   }
 
   @AfterEach
@@ -122,6 +134,15 @@ class BedServiceTest {
     }
   }
 
+  private Booking createBooking() {
+    Booking booking = new Booking();
+    booking.setNumberOfNights(3);
+    booking.setArrivalDate("2021-05-21");
+    booking.setTenantPublicKey("72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC");
+    booking.setBedPackage("allYouCanDrink");
+    return booking;
+  }
+
   @Test
   void sortBeds_whenMultipleBeds_shouldBeSortedInDescendingStarsOrder() {
     createBeds();
@@ -213,69 +234,25 @@ class BedServiceTest {
 
   @Test
   void addBed_whenCreatingOneValidBed_shouldAddOneBedToHashMap() {
-    Bed bed =
-        new Bed(
-            this.ownerPublicKey,
-            this.zipCode,
-            this.bedType,
-            this.cleaningFrequency,
-            this.bloodTypes,
-            this.capacity,
-            this.packages);
-    String uuid = UUID.randomUUID().toString();
-    bed.setUuid(uuid);
-    this.bedService.addBed(bed, uuid);
+    this.bedService.addBed(this.bed, this.bedUuid);
     assertEquals(1, bedService.getTotalNumberOfBeds());
   }
 
   @Test
   void addBed_whenCreatingOneValidBed_shouldBeEqualToFirstIndexOfGetAllBeds() {
-    Bed bed =
-        new Bed(
-            this.ownerPublicKey,
-            this.zipCode,
-            this.bedType,
-            this.cleaningFrequency,
-            this.bloodTypes,
-            this.capacity,
-            this.packages);
-    String uuid = UUID.randomUUID().toString();
-    bed.setUuid(uuid);
-    this.bedService.addBed(bed, uuid);
+    this.bedService.addBed(this.bed, this.bedUuid);
     assertEquals(bed, this.bedService.getAllBeds().get(0));
   }
 
   @Test
   void getBedByUuid_whenGettingBedWithValidUuid_shouldEqualSameBed() {
-    Bed bed =
-        new Bed(
-            this.ownerPublicKey,
-            this.zipCode,
-            this.bedType,
-            this.cleaningFrequency,
-            this.bloodTypes,
-            this.capacity,
-            this.packages);
-    String uuid = UUID.randomUUID().toString();
-    bed.setUuid(uuid);
-    this.bedService.addBed(bed, uuid);
-    assertEquals(bed, this.bedService.getBedByUuid(uuid));
+    this.bedService.addBed(this.bed, this.bedUuid);
+    assertEquals(bed, this.bedService.getBedByUuid(this.bedUuid));
   }
 
   @Test
   void getBedByUuid_whenGettingBedWithInvalidUuid_shouldThrow() {
-    Bed bed =
-        new Bed(
-            this.ownerPublicKey,
-            this.zipCode,
-            this.bedType,
-            this.cleaningFrequency,
-            this.bloodTypes,
-            this.capacity,
-            this.packages);
-    String uuid = UUID.randomUUID().toString();
-    bed.setUuid(uuid);
-    this.bedService.addBed(bed, uuid);
+    this.bedService.addBed(this.bed, this.bedUuid);
     String invalidUuid = "";
     assertThrows(BedNotFoundException.class, () -> this.bedService.getBedByUuid(invalidUuid));
   }
@@ -283,20 +260,19 @@ class BedServiceTest {
   @Test
   void removeBed_whenGivingValidUUID_shouldWork() {
     assertEquals(0, bedService.getTotalNumberOfBeds());
-    Bed bed =
-        new Bed(
-            this.ownerPublicKey,
-            this.zipCode,
-            this.bedType,
-            this.cleaningFrequency,
-            this.bloodTypes,
-            this.capacity,
-            this.packages);
-    String uuid = UUID.randomUUID().toString();
-    bed.setUuid(uuid);
-    this.bedService.addBed(bed, uuid);
+    this.bedService.addBed(this.bed, this.bedUuid);
     assertEquals(1, bedService.getTotalNumberOfBeds());
-    bedService.removeBed(uuid);
+    bedService.removeBed(this.bedUuid);
     assertEquals(0, bedService.getTotalNumberOfBeds());
+  }
+
+  @Test
+  void cancelBooking_whenBookingExist_shouldSetTheBookingStatusAsCanceled() {
+    Booking booking = createBooking();
+    String bookingUuid = this.bed.addBooking(booking);
+    this.bed.cancelBooking(bookingUuid);
+    assertEquals(
+        BookingStatus.CANCELED.getLabel(),
+        this.bed.getBookingByUuid(bookingUuid).getBookingStatus());
   }
 }

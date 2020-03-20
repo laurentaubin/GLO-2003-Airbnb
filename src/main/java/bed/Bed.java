@@ -162,4 +162,8 @@ public class Bed {
   public void setLodgingMode(LodgingMode lodgingMode) {
     this.lodgingMode = lodgingMode;
   }
+
+  public void cancelBooking(String bookingUuid) {
+    this.getBookingByUuid(bookingUuid).cancelBooking();
+  }
 }

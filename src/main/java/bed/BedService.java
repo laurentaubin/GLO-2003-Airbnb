@@ -2,9 +2,7 @@ package bed;
 
 import bed.booking.Booking;
 import bed.booking.BookingResponse;
-import bed.booking.BookingTotalPriceCalculator;
 import bed.booking.exception.BedNotFoundException;
-import java.math.BigDecimal;
 import java.util.*;
 
 public class BedService {
@@ -29,7 +27,7 @@ public class BedService {
     return beds.size();
   }
 
-  public Bed getBedByUuid(String uuid) throws BedNotFoundException {
+  public Bed getBedByUuid(String uuid) {
     if (!beds.containsKey(uuid)) {
       throw new BedNotFoundException(uuid);
     }
@@ -51,16 +49,15 @@ public class BedService {
     return bedResponse;
   }
 
+  public Booking getBookingByUuid(String bedUuid, String bookingUuid) {
+    Bed bed = this.getBedByUuid(bedUuid);
+    return bed.getBookingByUuid(bookingUuid);
+  }
+
   public BookingResponse getBookingResponseByUuid(String bedUuid, String bookingUuid) {
     Bed bed = this.getBedByUuid(bedUuid);
     Booking booking = bed.getBookingByUuid(bookingUuid);
-    BedPackage[] bedPackages = bed.getPackages();
-    BookingTotalPriceCalculator priceCalculator =
-        new BookingTotalPriceCalculator(bedPackages, booking);
-    BigDecimal total = priceCalculator.getTotalWithDiscount();
-    BookingResponse bookingResponse =
-        new BookingResponse(
-            booking.getArrivalDate(), booking.getNumberOfNights(), booking.getBedPackage(), total);
+    BookingResponse bookingResponse = new BookingResponse(booking);
     return bookingResponse;
   }
 
@@ -70,18 +67,9 @@ public class BedService {
 
   public ArrayList<BookingResponse> getAllBookingsForBed(String bedUuid) {
     Bed bed = this.getBedByUuid(bedUuid);
-    BedPackage[] bedPackages = bed.getPackages();
     ArrayList<BookingResponse> bookings = new ArrayList<>();
     for (Booking booking : bed.getAllBookings()) {
-      BookingTotalPriceCalculator priceCalculator =
-          new BookingTotalPriceCalculator(bedPackages, booking);
-      BigDecimal total = priceCalculator.getTotalWithDiscount();
-      BookingResponse bookingResponse =
-          new BookingResponse(
-              booking.getArrivalDate(),
-              booking.getNumberOfNights(),
-              booking.getBedPackage(),
-              total);
+      BookingResponse bookingResponse = new BookingResponse(booking);
       bookings.add(bookingResponse);
     }
     return bookings;
@@ -119,5 +107,12 @@ public class BedService {
     ArrayList<Bed> beds = sortBeds(filteredBeds);
 
     return beds;
+  }
+
+  public void cancelBooking(String bedUuid, String bookingUuid) {
+    Booking bookingToCancel = getBookingByUuid(bedUuid, bookingUuid);
+    CancelationValidator validator = new CancelationValidator();
+    validator.validateCancelation(bookingToCancel);
+    bookingToCancel.cancelBooking();
   }
 }

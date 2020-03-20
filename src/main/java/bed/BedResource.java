@@ -5,9 +5,10 @@ import static spark.Spark.post;
 
 import bed.booking.Booking;
 import bed.booking.BookingResponse;
-import bed.booking.BookingService;
+import bed.booking.BookingTotalPriceCalculator;
 import bed.booking.BookingValidator;
 import bed.booking.JsonToBookingConverter;
+import bed.booking.exception.BedNotFoundException;
 import bed.booking.exception.BookingNotFoundException;
 import bed.exception.InvalidMinCapacityException;
 import bed.response.ErrorPostResponse;
@@ -26,8 +27,6 @@ public class BedResource implements RouteGroup {
   private JsonToBedConverter jsonToBedConverter = new JsonToBedConverter();
   private ObjectMapper objectMapper = new ObjectMapper();
   private BedValidator bedValidator = new BedValidator();
-
-  private BookingService bookingService = BookingService.getInstance();
   private JsonToBookingConverter jsonToBookingConverter = new JsonToBookingConverter();
   private BookingValidator bookingValidator = new BookingValidator();
 
@@ -53,11 +52,11 @@ public class BedResource implements RouteGroup {
           }
         });
 
-    get("/:uuid", (this::getBed));
+    get("/:uuid", (this::getBed), this.objectMapper::writeValueAsString);
 
-    get("/:uuid/bookings", this::getAllBookings);
+    get("/:uuid/bookings", this::getAllBookings, this.objectMapper::writeValueAsString);
 
-    get("/:uuid/bookings/:bookingUuid", this::getBooking);
+    get("/:uuid/bookings/:bookingUuid", this::getBooking, this.objectMapper::writeValueAsString);
     post(
         "/:uuid/bookings",
         (request, response) -> {
@@ -65,14 +64,38 @@ public class BedResource implements RouteGroup {
             Bed bed = this.bedService.getBedByUuid(request.params(":uuid"));
             bookingValidator.validateBooking(request.body(), bed);
             Booking booking = jsonToBookingConverter.generateBookingFromJson(request.body());
+            BookingTotalPriceCalculator calculator =
+                new BookingTotalPriceCalculator(bed.getPackages(), booking);
+            booking.setTotal(calculator.getTotalWithDiscount());
             String bookingUuid = bed.addBooking(booking);
             response.status(201);
             response.header("Location", "/beds/" + bed.getUuid() + "/bookings/" + bookingUuid);
-            return objectMapper.writeValueAsString(bookingUuid);
+            return bookingUuid;
           } catch (AirbnbException e) {
             return generatePostErrorMessage(e);
           }
         });
+
+    post(
+        "/:uuid/bookings/:bookingUuid/cancel",
+        ((request, response) -> {
+          try {
+            System.out.println("\n\n\n BOOKING IS BEING CANCELED \n\n\n");
+            String bedUuid = request.params(":uuid");
+            String bookingUuid = request.params(":bookingUuid");
+            this.bedService.cancelBooking(bedUuid, bookingUuid);
+            return "Booking " + bookingUuid + " has been canceled";
+          } catch (BedNotFoundException e) {
+            response.status(404);
+            return generatePostErrorMessage(e);
+          } catch (BookingNotFoundException e) {
+            response.status(404);
+            return generatePostErrorMessage(e);
+          } catch (AirbnbException e) {
+            response.status(400);
+            return generatePostErrorMessage(e);
+          }
+        }));
   }
 
   public Object getBed(Request request, Response response) throws JsonProcessingException {
@@ -82,7 +105,7 @@ public class BedResource implements RouteGroup {
     try {
       BedResponse bedResponse = this.bedService.getBedResponseByUuid(uuid);
       response.status(HttpStatus.OK_200);
-      return objectMapper.writeValueAsString(bedResponse);
+      return bedResponse;
 
     } catch (AirbnbException e) {
       response.status(404);
@@ -121,7 +144,7 @@ public class BedResource implements RouteGroup {
       }
 
       response.status(HttpStatus.OK_200);
-      return objectMapper.writeValueAsString(bedsResponses);
+      return bedsResponses;
 
     } catch (AirbnbException e) {
       response.status(400);
@@ -129,32 +152,32 @@ public class BedResource implements RouteGroup {
     }
   }
 
-  private String generatePostErrorMessage(AirbnbException e) throws JsonProcessingException {
+  private ErrorPostResponse generatePostErrorMessage(AirbnbException e) {
     ErrorPostResponse errorPostResponse = new ErrorPostResponse();
     errorPostResponse.setError(e.getError());
     errorPostResponse.setDescription(e.getDescription());
-    return objectMapper.writeValueAsString(errorPostResponse);
+    return errorPostResponse;
   }
 
-  public Object getBooking(Request request, Response response) throws JsonProcessingException {
+  public Object getBooking(Request request, Response response) {
     try {
       BookingResponse booking =
           this.bedService.getBookingResponseByUuid(
               request.params(":uuid"), request.params(":bookingUuid"));
       response.status(200);
-      return objectMapper.writeValueAsString(booking);
+      return booking;
     } catch (AirbnbException e) {
       response.status(404);
       return generatePostErrorMessage(e);
     }
   }
 
-  public Object getAllBookings(Request request, Response response) throws JsonProcessingException {
+  public Object getAllBookings(Request request, Response response) {
     try {
       ArrayList<BookingResponse> bookings =
           this.bedService.getAllBookingsForBed(request.params(":uuid"));
       response.status(200);
-      return objectMapper.writeValueAsString(bookings);
+      return bookings;
     } catch (BookingNotFoundException e) {
       response.status(404);
       return generatePostErrorMessage(e);

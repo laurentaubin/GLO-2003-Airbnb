@@ -2,7 +2,6 @@ package bed.booking;
 
 import bed.Bed;
 import bed.BedPackage;
-import bed.BedService;
 import bed.booking.exception.BedAlreadyBookedException;
 import bed.booking.exception.InvalidArrivalDateException;
 import bed.booking.exception.InvalidBookingPackageException;
@@ -22,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.GenericValidator;
 
 public class BookingValidator {
-  private BedService bedService = BedService.getInstance();
   private ObjectMapper mapper = new ObjectMapper();
   private String TENANT_PUBLIC_KEY = "tenantPublicKey";
   private String ARRIVAL_DATE = "arrivalDate";
@@ -164,7 +162,6 @@ public class BookingValidator {
         throw new BedAlreadyBookedException();
       }
 
-      // La date d'arrivée et de départ sont les mêmes qu'une autre réservation
       if (isAskedArrivalDateTheSameAsOtherArrivalDate(askedArrivalDate, bookingArrivalDate)
           && isAskedDepartureTheSameAsOtherDepartureDate(
               askedDepartureDate, bookingDepartureDate)) {

@@ -17,8 +17,11 @@ public class Bed {
   private BedPackage[] packages;
   private String uuid;
   private Map<String, Booking> bookings = new HashMap<>();
+  private LodgingMode lodgingMode;
 
-  public Bed() {}
+  public Bed() {
+    this.setLodgingMode(LodgingMode.PRIVATE);
+  }
 
   public Bed(
       String ownerPublicKey,
@@ -36,6 +39,7 @@ public class Bed {
     this.setBloodTypes(bloodTypes);
     this.setCapacity(capacity);
     this.setPackages(packages);
+    this.setLodgingMode(LodgingMode.PRIVATE);
   }
 
   public String getOwnerPublicKey() {
@@ -153,5 +157,13 @@ public class Bed {
 
   public ArrayList<Booking> getAllBookings() {
     return new ArrayList<>(bookings.values());
+  }
+
+  public LodgingMode getLodgingMode() {
+    return lodgingMode;
+  }
+
+  public void setLodgingMode(LodgingMode lodgingMode) {
+    this.lodgingMode = lodgingMode;
   }
 }

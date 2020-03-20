@@ -115,22 +115,18 @@ public class Bed {
   }
 
   public int getStars() {
-    try {
-      double globalScore =
-          this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
-      if (0 <= globalScore && globalScore < 100) {
-        return 1;
-      } else if (100 <= globalScore && globalScore < 187.5) {
-        return 2;
-      } else if (187.5 <= globalScore && globalScore < 300) {
-        return 3;
-      } else if (300 <= globalScore && globalScore < 500) {
-        return 4;
-      } else {
-        return 5;
-      }
-    } catch (Exception e) {
-      return -1;
+    double globalScore =
+        this.cleaningFrequency.getScore() * this.bedType.getScore() * getGlobalBloodTypeScore();
+    if (0 <= globalScore && globalScore < 100) {
+      return 1;
+    } else if (100 <= globalScore && globalScore < 187.5) {
+      return 2;
+    } else if (187.5 <= globalScore && globalScore < 300) {
+      return 3;
+    } else if (300 <= globalScore && globalScore < 500) {
+      return 4;
+    } else {
+      return 5;
     }
   }
 

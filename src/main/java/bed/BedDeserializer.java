@@ -17,21 +17,16 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
     JsonNode bedNode;
 
     bedNode = parser.getCodec().readTree(parser);
-    Bed bed = new Bed();
 
-    bed.setOwnerPublicKey(bedNode.get("ownerPublicKey").textValue());
-    bed.setZipCode(bedNode.get("zipCode").textValue());
-    bed.setBedType(BedType.valueOfLabel(bedNode.get("bedType").textValue()));
-    bed.setCleaningFrequency(
-        CleaningFrequency.valueOfLabel(bedNode.get("cleaningFrequency").textValue()));
-    bed.setCapacity(bedNode.get("capacity").asInt());
-
-    BloodType[] bloodTypes = getBedBloodTypes(bedNode.get("bloodTypes"));
-    bed.setBloodTypes(bloodTypes);
-
-    BedPackage[] bedPackages;
-    bedPackages = getBedPackages(bedNode.get("packages"));
-    bed.setPackages(bedPackages);
+    Bed bed =
+        new Bed(
+            bedNode.get("ownerPublicKey").textValue(),
+            bedNode.get("zipCode").textValue(),
+            BedType.valueOfLabel(bedNode.get("bedType").textValue()),
+            CleaningFrequency.valueOfLabel(bedNode.get("cleaningFrequency").textValue()),
+            getBedBloodTypes(bedNode.get("bloodTypes")),
+            bedNode.get("capacity").asInt(),
+            getBedPackages(bedNode.get("packages")));
 
     return bed;
   }

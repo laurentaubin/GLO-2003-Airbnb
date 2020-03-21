@@ -19,10 +19,6 @@ public class Bed {
   private Map<String, Booking> bookings = new HashMap<>();
   private LodgingMode lodgingMode;
 
-  public Bed() {
-    this.setLodgingMode(LodgingMode.PRIVATE);
-  }
-
   public Bed(
       String ownerPublicKey,
       String zipCode,

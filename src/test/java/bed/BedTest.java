@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class BedTest {
 
   @Test
-  void creatingBed_withValidParameters_shouldNotThrow() throws Exception {
+  void creatingBed_withValidParameters_shouldNotThrow() {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     String zipCode = "12345";
     BedType bedType = BedType.LATEX;
@@ -33,7 +33,7 @@ public class BedTest {
   }
 
   @Test
-  void gettingStarRating_withValidParameters_shouldNotThrow() throws Exception {
+  void gettingStarRating_withValidParameters_shouldNotThrow() {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     String zipCode = "12345";
     BedType bedType = BedType.LATEX;
@@ -53,7 +53,7 @@ public class BedTest {
   }
 
   @Test
-  void gettingMaxStarRating_withValidParameters_shouldNotThrow() throws Exception {
+  void gettingMaxStarRating_withValidParameters_shouldNotThrow() {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     String zipCode = "12345";
     BedType bedType = BedType.SPRINGS;
@@ -73,7 +73,7 @@ public class BedTest {
   }
 
   @Test
-  void gettingMinStarRating_withValidParameters_shouldNotThrow() throws Exception {
+  void gettingMinStarRating_withValidParameters_shouldNotThrow() {
     String ownerPublicKey = "8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E";
     String zipCode = "12345";
     BedType bedType = BedType.LATEX;

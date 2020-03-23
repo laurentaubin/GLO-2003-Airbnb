@@ -139,7 +139,8 @@ public class BedResource implements RouteGroup {
                 bed.getBloodTypes(),
                 bed.getCapacity(),
                 bed.getStars(),
-                bed.getPackages());
+                bed.getPackages(),
+                bed.getLodgingMode());
         bedsResponses.add(bedResponse);
       }
 

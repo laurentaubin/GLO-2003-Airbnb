@@ -2,16 +2,7 @@ package bed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import bed.exception.ExceedingAccommodationCapacityException;
-import bed.exception.InvalidAllYouCanDrinkException;
-import bed.exception.InvalidBedTypeException;
-import bed.exception.InvalidBloodTypeException;
-import bed.exception.InvalidCapacityException;
-import bed.exception.InvalidCleaningFrequencyException;
-import bed.exception.InvalidOwnerKeyException;
-import bed.exception.InvalidPackageNameException;
-import bed.exception.InvalidSweetToothPackageException;
-import bed.exception.InvalidZipCodeException;
+import bed.exception.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +31,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertDoesNotThrow(() -> bedValidator.validateBed(jsonString));
   }
@@ -56,7 +48,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidOwnerKeyException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -73,7 +66,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidOwnerKeyException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -89,7 +83,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidZipCodeException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -106,7 +101,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidZipCodeException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -122,7 +118,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidBedTypeException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -139,7 +136,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidBedTypeException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -155,7 +153,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(
         InvalidCleaningFrequencyException.class, () -> bedValidator.validateBed(jsonString));
@@ -173,7 +172,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(
         InvalidCleaningFrequencyException.class, () -> bedValidator.validateBed(jsonString));
@@ -190,7 +190,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidBloodTypeException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -207,7 +208,8 @@ public class BedValidatorTest {
             + "\"capacity\": 1,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidBloodTypeException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -223,7 +225,8 @@ public class BedValidatorTest {
             + "\"bloodTypes\": [\"O-\", \"O+\"],"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidCapacityException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -240,7 +243,8 @@ public class BedValidatorTest {
             + "\"capacity\": null,"
             + "\"packages\": ["
             + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
-            + "]"
+            + "],"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidCapacityException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -254,7 +258,8 @@ public class BedValidatorTest {
             + "\"bedType\": \"springs\", "
             + "\"cleaningFrequency\": \"annual\", "
             + "\"bloodTypes\": [\"O-\", \"O+\"],"
-            + "\"capacity\": 1"
+            + "\"capacity\": 1,"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidPackageNameException.class, () -> bedValidator.validateBed(jsonString));
   }
@@ -269,9 +274,47 @@ public class BedValidatorTest {
             + "\"cleaningFrequency\": \"annual\", "
             + "\"bloodTypes\": [\"O-\", \"O+\"],"
             + "\"capacity\": 1,"
-            + "\"packages\": null"
+            + "\"packages\": null,"
+            + "\"lodgingMode\": \"cohabitation\""
             + "}";
     assertThrows(InvalidPackageNameException.class, () -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenLodgingModeIsMissing_shouldNotThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "]"
+            + "}";
+
+    assertDoesNotThrow(() -> bedValidator.validateBed(jsonString));
+  }
+
+  @Test
+  void validateBed_whenLodgingModeIsEmpty_shouldThrow() {
+    jsonString =
+        "{"
+            + "\"ownerPublicKey\": \"8F0436A6FB0AA49085B7F19AB73933973BF216276F2EC7D122AC110BB46A3A4E\","
+            + "\"zipCode\": \"12345\","
+            + "\"bedType\": \"springs\", "
+            + "\"cleaningFrequency\": \"annual\", "
+            + "\"bloodTypes\": [\"O-\", \"O+\"],"
+            + "\"capacity\": 1,"
+            + "\"packages\": ["
+            + "{ \"name\": \"bloodthirsty\", \"pricePerNight\": 12.25}"
+            + "],"
+            + "\"lodgingMode\": \"\""
+            + "}";
+
+    assertThrows(InvalidLodgingModeException.class, () -> bedValidator.validateBed(jsonString));
   }
 
   @Test
@@ -550,5 +593,22 @@ public class BedValidatorTest {
     JsonNode packagesNode = mapper.readTree(packages).get("packages");
     assertThrows(
         InvalidPackageNameException.class, () -> bedValidator.validateBedPackages(packagesNode));
+  }
+
+  @Test
+  void validateLodgingMode_whenProvidingValidLodgingMode_shouldNotThrow()
+      throws JsonProcessingException {
+    String lodgingModeString = "{\"lodgingMode\": \"cohabitation\"}";
+    String lodgingMode = mapper.readTree(lodgingModeString).get("lodgingMode").textValue();
+    assertDoesNotThrow(() -> bedValidator.validateLodgingMode(lodgingMode));
+  }
+
+  @Test
+  void validateLodgingMode_whenProvidingInvalidLodgingMode_shouldThrow()
+      throws JsonProcessingException {
+    String lodgingModeString = "{\"lodgingMode\": \"partyOfTwo\"}";
+    String lodgingMode = mapper.readTree(lodgingModeString).get("lodgingMode").textValue();
+    assertThrows(
+        InvalidLodgingModeException.class, () -> bedValidator.validateLodgingMode(lodgingMode));
   }
 }

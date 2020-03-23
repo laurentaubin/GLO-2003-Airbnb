@@ -1,15 +1,6 @@
 package bed;
 
-import bed.exception.ExceedingAccommodationCapacityException;
-import bed.exception.InvalidAllYouCanDrinkException;
-import bed.exception.InvalidBedTypeException;
-import bed.exception.InvalidBloodTypeException;
-import bed.exception.InvalidCapacityException;
-import bed.exception.InvalidCleaningFrequencyException;
-import bed.exception.InvalidOwnerKeyException;
-import bed.exception.InvalidPackageNameException;
-import bed.exception.InvalidSweetToothPackageException;
-import bed.exception.InvalidZipCodeException;
+import bed.exception.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +21,7 @@ public class BedValidator {
   private final String PACKAGES = "packages";
   private final String NAME = "name";
   private final String PRICE_PER_NIGHT = "pricePerNight";
+  private final String LODGING_MODE = "lodgingMode";
 
   public BedValidator() {}
 
@@ -69,6 +61,13 @@ public class BedValidator {
       throw new InvalidPackageNameException();
     } else {
       validateBedPackages(bedNode.get(PACKAGES));
+    }
+    if (bedNode.has(LODGING_MODE)) {
+      if (bedNode.get(LODGING_MODE).isNull()) {
+        throw new InvalidLodgingModeException();
+      } else {
+        validateLodgingMode(bedNode.get(LODGING_MODE).textValue());
+      }
     }
   }
 
@@ -152,6 +151,10 @@ public class BedValidator {
         throw new InvalidPackageNameException();
       }
     }
+  }
+
+  public void validateLodgingMode(String lodgingMode) {
+    LodgingMode.valueOfLabel(lodgingMode);
   }
 
   private boolean doesPricePerNightHaveMoreThanTwoDecimals(String pricePerNightAsString) {

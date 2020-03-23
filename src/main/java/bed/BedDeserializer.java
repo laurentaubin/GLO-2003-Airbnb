@@ -18,17 +18,37 @@ public class BedDeserializer extends JsonDeserializer<Bed> {
 
     bedNode = parser.getCodec().readTree(parser);
 
-    Bed bed =
-        new Bed(
-            bedNode.get("ownerPublicKey").textValue(),
-            bedNode.get("zipCode").textValue(),
-            BedType.valueOfLabel(bedNode.get("bedType").textValue()),
-            CleaningFrequency.valueOfLabel(bedNode.get("cleaningFrequency").textValue()),
-            getBedBloodTypes(bedNode.get("bloodTypes")),
-            bedNode.get("capacity").asInt(),
-            getBedPackages(bedNode.get("packages")));
+    Bed bed;
 
+    if (bedNode.has("lodgingMode")) {
+      bed = createBedWithLodgingMode(bedNode);
+    } else {
+      bed = createBedWithoutLodgingMode(bedNode);
+    }
     return bed;
+  }
+
+  private Bed createBedWithLodgingMode(JsonNode bedNode) {
+    return new Bed(
+        bedNode.get("ownerPublicKey").textValue(),
+        bedNode.get("zipCode").textValue(),
+        BedType.valueOfLabel(bedNode.get("bedType").textValue()),
+        CleaningFrequency.valueOfLabel(bedNode.get("cleaningFrequency").textValue()),
+        getBedBloodTypes(bedNode.get("bloodTypes")),
+        bedNode.get("capacity").asInt(),
+        getBedPackages(bedNode.get("packages")),
+        LodgingMode.valueOfLabel(bedNode.get("lodgingMode").textValue()));
+  }
+
+  private Bed createBedWithoutLodgingMode(JsonNode bedNode) {
+    return new Bed(
+        bedNode.get("ownerPublicKey").textValue(),
+        bedNode.get("zipCode").textValue(),
+        BedType.valueOfLabel(bedNode.get("bedType").textValue()),
+        CleaningFrequency.valueOfLabel(bedNode.get("cleaningFrequency").textValue()),
+        getBedBloodTypes(bedNode.get("bloodTypes")),
+        bedNode.get("capacity").asInt(),
+        getBedPackages(bedNode.get("packages")));
   }
 
   private BloodType[] getBedBloodTypes(JsonNode bloodTypesNode) {

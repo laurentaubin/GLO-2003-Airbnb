@@ -38,6 +38,26 @@ public class Bed {
     this.setLodgingMode(LodgingMode.PRIVATE);
   }
 
+  public Bed(
+      String ownerPublicKey,
+      String zipCode,
+      BedType bedType,
+      CleaningFrequency cleaningFrequency,
+      BloodType[] bloodTypes,
+      int capacity,
+      BedPackage[] packages,
+      LodgingMode lodgingMode) {
+
+    this.setOwnerPublicKey(ownerPublicKey);
+    this.setZipCode(zipCode);
+    this.setBedType(bedType);
+    this.setCleaningFrequency(cleaningFrequency);
+    this.setBloodTypes(bloodTypes);
+    this.setCapacity(capacity);
+    this.setPackages(packages);
+    this.setLodgingMode(lodgingMode);
+  }
+
   public String getOwnerPublicKey() {
     return ownerPublicKey;
   }

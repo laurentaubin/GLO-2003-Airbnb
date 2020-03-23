@@ -9,6 +9,7 @@ public class BedResponse {
   private int capacity;
   private BedPackage[] packages;
   private int stars;
+  private LodgingMode lodgingMode;
 
   public BedResponse(
       String bedNumber,
@@ -18,7 +19,8 @@ public class BedResponse {
       BloodType[] bloodTypes,
       int capacity,
       int stars,
-      BedPackage[] packages) {
+      BedPackage[] packages,
+      LodgingMode lodgingMode) {
     this.bedNumber = bedNumber;
     this.zipCode = zipCode;
     this.bedType = bedType;
@@ -27,6 +29,7 @@ public class BedResponse {
     this.capacity = capacity;
     this.stars = stars;
     this.packages = packages;
+    this.lodgingMode = lodgingMode;
   }
 
   public CleaningFrequency getCleaningFrequency() {
@@ -59,5 +62,9 @@ public class BedResponse {
 
   public String getZipCode() {
     return zipCode;
+  }
+
+  public LodgingMode getLodgingMode() {
+    return lodgingMode;
   }
 }

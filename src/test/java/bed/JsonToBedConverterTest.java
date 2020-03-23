@@ -22,7 +22,14 @@ class JsonToBedConverterTest {
   private Bed expectedBed =
       new Bed(ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
   private String bedJson =
-      "{\"ownerPublicKey\": \"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\", \"zipCode\": \"12345\", \"bedType\": \"latex\", \"cleaningFrequency\": \"annual\" , \"bloodTypes\": [\"O-\", \"AB+\"], \"capacity\": 234, \"packages\": [{\"name\": \"bloodthirsty\", \"pricePerNight\": 12.50}, {\"name\": \"sweetTooth\", \"pricePerNight\": 6}]}";
+      "{\"ownerPublicKey\": \"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\", "
+          + "\"zipCode\": \"12345\", "
+          + "\"bedType\": \"latex\", "
+          + "\"cleaningFrequency\": \"annual\" ,"
+          + "\"bloodTypes\": [\"O-\", \"AB+\"], "
+          + "\"capacity\": 234, "
+          + "\"packages\": [{\"name\": \"bloodthirsty\", \"pricePerNight\": 12.50}, {\"name\": \"sweetTooth\", \"pricePerNight\": 6}], "
+          + "\"lodgingMode\": \"cohabitation\"}";
 
   @Test
   void deserializeBed_withValidJson_shouldEqualPublicKey() throws IOException {
@@ -78,6 +85,12 @@ class JsonToBedConverterTest {
     Bed actualBed = this.jsonToBedConverter.generateBedFromJson(bedJson);
 
     assertArrayEquals(expectedBed.getPackages(), actualBed.getPackages());
+  }
+
+  @Test
+  void deserializeBed_withValidJson_shouldEqualLodgingMode() throws IOException {
+    Bed actualBed = this.jsonToBedConverter.generateBedFromJson(bedJson);
+    assertEquals(actualBed.getLodgingMode(), LodgingMode.COHABITATION);
   }
 
   @Test

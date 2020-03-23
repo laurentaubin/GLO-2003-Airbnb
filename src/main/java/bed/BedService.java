@@ -45,7 +45,8 @@ public class BedService {
             bed.getBloodTypes(),
             bed.getCapacity(),
             bed.getStars(),
-            bed.getPackages());
+            bed.getPackages(),
+            bed.getLodgingMode());
     return bedResponse;
   }
 

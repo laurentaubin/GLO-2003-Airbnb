@@ -146,7 +146,7 @@ class BedServiceTest {
   @Test
   void sortBeds_whenMultipleBeds_shouldBeSortedInDescendingStarsOrder() {
     createBeds();
-    Query query = new Query("empty", "empty", "empty", "empty", "0");
+    Query query = new Query("empty", "empty", "empty", "empty", "0", "empty");
 
     ArrayList<Bed> sortedBeds = this.bedService.Get(query);
 
@@ -158,7 +158,7 @@ class BedServiceTest {
 
   @Test
   void filterBeds_whenNoBedWasAdded_shouldEqualEmptyArrayList() {
-    Query query = new Query("empty", "empty", "empty", "empty", "0");
+    Query query = new Query("empty", "empty", "empty", "empty", "0", "empty");
     assertEquals(this.bedService.Get(query), new ArrayList<Bed>());
   }
 
@@ -166,7 +166,7 @@ class BedServiceTest {
   void filterBeds_parametersForEach_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("allYouCanDrink", "memoryFoam", "never", "O+,A-,B+", "350");
+    Query query = new Query("allYouCanDrink", "memoryFoam", "never", "O+,A-,B+", "350", "private");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     assertEquals(filteredBeds.size(), 1);
@@ -177,13 +177,14 @@ class BedServiceTest {
     assertTrue(Arrays.asList(filteredBeds.get(0).getBloodTypes()).contains(BloodType.A_NEG));
     assertTrue(Arrays.asList(filteredBeds.get(0).getBloodTypes()).contains(BloodType.B_POS));
     assertTrue(filteredBeds.get(0).getCapacity() >= 350);
+    assertEquals(filteredBeds.get(0).getLodgingMode(), LodgingMode.PRIVATE);
   }
 
   @Test
   void filterBeds_parameters1_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("empty", "memoryFoam", "empty", "empty", "0");
+    Query query = new Query("empty", "memoryFoam", "empty", "empty", "0", "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -196,7 +197,7 @@ class BedServiceTest {
   void filterBeds_parameters2_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("sweetTooth", "springs", "empty", "O-", "0");
+    Query query = new Query("sweetTooth", "springs", "empty", "O-", "0", "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -211,7 +212,7 @@ class BedServiceTest {
   void filterBeds_parameters3_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("empty", "empty", "never", "empty", "400");
+    Query query = new Query("empty", "empty", "never", "empty", "400", "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -223,7 +224,7 @@ class BedServiceTest {
 
   @Test
   void filterBeds_noParameters_shouldReturnAllBeds() {
-    Query query = new Query("empty", "empty", "empty", "empty", "0");
+    Query query = new Query("empty", "empty", "empty", "empty", "0", "empty");
     assertEquals(this.bedService.Get(query), this.bedService.getAllBeds());
   }
 

@@ -102,7 +102,8 @@ public class BedService {
           && (Arrays.asList(bed.getBloodTypes()).containsAll(Arrays.asList(query.getBloodTypes())))
           && (Arrays.asList(query.getCleaningFrequencies()).contains(bed.getCleaningFrequency()))
           && (Arrays.asList(query.getBedTypes()).contains(bed.getBedType()))
-          && (bed.getCapacity() >= query.getMinCapacity())) {
+          && (bed.getCapacity() >= query.getMinCapacity())
+          && (Arrays.asList(query.getLodgingModes()).contains(bed.getLodgingMode()))) {
         filteredBeds.add(bed);
       }
     }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public enum LodgingMode {
   @JsonProperty("private")
   PRIVATE("private"),
-  @JsonProperty("private")
+  @JsonProperty("cohabitation")
   COHABITATION("cohabitation");
 
   private String label;

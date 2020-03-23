@@ -34,7 +34,7 @@ public class BedResource implements RouteGroup {
 
   @Override
   public void addRoutes() {
-    get("", this::getBeds);
+    get("", this::getBeds, this.objectMapper::writeValueAsString);
 
     post(
         "",
@@ -119,12 +119,15 @@ public class BedResource implements RouteGroup {
       String cleaningFrequencies = request.queryParamOrDefault("cleaningFreq", "empty");
       String bloodTypes = request.queryParamOrDefault("bloodTypes", "empty");
       String minCapacity = request.queryParamOrDefault("minCapacity", "1");
+      String lodgingModes = request.queryParamOrDefault("lodgingMode", "empty");
 
       if (minCapacity.indexOf('.') != -1 || Integer.parseInt(minCapacity) <= 0) {
         throw new InvalidMinCapacityException();
       }
 
-      Query query = new Query(packageNames, bedTypes, cleaningFrequencies, bloodTypes, minCapacity);
+      Query query =
+          new Query(
+              packageNames, bedTypes, cleaningFrequencies, bloodTypes, minCapacity, lodgingModes);
       ArrayList<Bed> beds = this.bedService.Get(query);
 
       ArrayList<BedResponse> bedsResponses = new ArrayList<BedResponse>();

@@ -8,18 +8,21 @@ public class Query {
   private CleaningFrequency[] cleaningFrequencies;
   private BloodType[] bloodTypes;
   private int minCapacity;
+  private LodgingMode[] lodgingModes;
 
   public Query(
       String packageNames,
       String bedTypes,
       String cleaningFrequencies,
       String bloodtypes,
-      String minCapacity) {
+      String minCapacity,
+      String lodgingModes) {
     this.packageNames = unrollPackages(packageNames);
     this.bedTypes = unrollBedTypes(bedTypes);
     this.cleaningFrequencies = unrollCleaningFrequencies(cleaningFrequencies);
     this.bloodTypes = unrollBloodTypes(bloodtypes);
     this.minCapacity = unrollMinCapacity(minCapacity);
+    this.lodgingModes = unrollLodgingModes(lodgingModes);
   }
 
   private int unrollMinCapacity(String minCapacity) {
@@ -86,6 +89,16 @@ public class Query {
     return packageNames;
   }
 
+  private LodgingMode[] unrollLodgingModes(String _lodgingModes) {
+    LodgingMode[] lodgingModes;
+    if (_lodgingModes.equals("empty")) {
+      lodgingModes = new LodgingMode[] {LodgingMode.PRIVATE, LodgingMode.COHABITATION};
+    } else {
+      lodgingModes = new LodgingMode[] {LodgingMode.valueOfLabel(_lodgingModes)};
+    }
+    return lodgingModes;
+  }
+
   public int getMinCapacity() {
     return minCapacity;
   }
@@ -104,5 +117,9 @@ public class Query {
 
   public CleaningFrequency[] getCleaningFrequencies() {
     return cleaningFrequencies;
+  }
+
+  public LodgingMode[] getLodgingModes() {
+    return lodgingModes;
   }
 }

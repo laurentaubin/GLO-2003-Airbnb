@@ -20,6 +20,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
 import spark.Response;
 import spark.RouteGroup;
+import transactions.TransactionService;
 
 public class BedResource implements RouteGroup {
   public static final String ROOT_PATH = "/beds";
@@ -29,6 +30,7 @@ public class BedResource implements RouteGroup {
   private BedValidator bedValidator = new BedValidator();
   private JsonToBookingConverter jsonToBookingConverter = new JsonToBookingConverter();
   private BookingValidator bookingValidator = new BookingValidator();
+  private TransactionService transactionService = TransactionService.getInstance();
 
   @Override
   public void addRoutes() {
@@ -48,7 +50,7 @@ public class BedResource implements RouteGroup {
             return uuid;
           } catch (AirbnbException e) {
             response.status(400);
-            return generatePostErrorMessage(e);
+            return objectMapper.writeValueAsString(generatePostErrorMessage(e));
           }
         });
 
@@ -68,11 +70,12 @@ public class BedResource implements RouteGroup {
                 new BookingTotalPriceCalculator(bed.getPackages(), booking);
             booking.setTotal(calculator.getTotalWithDiscount());
             String bookingUuid = bed.addBooking(booking);
+            transactionService.addBookedTransactions(booking, bed);
             response.status(201);
             response.header("Location", "/beds/" + bed.getUuid() + "/bookings/" + bookingUuid);
             return bookingUuid;
           } catch (AirbnbException e) {
-            return generatePostErrorMessage(e);
+            return objectMapper.writeValueAsString(generatePostErrorMessage(e));
           }
         });
 
@@ -80,20 +83,16 @@ public class BedResource implements RouteGroup {
         "/:uuid/bookings/:bookingUuid/cancel",
         ((request, response) -> {
           try {
-            System.out.println("\n\n\n BOOKING IS BEING CANCELED \n\n\n");
             String bedUuid = request.params(":uuid");
             String bookingUuid = request.params(":bookingUuid");
             this.bedService.cancelBooking(bedUuid, bookingUuid);
             return "Booking " + bookingUuid + " has been canceled";
-          } catch (BedNotFoundException e) {
+          } catch (BedNotFoundException | BookingNotFoundException e) {
             response.status(404);
-            return generatePostErrorMessage(e);
-          } catch (BookingNotFoundException e) {
-            response.status(404);
-            return generatePostErrorMessage(e);
+            return objectMapper.writeValueAsString(generatePostErrorMessage(e));
           } catch (AirbnbException e) {
             response.status(400);
-            return generatePostErrorMessage(e);
+            return objectMapper.writeValueAsString(generatePostErrorMessage(e));
           }
         }));
   }
@@ -113,7 +112,7 @@ public class BedResource implements RouteGroup {
     }
   }
 
-  public Object getBeds(Request request, Response response) throws JsonProcessingException {
+  public Object getBeds(Request request, Response response) {
     try {
       String packageNames = request.queryParamOrDefault("package", "empty");
       String bedTypes = request.queryParamOrDefault("bedType", "empty");

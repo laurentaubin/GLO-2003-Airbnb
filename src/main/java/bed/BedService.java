@@ -4,10 +4,12 @@ import bed.booking.Booking;
 import bed.booking.BookingResponse;
 import bed.booking.exception.BedNotFoundException;
 import java.util.*;
+import transactions.TransactionService;
 
 public class BedService {
-  private Map<String, Bed> beds = new HashMap<String, Bed>();
+  private Map<String, Bed> beds = new HashMap<>();
   private static BedService bedService = null;
+  private TransactionService transactionService = TransactionService.getInstance();
 
   private BedService() {};
 
@@ -115,5 +117,6 @@ public class BedService {
     CancelationValidator validator = new CancelationValidator();
     validator.validateCancelation(bookingToCancel);
     bookingToCancel.cancelBooking();
+    this.transactionService.addCancelationTransactions(bookingToCancel, getBedByUuid(bedUuid));
   }
 }

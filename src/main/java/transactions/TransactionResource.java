@@ -2,21 +2,22 @@ package transactions;
 
 import static spark.Spark.get;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import spark.Request;
+import spark.Response;
 import spark.RouteGroup;
 
 public class TransactionResource implements RouteGroup {
   public static final String TRANSACTION_PATH = "/admin/transactions";
-
-  public static TransactionService transactionService = new TransactionService();
+  private TransactionService transactionService = TransactionService.getInstance();
+  private ObjectMapper mapper = new ObjectMapper();
 
   @Override
   public void addRoutes() {
-    get(
-        "",
-        ((request, response) -> {
-          response.status(200);
-          response.type("application/json");
-          return (transactionService.getListOfTransactions());
-        }));
+    get("", this::getTransactions, this.mapper::writeValueAsString);
+  }
+
+  private Object getTransactions(Request request, Response response) {
+    return this.transactionService.getTransactions();
   }
 }

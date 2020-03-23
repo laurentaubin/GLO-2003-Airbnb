@@ -1,32 +1,18 @@
 package transactions;
 
-import java.text.DecimalFormat;
-
 public class Transaction {
   private String timestamp;
-  private String from_uuid;
-  private String to_uuid;
+  private String from;
+  private String to;
   private Number total;
   private String reason;
 
-  @Override
-  public String toString() {
-    return "{"
-        + "timestamp: '"
-        + timestamp
-        + '\''
-        + ", from_uuid: '"
-        + from_uuid
-        + '\''
-        + ", to_uuid: '"
-        + to_uuid
-        + '\''
-        + ", total: "
-        + total
-        + ", reason: '"
-        + reason
-        + '\''
-        + '}';
+  public Transaction(String timestamp, String from, String to, Number total, String reason) {
+    this.timestamp = timestamp;
+    this.from = from;
+    this.to = to;
+    this.total = total;
+    this.reason = reason;
   }
 
   public String getTimestamp() {
@@ -37,29 +23,20 @@ public class Transaction {
     this.timestamp = timestamp;
   }
 
-  public Transaction(
-      String from_uuid, String to_uuid, Number total, String reason, String timestamp) {
-    this.timestamp = timestamp;
-    this.from_uuid = from_uuid;
-    this.to_uuid = to_uuid;
-    this.total = Float.parseFloat(new DecimalFormat("##.##").format(total));
-    this.reason = reason;
+  public String getFrom() {
+    return from;
   }
 
-  public String getFrom_uuid() {
-    return from_uuid;
+  public void setFrom(String from) {
+    this.from = from;
   }
 
-  public void setFrom_uuid(String from_uuid) {
-    this.from_uuid = from_uuid;
+  public String getTo() {
+    return to;
   }
 
-  public String getTo_uuid() {
-    return to_uuid;
-  }
-
-  public void setTo_uuid(String to_uuid) {
-    this.to_uuid = to_uuid;
+  public void setTo(String to) {
+    this.to = to;
   }
 
   public Number getTotal() {

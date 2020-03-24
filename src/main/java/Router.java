@@ -1,7 +1,7 @@
 import static spark.Spark.path;
 
-import bed.BedResource;
-import transactions.TransactionResource;
+import presentation.bed.BedResource;
+import presentation.transaction.TransactionResource;
 
 public class Router {
   public static void setUpRoutes() {

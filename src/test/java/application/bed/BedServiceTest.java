@@ -8,9 +8,9 @@ import domain.bed.enums.*;
 import domain.booking.Booking;
 import domain.booking.BookingStatus;
 import domain.booking.exception.BedNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -147,9 +147,9 @@ class BedServiceTest {
   }
 
   @Test
-  void sortBeds_whenMultipleBeds_shouldBeSortedInDescendingStarsOrder() {
+  void sortBeds_withMultipleBeds_shouldBeSortedInDescendingStarsOrder() {
     createBeds();
-    Query query = new Query("empty", "empty", "empty", "empty", "0", "empty");
+    Query query = new Query("empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty");
 
     ArrayList<Bed> sortedBeds = this.bedService.Get(query);
 
@@ -160,16 +160,25 @@ class BedServiceTest {
   }
 
   @Test
-  void filterBeds_whenNoBedWasAdded_shouldEqualEmptyArrayList() {
-    Query query = new Query("empty", "empty", "empty", "empty", "0", "empty");
+  void filterBeds_withNoBedWasAdded_shouldEqualEmptyArrayList() {
+    Query query = new Query("empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty");
     assertEquals(this.bedService.Get(query), new ArrayList<Bed>());
   }
 
   @Test
-  void filterBeds_parametersForEach_shouldFilterCorrectly() {
+  void filterBeds_withParametersForEach_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("allYouCanDrink", "memoryFoam", "never", "O+,A-,B+", "350", "private");
+    Query query =
+        new Query(
+            "allYouCanDrink",
+            "memoryFoam",
+            "never",
+            "O+,A-,B+",
+            "350",
+            "private",
+            "empty",
+            "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     assertEquals(filteredBeds.size(), 1);
@@ -184,10 +193,11 @@ class BedServiceTest {
   }
 
   @Test
-  void filterBeds_parameters1_shouldFilterCorrectly() {
+  void filterBeds_withParameters1_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("empty", "memoryFoam", "empty", "empty", "0", "empty");
+    Query query =
+        new Query("empty", "memoryFoam", "empty", "empty", "empty", "empty", "empty", "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -197,10 +207,11 @@ class BedServiceTest {
   }
 
   @Test
-  void filterBeds_parameters2_shouldFilterCorrectly() {
+  void filterBeds_withParameters2_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("sweetTooth", "springs", "empty", "O-", "0", "empty");
+    Query query =
+        new Query("sweetTooth", "springs", "empty", "O-", "empty", "empty", "empty", "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -212,10 +223,10 @@ class BedServiceTest {
   }
 
   @Test
-  void filterBeds_parameters3_shouldFilterCorrectly() {
+  void filterBeds_withParameters3_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("empty", "empty", "never", "empty", "400", "empty");
+    Query query = new Query("empty", "empty", "never", "empty", "400", "empty", "empty", "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -226,43 +237,227 @@ class BedServiceTest {
   }
 
   @Test
-  void filterBeds_noParameters_shouldReturnAllBeds() {
-    Query query = new Query("empty", "empty", "empty", "empty", "0", "empty");
+  void filterBeds_withNoParameters_shouldReturnAllBeds() {
+    Query query = new Query("empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty");
     assertEquals(this.bedService.Get(query), this.bedService.getAllBeds());
   }
 
   @Test
-  void getTotalNumberOfBeds_whenNoBedWasAdded_shouldEquals0() {
+  void filterBeds_withTwoEmptyBedsOneFullWholeWeek_shouldReturnTwoEmptyBeds() {
+    Bed bed1 = createBed(BedType.SPRINGS, CleaningFrequency.NEVER, PackageName.BLOOD_THIRSTY, 100);
+    Bed bed2 =
+        createBed(BedType.MEMORY_FOAM, CleaningFrequency.ANNUAL, PackageName.SWEET_TOOTH, 100);
+    Bed bed3 =
+        createBed(BedType.LATEX, CleaningFrequency.WEEKLY, PackageName.ALL_YOU_CAN_DRINK, 100);
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String bookingArrivalDate = LocalDate.now().format(formatter);
+    int bookingNumberOfNights = 3;
+    int bookingColonySize = 80;
+    Booking booking = createBooking(bookingArrivalDate, bookingNumberOfNights, bookingColonySize);
+    bed3.addBooking(booking);
+
+    String queryArrivalDate = "empty";
+    String queryNumberOfNights = "empty";
+    String queryMinCapacity = "50";
+    Query query =
+        new Query(
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            queryMinCapacity,
+            "empty",
+            queryArrivalDate,
+            queryNumberOfNights);
+
+    List<Bed> expected = Arrays.asList(bed1, bed2);
+    Collections.sort(expected, new BedStarComparator());
+    ArrayList<Bed> expected_beds = new ArrayList<>(expected);
+    Collections.reverse(expected_beds);
+    assertEquals(expected_beds, this.bedService.Get(query));
+  }
+
+  @Test
+  void filterBeds_withTwoEmptyBedsOneConflictingForADay_shouldReturnTwoEmptyBeds() {
+    Bed bed1 = createBed(BedType.SPRINGS, CleaningFrequency.NEVER, PackageName.BLOOD_THIRSTY, 100);
+    Bed bed2 =
+        createBed(BedType.MEMORY_FOAM, CleaningFrequency.ANNUAL, PackageName.SWEET_TOOTH, 100);
+    Bed bed3 =
+        createBed(BedType.LATEX, CleaningFrequency.WEEKLY, PackageName.ALL_YOU_CAN_DRINK, 100);
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String bookingArrivalDate = LocalDate.parse("2020-05-20").format(formatter);
+    int bookingNumberOfNights = 3;
+    int bookingColonySize = 80;
+    Booking booking = createBooking(bookingArrivalDate, bookingNumberOfNights, bookingColonySize);
+    bed3.addBooking(booking);
+
+    String queryArrivalDate = "2020-05-19";
+    String queryNumberOfNights = "empty";
+    String queryMinCapacity = "50";
+    Query query =
+        new Query(
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            queryMinCapacity,
+            "empty",
+            queryArrivalDate,
+            queryNumberOfNights);
+
+    List<Bed> beds = Arrays.asList(bed1, bed2);
+    beds.sort(new BedStarComparator());
+    ArrayList<Bed> expected_beds = new ArrayList<>(beds);
+    Collections.reverse(expected_beds);
+    assertEquals(expected_beds, this.bedService.Get(query));
+  }
+
+  @Test
+  void filterBeds_withTwoEmptyBedsOneBookedButStillRoom_shouldReturnAllBeds() {
+    Bed bed1 = createBed(BedType.SPRINGS, CleaningFrequency.NEVER, PackageName.BLOOD_THIRSTY, 100);
+    Bed bed2 =
+        createBed(BedType.MEMORY_FOAM, CleaningFrequency.ANNUAL, PackageName.SWEET_TOOTH, 100);
+    Bed bed3 =
+        createBed(BedType.LATEX, CleaningFrequency.WEEKLY, PackageName.ALL_YOU_CAN_DRINK, 100);
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String bookingArrivalDate = LocalDate.now().format(formatter);
+    int bookingNumberOfNights = 3;
+    int bookingColonySize = 40;
+    Booking booking = createBooking(bookingArrivalDate, bookingNumberOfNights, bookingColonySize);
+    bed3.addBooking(booking);
+
+    String queryArrivalDate = "empty";
+    String queryNumberOfNights = "empty";
+    String queryMinCapacity = "50";
+    Query query =
+        new Query(
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            queryMinCapacity,
+            "empty",
+            queryArrivalDate,
+            queryNumberOfNights);
+
+    List<Bed> beds = Arrays.asList(bed1, bed2, bed3);
+    beds.sort(new BedStarComparator());
+    ArrayList<Bed> expected_beds = new ArrayList<>(beds);
+    Collections.reverse(expected_beds);
+    assertEquals(expected_beds, this.bedService.Get(query));
+  }
+
+  @Test
+  void filterBeds_withThreeFullBeds_shouldReturnEmptyList() {
+    Bed bed1 = createBed(BedType.SPRINGS, CleaningFrequency.NEVER, PackageName.BLOOD_THIRSTY, 100);
+    Bed bed2 =
+        createBed(BedType.MEMORY_FOAM, CleaningFrequency.ANNUAL, PackageName.SWEET_TOOTH, 100);
+    Bed bed3 =
+        createBed(BedType.LATEX, CleaningFrequency.WEEKLY, PackageName.ALL_YOU_CAN_DRINK, 100);
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String bookingArrivalDate = LocalDate.now().format(formatter);
+    int bookingNumberOfNights = 3;
+    int bookingColonySize = 100;
+    Booking booking = createBooking(bookingArrivalDate, bookingNumberOfNights, bookingColonySize);
+    bed1.addBooking(booking);
+    bed2.addBooking(booking);
+    bed3.addBooking(booking);
+
+    String queryArrivalDate = "empty";
+    String queryNumberOfNights = "empty";
+    String queryMinCapacity = "50";
+    Query query =
+        new Query(
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            queryMinCapacity,
+            "empty",
+            queryArrivalDate,
+            queryNumberOfNights);
+
+    ArrayList<Bed> expected_beds = new ArrayList<>();
+    Collections.reverse(expected_beds);
+    assertEquals(expected_beds, this.bedService.Get(query));
+  }
+
+  private Bed createBed(
+      BedType bedType, CleaningFrequency cleaningFrequency, PackageName packageName, int capacity) {
+    BloodType[] bloodTypes1 =
+        new BloodType[] {
+          BloodType.A_NEG,
+          BloodType.A_POS,
+          BloodType.AB_NEG,
+          BloodType.AB_POS,
+          BloodType.B_NEG,
+          BloodType.B_POS,
+          BloodType.O_NEG,
+          BloodType.O_POS
+        };
+    BedPackage[] packages1 =
+        new BedPackage[] {
+          new BedPackage(packageName, 0),
+        };
+    Bed bed =
+        new Bed(
+            this.ownerPublicKey,
+            this.zipCode,
+            bedType,
+            cleaningFrequency,
+            bloodTypes1,
+            capacity,
+            packages1);
+    String uuid = UUID.randomUUID().toString();
+    bed.setUuid(uuid);
+    bedService.addBed(bed, uuid);
+    return bed;
+  }
+
+  private Booking createBooking(String arrivalDate, int numberOfNights, int colonySize) {
+    String tenantPublicKey = "72001343BA93508E74E3BFFA68593C2016D0434CF0AA76CB3DF64F93170D60EC";
+    String bedPackage = "allYouCanDrink";
+    Booking booking = new Booking(tenantPublicKey, arrivalDate, numberOfNights, bedPackage);
+    booking.setColonySize(colonySize);
+    return booking;
+  }
+
+  @Test
+  void getTotalNumberOfBeds_withNoBedWasAdded_shouldEquals0() {
     assertEquals(0, this.bedService.getTotalNumberOfBeds());
   }
 
   @Test
-  void addBed_whenCreatingOneValidBed_shouldAddOneBedToHashMap() {
+  void addBed_withCreatingOneValidBed_shouldAddOneBedToHashMap() {
     this.bedService.addBed(this.bed, this.bedUuid);
     assertEquals(1, bedService.getTotalNumberOfBeds());
   }
 
   @Test
-  void addBed_whenCreatingOneValidBed_shouldBeEqualToFirstIndexOfGetAllBeds() {
+  void addBed_withCreatingOneValidBed_shouldBeEqualToFirstIndexOfGetAllBeds() {
     this.bedService.addBed(this.bed, this.bedUuid);
     assertEquals(bed, this.bedService.getAllBeds().get(0));
   }
 
   @Test
-  void getBedByUuid_whenGettingBedWithValidUuid_shouldEqualSameBed() {
+  void getBedByUuid_withGettingBedWithValidUuid_shouldEqualSameBed() {
     this.bedService.addBed(this.bed, this.bedUuid);
     assertEquals(bed, this.bedService.getBedByUuid(this.bedUuid));
   }
 
   @Test
-  void getBedByUuid_whenGettingBedWithInvalidUuid_shouldThrow() {
+  void getBedByUuid_withGettingBedWithInvalidUuid_shouldThrow() {
     this.bedService.addBed(this.bed, this.bedUuid);
     String invalidUuid = "";
     assertThrows(BedNotFoundException.class, () -> this.bedService.getBedByUuid(invalidUuid));
   }
 
   @Test
-  void removeBed_whenGivingValidUUID_shouldWork() {
+  void removeBed_withGivingValidUUID_shouldWork() {
     assertEquals(0, bedService.getTotalNumberOfBeds());
     this.bedService.addBed(this.bed, this.bedUuid);
     assertEquals(1, bedService.getTotalNumberOfBeds());
@@ -271,7 +466,7 @@ class BedServiceTest {
   }
 
   @Test
-  void cancelBooking_whenBookingExist_shouldSetTheBookingStatusAsCanceled() {
+  void cancelBooking_withBookingExist_shouldSetTheBookingStatusAsCanceled() {
     Booking booking = createBooking();
     String bookingUuid = this.bed.addBooking(booking);
     this.bed.cancelBooking(bookingUuid);

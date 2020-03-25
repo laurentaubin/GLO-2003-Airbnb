@@ -4,6 +4,6 @@ import domain.bed.exception.AirbnbException;
 
 public class InvalidArrivalDateException extends AirbnbException {
   public InvalidArrivalDateException() {
-    super("INVALID-ARRIVAL-DATE", "Invalid date format: must be yyyy-mm-dd");
+    super("INVALID_ARRIVAL_DATE", "arrival date should be formatted as YYYY-MM-DD");
   }
 }

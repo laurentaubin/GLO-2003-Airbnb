@@ -3,6 +3,9 @@ package domain.bed;
 import domain.bed.enums.*;
 import domain.booking.Booking;
 import domain.booking.exception.BookingNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -182,5 +185,71 @@ public class Bed {
 
   public void cancelBooking(String bookingUuid) {
     this.getBookingByUuid(bookingUuid).cancelBooking();
+  }
+
+  public static ArrayList<String> intersections(
+      Booking booking, String arrivalDate, int numberOfNights) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    Set<String> bookingDates =
+        getStayDates(formatter, booking.getArrivalDate(), booking.getNumberOfNights());
+
+    Set<String> queryDates = getStayDates(formatter, arrivalDate, numberOfNights);
+
+    queryDates.retainAll(bookingDates);
+
+    return new ArrayList<>(queryDates);
+  }
+
+  private static Set<String> getStayDates(
+      DateTimeFormatter formatter, String arrivalDate2, int numberOfNights2) {
+    Set<String> bookingDates = new HashSet<>();
+    LocalDate bookingStartDate = LocalDate.parse(arrivalDate2);
+    for (int i = 0; i < numberOfNights2; i++) {
+      LocalDate bookingDate = bookingStartDate.plusDays(i);
+      bookingDates.add(bookingDate.format(formatter));
+    }
+    return bookingDates;
+  }
+
+  public boolean isAvailable(String arrivalDate, int numberOfNights, int minCapacity) {
+    HashMap<String, Integer> stayDates = initializeStayDates(arrivalDate, numberOfNights);
+
+    updateStayDatesCapacityWithBookings(arrivalDate, numberOfNights, stayDates);
+
+    for (Integer peopleInRoom : stayDates.values()) {
+      if (noRoomInBed(minCapacity, peopleInRoom)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private boolean noRoomInBed(int minCapacity, Integer peopleInRoom) {
+    return minCapacity > this.getCapacity() - peopleInRoom;
+  }
+
+  private void updateStayDatesCapacityWithBookings(
+      String arrivalDate, int numberOfNights, HashMap<String, Integer> stayDates) {
+    for (Booking booking : getAllBookings()) {
+      ArrayList<String> intersections = Bed.intersections(booking, arrivalDate, numberOfNights);
+      if (intersections.size() != 0) {
+        for (String date : intersections) {
+          int oldCapacity = stayDates.get(date);
+          stayDates.replace(date, oldCapacity + booking.getColonySize());
+        }
+      }
+    }
+  }
+
+  private HashMap<String, Integer> initializeStayDates(String arrivalDate, int numberOfNights) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    HashMap<String, Integer> stayDates = new HashMap<String, Integer>();
+    LocalDate startDate = LocalDate.parse(arrivalDate);
+    for (int i = 0; i < numberOfNights; i++) {
+      LocalDate newDate = startDate.plusDays(i);
+      stayDates.put(newDate.format(formatter), 0);
+    }
+    return stayDates;
   }
 }

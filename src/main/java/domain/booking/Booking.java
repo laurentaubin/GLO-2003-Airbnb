@@ -11,6 +11,11 @@ public class Booking {
   private String bedPackage;
   private BookingStatus bookingStatus;
   private BigDecimal total;
+  private Integer colonySize = 0;
+
+  public void setColonySize(Integer colonySize) {
+    this.colonySize = colonySize;
+  }
 
   public Booking() {
     this.setBookingStatusAsBooked();
@@ -82,5 +87,9 @@ public class Booking {
 
   public void setTotal(BigDecimal total) {
     this.total = total;
+  }
+
+  public Integer getColonySize() {
+    return this.colonySize;
   }
 }

@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.bed.Bed;
 import domain.bed.exception.AirbnbException;
-import domain.bed.exception.InvalidMinCapacityException;
 import domain.booking.Booking;
 import domain.booking.exception.BedNotFoundException;
 import domain.booking.exception.BookingNotFoundException;
@@ -123,16 +122,21 @@ public class BedResource implements RouteGroup {
       String bedTypes = request.queryParamOrDefault("bedType", "empty");
       String cleaningFrequencies = request.queryParamOrDefault("cleaningFreq", "empty");
       String bloodTypes = request.queryParamOrDefault("bloodTypes", "empty");
-      String minCapacity = request.queryParamOrDefault("minCapacity", "1");
+      String minCapacity = request.queryParamOrDefault("minCapacity", "empty");
       String lodgingModes = request.queryParamOrDefault("lodgingMode", "empty");
-
-      if (minCapacity.indexOf('.') != -1 || Integer.parseInt(minCapacity) <= 0) {
-        throw new InvalidMinCapacityException();
-      }
+      String arrivalDate = request.queryParamOrDefault("arrivalDate", "empty");
+      String numberOfNights = request.queryParamOrDefault("numberOfNights", "empty");
 
       Query query =
           new Query(
-              packageNames, bedTypes, cleaningFrequencies, bloodTypes, minCapacity, lodgingModes);
+              packageNames,
+              bedTypes,
+              cleaningFrequencies,
+              bloodTypes,
+              minCapacity,
+              lodgingModes,
+              arrivalDate,
+              numberOfNights);
       ArrayList<Bed> beds = this.bedService.Get(query);
 
       ArrayList<BedResponse> bedsResponses = new ArrayList<BedResponse>();

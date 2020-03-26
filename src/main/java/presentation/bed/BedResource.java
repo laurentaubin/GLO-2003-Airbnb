@@ -5,6 +5,7 @@ import static spark.Spark.post;
 
 import application.Query;
 import application.bed.BedService;
+import application.bed.BedStarCalculator;
 import application.bed.BedValidator;
 import application.booking.BookingResponse;
 import application.booking.BookingTotalPriceCalculator;
@@ -149,7 +150,7 @@ public class BedResource implements RouteGroup {
                 bed.getCleaningFrequency(),
                 bed.getBloodTypes(),
                 bed.getCapacity(),
-                bed.getStars(),
+                BedStarCalculator.calculateStars(bed),
                 bed.getPackages(),
                 bed.getLodgingMode());
         bedsResponses.add(bedResponse);

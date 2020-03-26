@@ -51,7 +51,7 @@ public class BedService {
             bed.getCleaningFrequency(),
             bed.getBloodTypes(),
             bed.getCapacity(),
-            bed.getStars(),
+            BedStarCalculator.calculateStars(bed),
             bed.getPackages(),
             bed.getLodgingMode());
     return bedResponse;

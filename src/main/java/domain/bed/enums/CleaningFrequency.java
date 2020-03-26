@@ -5,20 +5,18 @@ import domain.bed.exception.InvalidCleaningFrequencyException;
 
 public enum CleaningFrequency {
   @JsonProperty("weekly")
-  WEEKLY("weekly", 0.5),
+  WEEKLY("weekly"),
   @JsonProperty("monthly")
-  MONTHLY("monthly", 1),
+  MONTHLY("monthly"),
   @JsonProperty("annual")
-  ANNUAL("annual", 1.25),
+  ANNUAL("annual"),
   @JsonProperty("never")
-  NEVER("never", 2);
+  NEVER("never");
 
   private String label;
-  private double score;
 
-  CleaningFrequency(String frequency, double score) {
+  CleaningFrequency(String frequency) {
     this.label = frequency;
-    this.score = score;
   }
 
   public static CleaningFrequency valueOfLabel(String frequency) {
@@ -28,10 +26,6 @@ public enum CleaningFrequency {
       }
     }
     throw new InvalidCleaningFrequencyException();
-  }
-
-  public double getScore() {
-    return this.score;
   }
 
   @Override

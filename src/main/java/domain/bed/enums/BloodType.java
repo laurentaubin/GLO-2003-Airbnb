@@ -5,28 +5,26 @@ import domain.bed.exception.InvalidBloodTypeException;
 
 public enum BloodType {
   @JsonProperty("O-")
-  O_NEG("O-", 1.5),
+  O_NEG("O-"),
   @JsonProperty("O+")
-  O_POS("O+", 1),
+  O_POS("O+"),
   @JsonProperty("A-")
-  A_NEG("A-", 0.6),
+  A_NEG("A-"),
   @JsonProperty("A+")
-  A_POS("A+", 0.5),
+  A_POS("A+"),
   @JsonProperty("B-")
-  B_NEG("B-", 0.5),
+  B_NEG("B-"),
   @JsonProperty("B+")
-  B_POS("B+", 0.4),
+  B_POS("B+"),
   @JsonProperty("AB-")
-  AB_NEG("AB-", 0.2),
+  AB_NEG("AB-"),
   @JsonProperty("AB+")
-  AB_POS("AB+", 0.1);
+  AB_POS("AB+");
 
   private String label;
-  private double score;
 
-  BloodType(String type, double score) {
+  BloodType(String type) {
     this.label = type;
-    this.score = score;
   }
 
   public static BloodType valueOfLabel(String type) {
@@ -40,10 +38,6 @@ public enum BloodType {
 
   public String getLabel() {
     return this.label;
-  }
-
-  public double getScore() {
-    return this.score;
   }
 
   @Override

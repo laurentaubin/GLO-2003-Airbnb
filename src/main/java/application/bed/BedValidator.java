@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.bed.enums.*;
 import domain.bed.exception.*;
+import domain.geolocation.exception.InvalidZipCodeException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;

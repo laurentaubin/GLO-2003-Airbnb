@@ -1,4 +1,6 @@
-package domain.bed.exception;
+package domain.geolocation.exception;
+
+import domain.bed.exception.AirbnbException;
 
 public class InvalidZipCodeException extends AirbnbException {
   public InvalidZipCodeException() {

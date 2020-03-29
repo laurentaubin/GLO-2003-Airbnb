@@ -4,7 +4,6 @@ import java.io.IOException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
@@ -20,7 +19,7 @@ class GeneralRequestTest {
   private String bedsHttpPath = httpPath + "/beds";
 
   @BeforeAll
-  static void startServer_UsingHerokAssignedPort() {
+  static void startServer_UsingHerokuAssignedPort() {
     Main.main(new String[] {"a", "b"});
   }
 
@@ -30,8 +29,7 @@ class GeneralRequestTest {
   }
 
   @Test
-  public void givenPathDoesNotExists_whenAPiIsCalled_then404IsReceived()
-      throws ClientProtocolException, IOException {
+  public void givenPathDoesNotExists_whenAPiIsCalled_then404IsReceived() throws IOException {
 
     String name = RandomStringUtils.randomAlphabetic(8);
     HttpUriRequest request = new HttpGet(httpPath + "/" + name);
@@ -44,23 +42,19 @@ class GeneralRequestTest {
   @Test
   public void
       givenRequestWithNoAcceptHeader_whenRequestIsExecuted_thenDefaultResponseContentTypeIsJson()
-          throws ClientProtocolException, IOException {
+          throws IOException {
 
-    // Given
     String jsonMimeType = "application/json";
     HttpUriRequest request = new HttpGet(httpPath);
 
-    // When
     HttpResponse response = HttpClientBuilder.create().build().execute(request);
 
-    // Then
     String mimeType = ContentType.getOrDefault(response.getEntity()).getMimeType();
     assertEquals(jsonMimeType, mimeType);
   }
 
   @Test
-  public void givenPathExists_whenAPiIsCalled_then200IsReceived()
-      throws ClientProtocolException, IOException {
+  public void givenPathExists_whenAPiIsCalled_then200IsReceived() throws IOException {
 
     HttpUriRequest request = new HttpGet(bedsHttpPath);
 

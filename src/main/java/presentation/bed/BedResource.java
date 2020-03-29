@@ -80,6 +80,7 @@ public class BedResource implements RouteGroup {
             response.header("Location", "/beds/" + bed.getUuid() + "/bookings/" + bookingUuid);
             return bookingUuid;
           } catch (AirbnbException e) {
+            response.status(400);
             return objectMapper.writeValueAsString(generatePostErrorMessage(e));
           }
         });

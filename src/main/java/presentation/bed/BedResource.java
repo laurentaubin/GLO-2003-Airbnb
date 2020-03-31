@@ -87,20 +87,8 @@ public class BedResource implements RouteGroup {
 
     post(
         "/:uuid/bookings/:bookingUuid/cancel",
-        ((request, response) -> {
-          try {
-            String bedUuid = request.params(":uuid");
-            String bookingUuid = request.params(":bookingUuid");
-            this.bedService.cancelBooking(bedUuid, bookingUuid);
-            return "Booking " + bookingUuid + " has been canceled";
-          } catch (BedNotFoundException | BookingNotFoundException e) {
-            response.status(404);
-            return objectMapper.writeValueAsString(generatePostErrorMessage(e));
-          } catch (AirbnbException e) {
-            response.status(400);
-            return objectMapper.writeValueAsString(generatePostErrorMessage(e));
-          }
-        }));
+        this::cancelBooking,
+        this.objectMapper::writeValueAsString);
   }
 
   public Object getBed(Request request, Response response) throws JsonProcessingException {
@@ -193,6 +181,21 @@ public class BedResource implements RouteGroup {
       response.status(200);
       return bookings;
     } catch (BookingNotFoundException e) {
+      response.status(404);
+      return generatePostErrorMessage(e);
+    } catch (AirbnbException e) {
+      response.status(400);
+      return generatePostErrorMessage(e);
+    }
+  }
+
+  public Object cancelBooking(Request request, Response response) {
+    try {
+      String bedUuid = request.params(":uuid");
+      String bookingUuid = request.params(":bookingUuid");
+      this.bedService.cancelBooking(bedUuid, bookingUuid);
+      return "Booking " + bookingUuid + " has been canceled";
+    } catch (BedNotFoundException | BookingNotFoundException e) {
       response.status(404);
       return generatePostErrorMessage(e);
     } catch (AirbnbException e) {

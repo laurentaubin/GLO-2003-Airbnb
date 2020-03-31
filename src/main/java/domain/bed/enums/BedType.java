@@ -1,14 +1,10 @@
 package domain.bed.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import domain.bed.exception.InvalidBedTypeException;
 
 public enum BedType {
-  @JsonProperty("latex")
   LATEX("latex", 400),
-  @JsonProperty("memoryFoam")
   MEMORY_FOAM("memoryFoam", 700),
-  @JsonProperty("springs")
   SPRINGS("springs", 1000);
 
   private String label;

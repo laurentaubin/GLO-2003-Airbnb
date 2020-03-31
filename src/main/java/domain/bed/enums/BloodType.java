@@ -1,24 +1,15 @@
 package domain.bed.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import domain.bed.exception.InvalidBloodTypeException;
 
 public enum BloodType {
-  @JsonProperty("O-")
   O_NEG("O-"),
-  @JsonProperty("O+")
   O_POS("O+"),
-  @JsonProperty("A-")
   A_NEG("A-"),
-  @JsonProperty("A+")
   A_POS("A+"),
-  @JsonProperty("B-")
   B_NEG("B-"),
-  @JsonProperty("B+")
   B_POS("B+"),
-  @JsonProperty("AB-")
   AB_NEG("AB-"),
-  @JsonProperty("AB+")
   AB_POS("AB+");
 
   private String label;
@@ -34,10 +25,6 @@ public enum BloodType {
       }
     }
     throw new InvalidBloodTypeException();
-  }
-
-  public String getLabel() {
-    return this.label;
   }
 
   @Override

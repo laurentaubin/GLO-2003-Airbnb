@@ -1,17 +1,18 @@
 package presentation.bed;
 
 import domain.bed.enums.*;
+import java.util.ArrayList;
 
 public class BedResponse {
   private String bedNumber;
   private String zipCode;
-  private BedType bedType;
-  private CleaningFrequency cleaningFrequency;
-  private BloodType[] bloodTypes;
+  private String bedType;
+  private String cleaningFrequency;
+  private ArrayList<String> bloodTypes;
   private int capacity;
-  private BedPackage[] packages;
+  private ArrayList<BedPackageResponse> packages;
   private int stars;
-  private LodgingMode lodgingMode;
+  private String lodgingMode;
 
   public BedResponse(
       String bedNumber,
@@ -25,28 +26,56 @@ public class BedResponse {
       LodgingMode lodgingMode) {
     this.bedNumber = bedNumber;
     this.zipCode = zipCode;
-    this.bedType = bedType;
-    this.cleaningFrequency = cleaningFrequency;
-    this.bloodTypes = bloodTypes;
+    this.bedType = setBedTypeAsString(bedType);
+    this.cleaningFrequency = setCleaningFrequencyAsString(cleaningFrequency);
+    this.bloodTypes = this.setBloodTypesAsString(bloodTypes);
     this.capacity = capacity;
     this.stars = stars;
-    this.packages = packages;
-    this.lodgingMode = lodgingMode;
+    this.packages = setBedPackageAsString(packages);
+    this.lodgingMode = setLodgingModeAsString(lodgingMode);
   }
 
-  public CleaningFrequency getCleaningFrequency() {
+  public String setBedTypeAsString(BedType bedtype) {
+    return bedtype.toString();
+  }
+
+  public ArrayList<String> setBloodTypesAsString(BloodType[] bloodTypes) {
+    ArrayList<String> bloodtypesName = new ArrayList<>();
+    for (BloodType bloodType : bloodTypes) {
+      bloodtypesName.add(bloodType.toString());
+    }
+    return bloodtypesName;
+  }
+
+  public String setCleaningFrequencyAsString(CleaningFrequency cleaningFrequency) {
+    return cleaningFrequency.toString();
+  }
+
+  public ArrayList<BedPackageResponse> setBedPackageAsString(BedPackage[] packages) {
+    ArrayList<BedPackageResponse> bedPackageResponses = new ArrayList<>();
+    for (BedPackage bedPackage : packages) {
+      bedPackageResponses.add(new BedPackageResponse(bedPackage));
+    }
+    return bedPackageResponses;
+  }
+
+  public String setLodgingModeAsString(LodgingMode lodgingMode) {
+    return lodgingMode.toString();
+  }
+
+  public String getCleaningFrequency() {
     return cleaningFrequency;
   }
 
-  public BloodType[] getBloodTypes() {
+  public ArrayList<String> getBloodTypes() {
     return bloodTypes;
   }
 
-  public BedType getBedType() {
+  public String getBedType() {
     return bedType;
   }
 
-  public BedPackage[] getPackages() {
+  public ArrayList<BedPackageResponse> getPackages() {
     return packages;
   }
 
@@ -66,7 +95,7 @@ public class BedResponse {
     return zipCode;
   }
 
-  public LodgingMode getLodgingMode() {
+  public String getLodgingMode() {
     return lodgingMode;
   }
 }

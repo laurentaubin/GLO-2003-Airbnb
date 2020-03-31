@@ -1,12 +1,9 @@
 package domain.bed.enums;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import domain.bed.exception.InvalidLodgingModeException;
 
 public enum LodgingMode {
-  @JsonProperty("private")
   PRIVATE("private"),
-  @JsonProperty("cohabitation")
   COHABITATION("cohabitation");
 
   private String label;

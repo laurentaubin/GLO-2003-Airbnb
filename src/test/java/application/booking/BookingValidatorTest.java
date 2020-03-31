@@ -51,8 +51,8 @@ public class BookingValidatorTest {
     this.bed =
         new Bed(
             ownerPublicKey, zipCode, bedType, cleaningFrequency, bloodTypes, capacity, packages);
+    this.bedService.addBed(bed);
     bed.setUuid(this.uuid);
-    this.bedService.addBed(bed, this.uuid);
 
     String firstReservationJson =
         "{"

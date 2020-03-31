@@ -9,7 +9,6 @@ import application.bed.BedValidator;
 import application.booking.BookingResponse;
 import application.booking.BookingTotalPriceCalculator;
 import application.booking.BookingValidator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.bed.Bed;
 import domain.bed.BedService;
@@ -18,8 +17,8 @@ import domain.booking.Booking;
 import domain.booking.exception.BedNotFoundException;
 import domain.booking.exception.BookingNotFoundException;
 import domain.transaction.TransactionService;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
 import org.eclipse.jetty.http.HttpStatus;
 import presentation.ErrorPostResponse;
 import presentation.booking.JsonToBookingConverter;
@@ -41,23 +40,7 @@ public class BedResource implements RouteGroup {
   public void addRoutes() {
     get("", this::getBeds, this.objectMapper::writeValueAsString);
 
-    post(
-        "",
-        (request, response) -> {
-          try {
-            bedValidator.validateBed(request.body());
-            Bed bed = jsonToBedConverter.generateBedFromJson(request.body());
-            String uuid = UUID.randomUUID().toString();
-            bed.setUuid(uuid);
-            bedService.addBed(bed, uuid);
-            response.status(201);
-            response.header("Location", "/beds/" + uuid);
-            return uuid;
-          } catch (AirbnbException e) {
-            response.status(400);
-            return objectMapper.writeValueAsString(generatePostErrorMessage(e));
-          }
-        });
+    post("", this::createBed, this.objectMapper::writeValueAsString);
 
     get("/:uuid", (this::getBed), this.objectMapper::writeValueAsString);
 
@@ -91,7 +74,7 @@ public class BedResource implements RouteGroup {
         this.objectMapper::writeValueAsString);
   }
 
-  public Object getBed(Request request, Response response) throws JsonProcessingException {
+  public Object getBed(Request request, Response response) {
 
     String uuid = request.params(":uuid");
 
@@ -198,6 +181,17 @@ public class BedResource implements RouteGroup {
     } catch (BedNotFoundException | BookingNotFoundException e) {
       response.status(404);
       return generatePostErrorMessage(e);
+    }
+  }
+
+  public Object createBed(Request request, Response response) throws IOException {
+    try {
+      this.bedValidator.validateBed(request.body());
+      Bed bed = jsonToBedConverter.generateBedFromJson(request.body());
+      String uuid = bedService.addBed(bed);
+      response.status(201);
+      response.header("Location", "/beds/" + uuid);
+      return uuid;
     } catch (AirbnbException e) {
       response.status(400);
       return generatePostErrorMessage(e);

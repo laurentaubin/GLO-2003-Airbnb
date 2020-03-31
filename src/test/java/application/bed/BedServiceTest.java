@@ -7,6 +7,7 @@ import domain.bed.*;
 import domain.bed.enums.*;
 import domain.booking.Booking;
 import domain.booking.BookingStatus;
+import domain.booking.exception.BedNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -130,9 +131,7 @@ class BedServiceTest {
             packages5));
 
     for (Bed bed : beds) {
-      String uuid = UUID.randomUUID().toString();
-      bed.setUuid(uuid);
-      this.bedService.addBed(bed, uuid);
+      this.bedService.addBed(bed);
     }
   }
 
@@ -413,9 +412,7 @@ class BedServiceTest {
             bloodTypes1,
             capacity,
             packages1);
-    String uuid = UUID.randomUUID().toString();
-    bed.setUuid(uuid);
-    bedService.addBed(bed, uuid);
+    bedService.addBed(bed);
     return bed;
   }
 
@@ -425,6 +422,45 @@ class BedServiceTest {
     Booking booking = new Booking(tenantPublicKey, arrivalDate, numberOfNights, bedPackage);
     booking.setColonySize(colonySize);
     return booking;
+  }
+
+  @Test
+  void getTotalNumberOfBeds_withNoBedWasAdded_shouldEquals0() {
+    assertEquals(0, this.bedService.getTotalNumberOfBeds());
+  }
+
+  @Test
+  void addBed_withCreatingOneValidBed_shouldAddOneBedToHashMap() {
+    this.bedService.addBed(this.bed);
+    assertEquals(1, bedService.getTotalNumberOfBeds());
+  }
+
+  @Test
+  void addBed_withCreatingOneValidBed_shouldBeEqualToFirstIndexOfGetAllBeds() {
+    this.bedService.addBed(this.bed);
+    assertEquals(bed, this.bedService.getAllBeds().get(0));
+  }
+
+  @Test
+  void getBedByUuid_withGettingBedWithValidUuid_shouldEqualSameBed() {
+    this.bedUuid = this.bedService.addBed(this.bed);
+    assertEquals(bed, this.bedService.getBedByUuid(this.bedUuid));
+  }
+
+  @Test
+  void getBedByUuid_withGettingBedWithInvalidUuid_shouldThrow() {
+    this.bedService.addBed(this.bed);
+    String invalidUuid = "";
+    assertThrows(BedNotFoundException.class, () -> this.bedService.getBedByUuid(invalidUuid));
+  }
+
+  @Test
+  void removeBed_withGivingValidUUID_shouldWork() {
+    assertEquals(0, bedService.getTotalNumberOfBeds());
+    this.bedUuid = this.bedService.addBed(this.bed);
+    assertEquals(1, bedService.getTotalNumberOfBeds());
+    bedService.removeBed(this.bedUuid);
+    assertEquals(0, bedService.getTotalNumberOfBeds());
   }
 
   @Test

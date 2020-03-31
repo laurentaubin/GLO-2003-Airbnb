@@ -26,7 +26,9 @@ public class BedService {
     return bedService;
   }
 
-  public String addBed(Bed bed, String uuid) {
+  public String addBed(Bed bed) {
+    String uuid = UUID.randomUUID().toString();
+    bed.setUuid(uuid);
     bedRepository.addBed(uuid, bed);
     return uuid;
   }

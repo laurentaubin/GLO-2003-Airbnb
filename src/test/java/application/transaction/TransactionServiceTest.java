@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import domain.bed.Bed;
 import domain.booking.Booking;
+import domain.transaction.TransactionService;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

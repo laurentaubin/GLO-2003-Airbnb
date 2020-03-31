@@ -1,4 +1,4 @@
-package application.transaction;
+package infrastructure.transaction;
 
 import domain.transaction.Transaction;
 import java.util.ArrayList;

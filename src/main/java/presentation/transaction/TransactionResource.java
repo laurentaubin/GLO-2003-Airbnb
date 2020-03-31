@@ -2,8 +2,8 @@ package presentation.transaction;
 
 import static spark.Spark.get;
 
-import application.transaction.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import domain.transaction.TransactionService;
 import spark.Request;
 import spark.Response;
 import spark.RouteGroup;

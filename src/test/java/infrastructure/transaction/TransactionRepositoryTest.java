@@ -1,4 +1,4 @@
-package application.transaction;
+package infrastructure.transaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 

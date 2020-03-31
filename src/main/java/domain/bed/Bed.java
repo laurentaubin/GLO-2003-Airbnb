@@ -2,13 +2,12 @@ package domain.bed;
 
 import domain.bed.enums.*;
 import domain.booking.Booking;
-import domain.booking.exception.BookingNotFoundException;
+import infrastructure.booking.BookingRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class Bed {
@@ -20,7 +19,7 @@ public class Bed {
   private int capacity;
   private BedPackage[] packages;
   private String uuid;
-  private Map<String, Booking> bookings = new HashMap<>();
+  private BookingRepository bookingRepository = new BookingRepository();
   private LodgingMode lodgingMode;
 
   public Bed(
@@ -136,19 +135,16 @@ public class Bed {
 
   public String addBooking(Booking booking) {
     String bookingUuid = UUID.randomUUID().toString();
-    bookings.put(bookingUuid, booking);
+    this.bookingRepository.addBooking(bookingUuid, booking);
     return bookingUuid;
   }
 
   public Booking getBookingByUuid(String uuid) {
-    if (!bookings.containsKey(uuid)) {
-      throw new BookingNotFoundException(uuid);
-    }
-    return bookings.get(uuid);
+    return this.bookingRepository.getBooking(uuid);
   }
 
   public ArrayList<Booking> getAllBookings() {
-    return new ArrayList<>(bookings.values());
+    return this.bookingRepository.getAllBookings();
   }
 
   public LodgingMode getLodgingMode() {

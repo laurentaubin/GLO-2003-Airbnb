@@ -7,7 +7,6 @@ import domain.bed.*;
 import domain.bed.enums.*;
 import domain.booking.Booking;
 import domain.booking.BookingStatus;
-import domain.booking.exception.BedNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -426,45 +425,6 @@ class BedServiceTest {
     Booking booking = new Booking(tenantPublicKey, arrivalDate, numberOfNights, bedPackage);
     booking.setColonySize(colonySize);
     return booking;
-  }
-
-  @Test
-  void getTotalNumberOfBeds_withNoBedWasAdded_shouldEquals0() {
-    assertEquals(0, this.bedService.getTotalNumberOfBeds());
-  }
-
-  @Test
-  void addBed_withCreatingOneValidBed_shouldAddOneBedToHashMap() {
-    this.bedService.addBed(this.bed, this.bedUuid);
-    assertEquals(1, bedService.getTotalNumberOfBeds());
-  }
-
-  @Test
-  void addBed_withCreatingOneValidBed_shouldBeEqualToFirstIndexOfGetAllBeds() {
-    this.bedService.addBed(this.bed, this.bedUuid);
-    assertEquals(bed, this.bedService.getAllBeds().get(0));
-  }
-
-  @Test
-  void getBedByUuid_withGettingBedWithValidUuid_shouldEqualSameBed() {
-    this.bedService.addBed(this.bed, this.bedUuid);
-    assertEquals(bed, this.bedService.getBedByUuid(this.bedUuid));
-  }
-
-  @Test
-  void getBedByUuid_withGettingBedWithInvalidUuid_shouldThrow() {
-    this.bedService.addBed(this.bed, this.bedUuid);
-    String invalidUuid = "";
-    assertThrows(BedNotFoundException.class, () -> this.bedService.getBedByUuid(invalidUuid));
-  }
-
-  @Test
-  void removeBed_withGivingValidUUID_shouldWork() {
-    assertEquals(0, bedService.getTotalNumberOfBeds());
-    this.bedService.addBed(this.bed, this.bedUuid);
-    assertEquals(1, bedService.getTotalNumberOfBeds());
-    bedService.removeBed(this.bedUuid);
-    assertEquals(0, bedService.getTotalNumberOfBeds());
   }
 
   @Test

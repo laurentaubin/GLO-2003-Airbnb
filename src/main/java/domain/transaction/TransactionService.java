@@ -1,9 +1,8 @@
-package application.transaction;
+package domain.transaction;
 
 import domain.bed.Bed;
 import domain.booking.Booking;
-import domain.transaction.Transaction;
-import domain.transaction.TransactionReason;
+import infrastructure.transaction.TransactionRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

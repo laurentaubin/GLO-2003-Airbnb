@@ -1,18 +1,19 @@
-package application.bed;
+package domain.bed;
 
 import application.Query;
+import application.bed.BedStarCalculator;
+import application.bed.BedStarComparator;
 import application.booking.BookingResponse;
 import application.booking.CancelationValidator;
-import application.transaction.TransactionService;
-import domain.bed.Bed;
 import domain.bed.enums.PackageName;
 import domain.booking.Booking;
-import domain.booking.exception.BedNotFoundException;
+import domain.transaction.TransactionService;
+import infrastructure.bed.BedRepository;
 import java.util.*;
 import presentation.bed.BedResponse;
 
 public class BedService {
-  private Map<String, Bed> beds = new HashMap<>();
+  private BedRepository bedRepository = new BedRepository();
   private static BedService bedService = null;
   private TransactionService transactionService = TransactionService.getInstance();
 
@@ -26,19 +27,16 @@ public class BedService {
   }
 
   public String addBed(Bed bed, String uuid) {
-    beds.put(uuid, bed);
+    bedRepository.addBed(uuid, bed);
     return uuid;
   }
 
   public int getTotalNumberOfBeds() {
-    return beds.size();
+    return bedRepository.getTotalNumberOfBeds();
   }
 
   public Bed getBedByUuid(String uuid) {
-    if (!beds.containsKey(uuid)) {
-      throw new BedNotFoundException(uuid);
-    }
-    return beds.get(uuid);
+    return bedRepository.getBed(uuid);
   }
 
   public BedResponse getBedResponseByUuid(String uuid) {
@@ -70,7 +68,7 @@ public class BedService {
   }
 
   public ArrayList<Bed> getAllBeds() {
-    return new ArrayList<Bed>(beds.values());
+    return bedRepository.getAllBeds();
   }
 
   public ArrayList<BookingResponse> getAllBookingsForBed(String bedUuid) {
@@ -84,11 +82,11 @@ public class BedService {
   }
 
   public void removeBed(String uuid) {
-    this.beds.remove(uuid);
+    bedRepository.removeBed(uuid);
   }
 
   public void clearAllBeds() {
-    beds.clear();
+    bedRepository.clearAllBeds();
   }
 
   private ArrayList<Bed> sortBeds(ArrayList<Bed> beds) {

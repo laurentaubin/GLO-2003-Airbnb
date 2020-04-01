@@ -4,11 +4,11 @@ import domain.bed.enums.BedPackage;
 
 public class BedPackageResponse {
   private String name;
-  private double price;
+  private double pricePerNight;
 
   public BedPackageResponse(BedPackage bedPackage) {
     this.name = bedPackage.getName().toString();
-    this.price = bedPackage.getPricePerNight();
+    this.pricePerNight = bedPackage.getPricePerNight();
   }
 
   public String getName() {
@@ -19,11 +19,11 @@ public class BedPackageResponse {
     this.name = name;
   }
 
-  public double getPrice() {
-    return this.price;
+  public double getPricePerNight() {
+    return this.pricePerNight;
   }
 
-  public void setPrice(double price) {
-    this.price = price;
+  public void setPricePerNight(double price) {
+    this.pricePerNight = price;
   }
 }

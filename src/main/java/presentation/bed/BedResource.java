@@ -163,6 +163,9 @@ public class BedResource implements RouteGroup {
     } catch (BedNotFoundException | BookingNotFoundException e) {
       response.status(404);
       return generatePostErrorMessage(e);
+    } catch (AirbnbException e) {
+      response.status(400);
+      return generatePostErrorMessage(e);
     }
   }
 

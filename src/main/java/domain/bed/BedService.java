@@ -4,11 +4,13 @@ import application.Query;
 import application.bed.BedStarCalculator;
 import application.bed.BedStarComparator;
 import application.booking.BookingResponse;
+import application.booking.BookingTotalPriceCalculator;
 import application.booking.CancelationValidator;
 import domain.bed.enums.PackageName;
 import domain.booking.Booking;
 import domain.transaction.TransactionService;
 import infrastructure.bed.BedRepository;
+import java.math.BigDecimal;
 import java.util.*;
 import presentation.bed.BedResponse;
 
@@ -117,6 +119,19 @@ public class BedService {
     ArrayList<Bed> beds = sortBeds(filteredBeds);
 
     return beds;
+  }
+
+  public String addBooking(String bedUuid, Booking booking) {
+    Bed bed = this.getBedByUuid(bedUuid);
+    BigDecimal total = getBookingTotalPrice(bed, booking);
+    booking.setTotal(total);
+    return bed.addBooking(booking);
+  }
+
+  public BigDecimal getBookingTotalPrice(Bed bed, Booking booking) {
+    BookingTotalPriceCalculator calculator =
+        new BookingTotalPriceCalculator(bed.getPackages(), booking);
+    return calculator.getTotalWithDiscount();
   }
 
   public void cancelBooking(String bedUuid, String bookingUuid) {

@@ -40,7 +40,12 @@ public class BedResource implements RouteGroup {
   public void addRoutes() {
     get("", this::getBeds, this.objectMapper::writeValueAsString);
 
-    post("", this::createBed, this.objectMapper::writeValueAsString);
+    post(
+        "",
+        ((request, response) -> {
+          this.createBed(request, response);
+          return "";
+        }));
 
     get("/:uuid", this::getBed, this.objectMapper::writeValueAsString);
 
@@ -169,17 +174,16 @@ public class BedResource implements RouteGroup {
     }
   }
 
-  public Object createBed(Request request, Response response) throws IOException {
+  public void createBed(Request request, Response response) throws IOException {
     try {
       this.bedValidator.validateBed(request.body());
       Bed bed = jsonToBedConverter.generateBedFromJson(request.body());
       String uuid = bedService.addBed(bed);
       response.status(201);
       response.header("Location", "/beds/" + uuid);
-      return uuid;
     } catch (AirbnbException e) {
       response.status(400);
-      return generatePostErrorMessage(e);
+      response.body(objectMapper.writeValueAsString(generatePostErrorMessage(e)));
     }
   }
 

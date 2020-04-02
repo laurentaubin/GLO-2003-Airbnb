@@ -3,7 +3,6 @@ package domain.bed;
 import application.Query;
 import application.bed.BedStarCalculator;
 import application.bed.BedStarComparator;
-import application.booking.BookingResponse;
 import application.booking.BookingTotalPriceCalculator;
 import application.booking.CancelationValidator;
 import domain.bed.enums.PackageName;
@@ -13,6 +12,7 @@ import infrastructure.bed.BedRepository;
 import java.math.BigDecimal;
 import java.util.*;
 import presentation.bed.BedResponse;
+import presentation.booking.BookingResponse;
 
 public class BedService {
   private BedRepository bedRepository = new BedRepository();

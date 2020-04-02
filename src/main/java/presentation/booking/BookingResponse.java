@@ -1,4 +1,4 @@
-package application.booking;
+package presentation.booking;
 
 import domain.booking.Booking;
 import java.math.BigDecimal;
@@ -9,14 +9,6 @@ public class BookingResponse {
   private String bedPackage;
   private String status;
   private BigDecimal total;
-
-  public BookingResponse(
-      String arrivalDate, Integer numberOfNights, String bedPackage, BigDecimal total) {
-    this.arrivalDate = arrivalDate;
-    this.numberOfNights = numberOfNights;
-    this.bedPackage = bedPackage;
-    this.total = total;
-  }
 
   public BookingResponse(Booking booking) {
     this.arrivalDate = booking.getArrivalDate();
@@ -42,7 +34,7 @@ public class BookingResponse {
     this.numberOfNights = numberOfNights;
   }
 
-  public String getBedPackage() {
+  public String getPackage() {
     return this.bedPackage;
   }
 

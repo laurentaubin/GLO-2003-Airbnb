@@ -28,7 +28,7 @@ public class TransactionServiceTest {
   @Test
   void getOwnerTimestamp_whenUsingValidBooking_shouldReturnEndOfDayOfTheLastDay() {
     String timestamp = this.transactionService.getEndOfBookingTimestamp(this.booking);
-    assertEquals("2021-03-29T23:59:59.999999999Z", timestamp);
+    assertEquals("2021-03-29T23:59:59.999Z", timestamp);
   }
 
   @Test

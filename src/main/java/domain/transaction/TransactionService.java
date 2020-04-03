@@ -5,10 +5,12 @@ import domain.booking.Booking;
 import infrastructure.transaction.TransactionRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class TransactionService {
@@ -27,6 +29,11 @@ public class TransactionService {
 
   public ArrayList<Transaction> getTransactions() {
     return transactionRepository.getTransactions();
+  }
+
+  private String getFormattedNowTimeStamp() {
+    String format = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
+    return DateTimeFormatter.ofPattern(format).withZone(ZoneId.of("UTC")).format(Instant.now());
   }
 
   public void addBookedTransactions(Booking booking, Bed bed) {
@@ -60,7 +67,7 @@ public class TransactionService {
 
   private Transaction getTenantBookedTransaction(Booking booking) {
     return new Transaction(
-        LocalDateTime.now().atZone(ZoneOffset.UTC).toString(),
+        getFormattedNowTimeStamp(),
         booking.getTenantPublicKey(),
         AIRBNB,
         booking.getTotal(),
@@ -80,7 +87,10 @@ public class TransactionService {
     LocalDate arrivalDate = LocalDate.parse(booking.getArrivalDate());
     int numberOfNights = booking.getNumberOfNights();
     LocalDate lastDayOfBooking = arrivalDate.plusDays(numberOfNights);
-    return lastDayOfBooking.atTime(LocalTime.MAX).atZone(ZoneOffset.UTC).toString();
+    return lastDayOfBooking
+        .atTime(LocalTime.MAX)
+        .atZone(ZoneOffset.UTC)
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
   }
 
   private void addCanceledBookingWithTotalRefundTransactions(Booking booking, Bed bed) {
@@ -92,7 +102,7 @@ public class TransactionService {
 
   private Transaction getTenantCanceledTransactionWithTotalRefund(Booking booking) {
     return new Transaction(
-        LocalDateTime.now().atZone(ZoneOffset.UTC).toString(),
+        getFormattedNowTimeStamp(),
         AIRBNB,
         booking.getTenantPublicKey(),
         booking.getTotal(),
@@ -119,7 +129,7 @@ public class TransactionService {
 
   private Transaction getTenantCanceledTransactionWithPartialRefund(Booking booking) {
     return new Transaction(
-        LocalDateTime.now().atZone(ZoneOffset.UTC).toString(),
+        this.getFormattedNowTimeStamp(),
         AIRBNB,
         booking.getTenantPublicKey(),
         this.getTenantPartialRefundAmount(booking.getTotal()),
@@ -132,7 +142,7 @@ public class TransactionService {
 
   private Transaction getOwnerCanceledTransactionWithPartialPayment(Bed bed, Booking booking) {
     return new Transaction(
-        LocalDateTime.now().atZone(ZoneOffset.UTC).toString(),
+        this.getFormattedNowTimeStamp(),
         AIRBNB,
         bed.getOwnerPublicKey(),
         this.getOwnerPartialPaymentAmount(booking.getTotal()),

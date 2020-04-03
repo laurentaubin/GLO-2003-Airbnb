@@ -1,12 +1,10 @@
 package domain.geolocation;
 
 import java.awt.geom.Point2D;
-import java.io.IOException;
 
 public class DistanceCalculator {
 
-  public static double getDistanceBetweenTwoCoordinates(Point2D coord1, Point2D coord2)
-      throws IOException {
+  public static double getDistanceBetweenTwoCoordinates(Point2D coord1, Point2D coord2) {
     double lat1 = coord1.getX();
     double lon1 = coord1.getY();
 

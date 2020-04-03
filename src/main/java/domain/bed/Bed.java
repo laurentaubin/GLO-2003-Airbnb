@@ -2,7 +2,9 @@ package domain.bed;
 
 import domain.bed.enums.*;
 import domain.booking.Booking;
+import domain.geolocation.Geolocation;
 import infrastructure.booking.BookingRepository;
+import java.awt.geom.Point2D;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -21,6 +23,7 @@ public class Bed {
   private String uuid;
   private BookingRepository bookingRepository = new BookingRepository();
   private LodgingMode lodgingMode;
+  private Point2D coordinates;
 
   public Bed(
       String ownerPublicKey,
@@ -39,6 +42,7 @@ public class Bed {
     this.setCapacity(capacity);
     this.setPackages(packages);
     this.setLodgingMode(LodgingMode.PRIVATE);
+    this.setCoordinates(Geolocation.getZipCodeCoordinates(this.zipCode));
   }
 
   public Bed(
@@ -59,6 +63,14 @@ public class Bed {
     this.setCapacity(capacity);
     this.setPackages(packages);
     this.setLodgingMode(lodgingMode);
+  }
+
+  public Point2D getCoordinates() {
+    return coordinates;
+  }
+
+  public void setCoordinates(Point2D coordinates) {
+    this.coordinates = coordinates;
   }
 
   public String getOwnerPublicKey() {

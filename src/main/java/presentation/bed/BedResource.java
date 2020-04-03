@@ -86,6 +86,8 @@ public class BedResource implements RouteGroup {
       String lodgingModes = request.queryParamOrDefault("lodgingMode", "empty");
       String arrivalDate = request.queryParamOrDefault("arrivalDate", "empty");
       String numberOfNights = request.queryParamOrDefault("numberOfNights", "empty");
+      String origin = request.queryParamOrDefault("origin", "empty");
+      String maxDistance = request.queryParamOrDefault("maxDistance", "empty");
 
       Query query =
           new Query(
@@ -96,7 +98,9 @@ public class BedResource implements RouteGroup {
               minCapacity,
               lodgingModes,
               arrivalDate,
-              numberOfNights);
+              numberOfNights,
+              origin,
+              maxDistance);
       ArrayList<Bed> beds = this.bedService.Get(query);
 
       ArrayList<BedResponse> bedsResponses = new ArrayList<BedResponse>();

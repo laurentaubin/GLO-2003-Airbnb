@@ -1,12 +1,11 @@
 package application;
 
 import domain.bed.enums.*;
-import domain.bed.exception.ArrivalDateInPastException;
-import domain.bed.exception.InvalidDateWithoutMinCapacityException;
-import domain.bed.exception.InvalidMinCapacityException;
-import domain.bed.exception.InvalidNumberOfNightsWithoutMinCapacityException;
+import domain.bed.exception.*;
 import domain.booking.exception.InvalidArrivalDateException;
 import domain.booking.exception.InvalidNumberOfNightsException;
+import domain.geolocation.Geolocation;
+import java.awt.geom.Point2D;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -21,6 +20,10 @@ public class Query {
   private LodgingMode[] lodgingModes;
   private int numberOfNights;
   private String arrivalDate;
+  private String origin;
+  private double maxDistance;
+  private boolean originGiven;
+  private Point2D coordinates;
 
   public Query(
       String packageNames,
@@ -30,10 +33,13 @@ public class Query {
       String minCapacity,
       String lodgingModes,
       String arrivalDate,
-      String numberOfNights) {
+      String numberOfNights,
+      String origin,
+      String maxDistance) {
 
     validateIfArrivalDateSpecifiedMinCapacityIsSpecified(arrivalDate, minCapacity);
     validateIfNumberOfNightsSpecifiedMinCapacityIsSpecified(numberOfNights, minCapacity);
+    validateIfMaxDistanceSpecifiedOriginIsSpecified(maxDistance, origin);
 
     this.packageNames = unrollPackages(packageNames);
     this.bedTypes = unrollBedTypes(bedTypes);
@@ -43,6 +49,16 @@ public class Query {
     this.lodgingModes = unrollLodgingModes(lodgingModes);
     this.arrivalDate = unrollArrivalDate(arrivalDate);
     this.numberOfNights = unrollNumberOfNights(numberOfNights);
+    this.origin = unrollOrigin(origin);
+    this.maxDistance = unrollMaxDistance(maxDistance);
+  }
+
+  private void validateIfMaxDistanceSpecifiedOriginIsSpecified(String maxDistance, String origin) {
+    if (!maxDistance.equals("empty")) {
+      if (origin.equals("empty")) {
+        throw new InvalidMaxDistanceWithoutOriginException();
+      }
+    }
   }
 
   private void validateIfArrivalDateSpecifiedMinCapacityIsSpecified(
@@ -61,6 +77,38 @@ public class Query {
         throw new InvalidNumberOfNightsWithoutMinCapacityException();
       }
     }
+  }
+
+  private String unrollOrigin(String origin) {
+    if (origin.equals("empty")) {
+      this.originGiven = false;
+      return origin;
+    }
+
+    if (Geolocation.validateZipCode(origin)) {
+      this.coordinates = Geolocation.getZipCodeCoordinates(origin);
+      this.originGiven = true;
+    }
+
+    return origin;
+  }
+
+  private double unrollMaxDistance(String maxDistance) {
+    if (maxDistance.equals("empty")) {
+      return 10.0;
+    }
+
+    try {
+      double distance = Double.parseDouble(maxDistance);
+    } catch (NumberFormatException e) {
+      throw new InvalidMaxDistanceException();
+    }
+
+    if (Double.parseDouble(maxDistance) <= 0) {
+      throw new InvalidMaxDistanceException();
+    }
+
+    return Double.parseDouble(maxDistance);
   }
 
   private int unrollMinCapacity(String minCapacity) {
@@ -226,5 +274,17 @@ public class Query {
 
   public String getArrivalDate() {
     return arrivalDate;
+  }
+
+  public boolean isOriginGiven() {
+    return originGiven;
+  }
+
+  public double getMaxDistance() {
+    return maxDistance;
+  }
+
+  public Point2D getCoordinates() {
+    return coordinates;
   }
 }

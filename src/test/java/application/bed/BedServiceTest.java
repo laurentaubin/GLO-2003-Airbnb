@@ -147,7 +147,10 @@ class BedServiceTest {
   @Test
   void sortBeds_withMultipleBeds_shouldBeSortedInDescendingStarsOrder() {
     createBeds();
-    Query query = new Query("empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty");
+    Query query =
+        new Query(
+            "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty",
+            "empty");
 
     ArrayList<Bed> sortedBeds = this.bedService.Get(query);
 
@@ -161,7 +164,10 @@ class BedServiceTest {
 
   @Test
   void filterBeds_withNoBedWasAdded_shouldEqualEmptyArrayList() {
-    Query query = new Query("empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty");
+    Query query =
+        new Query(
+            "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty",
+            "empty");
     assertEquals(this.bedService.Get(query), new ArrayList<Bed>());
   }
 
@@ -177,8 +183,10 @@ class BedServiceTest {
             "O+,A-,B+",
             "350",
             "private",
-            "empty",
-            "empty");
+            "2021-03-03",
+            "3",
+            "12345",
+            "15.0");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     assertEquals(filteredBeds.size(), 1);
@@ -195,9 +203,18 @@ class BedServiceTest {
   @Test
   void filterBeds_withParameters1_shouldFilterCorrectly() {
     createBeds();
-
     Query query =
-        new Query("empty", "memoryFoam", "empty", "empty", "empty", "empty", "empty", "empty");
+        new Query(
+            "empty",
+            "memoryFoam",
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -211,7 +228,17 @@ class BedServiceTest {
     createBeds();
 
     Query query =
-        new Query("sweetTooth", "springs", "empty", "O-", "empty", "empty", "empty", "empty");
+        new Query(
+            "sweetTooth",
+            "springs",
+            "empty",
+            "O-",
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            "empty",
+            "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -226,7 +253,9 @@ class BedServiceTest {
   void filterBeds_withParameters3_shouldFilterCorrectly() {
     createBeds();
 
-    Query query = new Query("empty", "empty", "never", "empty", "400", "empty", "empty", "empty");
+    Query query =
+        new Query(
+            "empty", "empty", "never", "empty", "400", "empty", "empty", "empty", "empty", "empty");
     ArrayList<Bed> filteredBeds = this.bedService.Get(query);
 
     for (Bed bed : filteredBeds) {
@@ -238,8 +267,11 @@ class BedServiceTest {
 
   @Test
   void filterBeds_withNoParameters_shouldReturnAllBeds() {
-    Query query = new Query("empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty");
-    assertEquals(this.bedService.Get(query), this.bedService.getAllBeds());
+    Query query =
+        new Query(
+            "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty",
+            "empty");
+    assertEquals(this.bedService.getAllBeds().size(), this.bedService.Get(query).size());
   }
 
   @Test
@@ -269,7 +301,9 @@ class BedServiceTest {
             queryMinCapacity,
             "empty",
             queryArrivalDate,
-            queryNumberOfNights);
+            queryNumberOfNights,
+            "empty",
+            "empty");
 
     List<Bed> expected = Arrays.asList(bed1, bed2);
     Collections.sort(expected, new BedStarComparator());
@@ -305,7 +339,9 @@ class BedServiceTest {
             queryMinCapacity,
             "empty",
             queryArrivalDate,
-            queryNumberOfNights);
+            queryNumberOfNights,
+            "empty",
+            "empty");
 
     List<Bed> beds = Arrays.asList(bed1, bed2);
     beds.sort(new BedStarComparator());
@@ -341,7 +377,9 @@ class BedServiceTest {
             queryMinCapacity,
             "empty",
             queryArrivalDate,
-            queryNumberOfNights);
+            queryNumberOfNights,
+            "empty",
+            "empty");
 
     List<Bed> beds = Arrays.asList(bed1, bed2, bed3);
     beds.sort(new BedStarComparator());
@@ -379,11 +417,85 @@ class BedServiceTest {
             queryMinCapacity,
             "empty",
             queryArrivalDate,
-            queryNumberOfNights);
+            queryNumberOfNights,
+            "empty",
+            "empty");
 
     ArrayList<Bed> expected_beds = new ArrayList<>();
     Collections.reverse(expected_beds);
     assertEquals(expected_beds, this.bedService.Get(query));
+  }
+
+  @Test
+  void filterBeds_withInfiniteDistance_shouldReturnAllBeds() {
+    createBeds();
+    Query query =
+        new Query(
+            "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "32003",
+            "99999");
+
+    assertEquals(this.bedService.getAllBeds().size(), this.bedService.Get(query).size());
+  }
+
+  @Test
+  void filterBeds_withSmallDistanceAndZipCodeNotOnABed_shouldReturnNoBeds() {
+    createBeds();
+    Query query =
+        new Query(
+            "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "32003", "0.5");
+    ArrayList<Bed> expected_beds = new ArrayList<>();
+    assertEquals(expected_beds, this.bedService.Get(query));
+  }
+
+  @Test
+  void filterBeds_withSmallDistanceAndZipCodeOnABed_shouldReturnOneBed() {
+    Bed bed1 = createBed("10001");
+    Bed bed2 = createBed("10001");
+    Bed bed3 = createBed("10002");
+
+    Query query =
+        new Query(
+            "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "10002", "3");
+    ArrayList<Bed> expected_beds = new ArrayList<>(Arrays.asList(bed3));
+    assertEquals(expected_beds, this.bedService.Get(query));
+  }
+
+  @Test
+  void filterBeds_withNoMaxDistance_shouldReturnBedsWithinTenKm() {
+    Bed bed1 = createBed("10001");
+    Bed bed2 = createBed("10001");
+    Bed bed3 = createBed("10002");
+    Bed bed4 = createBed("32003");
+
+    Query query =
+        new Query(
+            "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "10002",
+            "empty");
+    ArrayList<Bed> expected_beds = new ArrayList<>(Arrays.asList(bed1, bed2, bed3));
+    ArrayList<Bed> received_beds = this.bedService.Get(query);
+
+    assertTrue(received_beds.contains(bed1));
+    assertTrue(received_beds.contains(bed2));
+    assertTrue(received_beds.contains(bed3));
+    assertEquals(expected_beds.size(), received_beds.size());
+  }
+
+  @Test
+  void filterBeds_withValidMaxDistance_shouldReturnBedsWithinDistance() {
+    Bed bed1 = createBed("10001");
+    Bed bed2 = createBed("10001");
+    Bed bed3 = createBed("10002");
+
+    Query query =
+        new Query(
+            "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "10002", "5");
+    ArrayList<Bed> expected_beds = new ArrayList<>(Arrays.asList(bed1, bed2, bed3));
+    ArrayList<Bed> received_beds = this.bedService.Get(query);
+
+    assertTrue(received_beds.contains(bed1));
+    assertTrue(received_beds.contains(bed2));
+    assertTrue(received_beds.contains(bed3));
+    assertEquals(expected_beds.size(), received_beds.size());
   }
 
   private Bed createBed(
@@ -407,6 +519,35 @@ class BedServiceTest {
         new Bed(
             this.ownerPublicKey,
             this.zipCode,
+            bedType,
+            cleaningFrequency,
+            bloodTypes1,
+            capacity,
+            packages1);
+    bedService.addBed(bed);
+    return bed;
+  }
+
+  private Bed createBed(String zipCode) {
+    BloodType[] bloodTypes1 =
+        new BloodType[] {
+          BloodType.A_NEG,
+          BloodType.A_POS,
+          BloodType.AB_NEG,
+          BloodType.AB_POS,
+          BloodType.B_NEG,
+          BloodType.B_POS,
+          BloodType.O_NEG,
+          BloodType.O_POS
+        };
+    BedPackage[] packages1 =
+        new BedPackage[] {
+          new BedPackage(PackageName.ALL_YOU_CAN_DRINK, 0),
+        };
+    Bed bed =
+        new Bed(
+            this.ownerPublicKey,
+            zipCode,
             bedType,
             cleaningFrequency,
             bloodTypes1,

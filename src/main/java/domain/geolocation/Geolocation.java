@@ -1,5 +1,6 @@
 package domain.geolocation;
 
+import domain.geolocation.exception.GeolocationAPICallFailException;
 import domain.geolocation.exception.InvalidZipCodeException;
 import domain.geolocation.exception.NonExistingZipCodeException;
 import java.awt.geom.Point2D;
@@ -12,7 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 public class Geolocation {
 
-  public static boolean validateZipCode(String zipCode) throws IOException {
+  public static boolean validateZipCode(String zipCode) {
     if (!(zipCode.matches("[0-9]+") && zipCode.length() == 5)) {
       throw new InvalidZipCodeException();
     } else if (GETRequest(zipCode) == null) {
@@ -21,7 +22,7 @@ public class Geolocation {
     return true;
   }
 
-  public static Point2D getZipCodeCoordinates(String zipCode) throws IOException {
+  public static Point2D getZipCodeCoordinates(String zipCode) {
     validateZipCode(zipCode);
     JsonNode response = GETRequest(zipCode);
 
@@ -33,7 +34,7 @@ public class Geolocation {
     return coordinatesDegreeConverter(coordinates);
   }
 
-  public static Point2D coordinatesDegreeConverter(Point2D coordinates) throws IOException {
+  public static Point2D coordinatesDegreeConverter(Point2D coordinates) {
     double latitudeDegree = 110.574;
     double longitudeDegree = 111.320;
 
@@ -47,15 +48,19 @@ public class Geolocation {
     return latLongConvertedToDegrees;
   }
 
-  public static JsonNode GETRequest(String zipCode) throws IOException {
-    URL url = new URL("https://api.zippopotam.us/US/" + zipCode);
-    HttpURLConnection request = (HttpURLConnection) url.openConnection();
-    request.connect();
-    ObjectMapper objectMapper = new ObjectMapper();
+  public static JsonNode GETRequest(String zipCode) {
     JsonNode response = null;
-    if (request.getResponseCode() != 404) {
-      response = objectMapper.readTree(new InputStreamReader((InputStream) request.getContent()));
+    try {
+      URL url = new URL("https://api.zippopotam.us/US/" + zipCode);
+      HttpURLConnection request = (HttpURLConnection) url.openConnection();
+      request.connect();
+      ObjectMapper objectMapper = new ObjectMapper();
+      if (request.getResponseCode() != 404) {
+        response = objectMapper.readTree(new InputStreamReader((InputStream) request.getContent()));
+      }
+      return response;
+    } catch (IOException e) {
+      throw new GeolocationAPICallFailException();
     }
-    return response;
   }
 }

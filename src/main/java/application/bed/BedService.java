@@ -6,6 +6,7 @@ import application.booking.CancelationValidator;
 import domain.bed.Bed;
 import domain.bed.enums.PackageName;
 import domain.booking.Booking;
+import domain.geolocation.DistanceCalculator;
 import domain.transaction.TransactionService;
 import infrastructure.bed.BedRepository;
 import java.math.BigDecimal;
@@ -110,7 +111,11 @@ public class BedService {
           && (Arrays.asList(query.getBedTypes()).contains(bed.getBedType()))
           && (Arrays.asList(query.getLodgingModes()).contains(bed.getLodgingMode()))
           && (bed.isAvailable(
-              query.getArrivalDate(), query.getNumberOfNights(), query.getMinCapacity()))) {
+              query.getArrivalDate(), query.getNumberOfNights(), query.getMinCapacity()))
+          && ((!query.isOriginGiven())
+              || (DistanceCalculator.getDistanceBetweenTwoCoordinates(
+                      bed.getCoordinates(), query.getCoordinates())
+                  <= query.getMaxDistance()))) {
         filteredBeds.add(bed);
       }
     }

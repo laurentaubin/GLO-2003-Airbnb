@@ -143,7 +143,7 @@ public class BookingValidator {
   }
 
   public void validateIfThereIsConflictWithAnotherReservation(
-      String arrivalDate, int numberOfNightsAsked, Bed bed) throws ParseException {
+      String arrivalDate, int numberOfNightsAsked, Bed bed) {
     ArrayList<Booking> bookings = bed.getAllBookings();
     LocalDate askedArrivalDate = LocalDate.parse(arrivalDate);
     LocalDate askedDepartureDate = askedArrivalDate.plusDays(numberOfNightsAsked);

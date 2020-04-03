@@ -1,0 +1,378 @@
+{
+  "info": {
+    "_postman_id": "cb5a7d02-3599-470a-a532-455563cab531",
+    "name": "Airbnb-Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "AUR",
+      "item": [
+        {
+          "name": "POST Bed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"storeBed_whenGivingValidRequestBody_shouldReturn201\", function(){",
+                  "    pm.expect(pm.response.code).to.equal(201);",
+                  "})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"ownerPublicKey\": \"8F0436A6FB049085B7F19AB73933973BF21276276F2EC7D122AC110BB46A3A4E\",\n\t\"zipCode\": \"54321\", \n\t\"bedType\": \"memoryFoam\", \n\t\"cleaningFrequency\": \"never\" , \n\t\"bloodTypes\": [\"O+\", \"A-\", \"B+\"], \n\t\"capacity\": 600, \n\t\"packages\": [{\"name\": \"bloodthirsty\", \"pricePerNight\": 12.50},\n\t\t\t\t{\"name\": \"allYouCanDrink\", \"pricePerNight\": 36.50}]\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "beds"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "setupBedUuid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"setupBedUuid\", function(){",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"bed_uuid\", jsonData[0].bedNumber);",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "beds"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET initial Bed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Test to see if bed_uuid was set correctly\", function(){",
+                  "    const bed_uuid = pm.collectionVariables.get(\"bed_uuid\")",
+                  "    const goodJson = {",
+                  "\"bedNumber\": bed_uuid, ",
+                  "\t\"zipCode\": \"54321\", ",
+                  "\t\"bedType\": \"memoryFoam\", ",
+                  "\t\"cleaningFrequency\": \"never\" , ",
+                  "\t\"bloodTypes\": [\"O+\", \"A-\", \"B+\"], ",
+                  "\t\"capacity\": 600, ",
+                  "\t\"packages\": [{\"name\": \"bloodthirsty\", \"pricePerNight\": 12.50},",
+                  "\t\t\t\t{\"name\": \"allYouCanDrink\", \"pricePerNight\": 36.50}],",
+                  "\t\"stars\": 5,",
+                  "\t\"lodgingMode\": \"private\"",
+                  "}",
+                  "",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(JSON.stringify(jsonData)).to.equal(JSON.stringify(goodJson));",
+                  "})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "beds/{{bed_uuid}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Booking on Bed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"setup\", function(){",
+                  "    const location = pm.response.headers.get('Location')",
+                  "    pm.collectionVariables.set(\"booking_uuid\", location);",
+                  "    pm.expect(pm.response.code).to.equal(201);})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"tenantPublicKey\": \"AA0436A6FB0AA49085B7F19AB73933973BA216276F2EC7D122AC110BB46A3A4E\", \"arrivalDate\": \"2021-01-19\",\"numberOfNights\": 3,\"package\": \"bloodthirsty\"};",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "beds/{{bed_uuid}}/bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Booking on Bed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Get Booking\", function(){",
+                  "    const expectedJsonResponse = {\n\"arrivalDate\": \"2021-01-19\",\n\"numberOfNights\": 3,\n\"bedPackage\": \"bloodthirsty\",\n\"status\": \"booked\",\n \"total\": 35.63}",
+                  "    const actualJsonResponse = pm.response.json()",
+                  "    pm.expect(JSON.stringify(expectedJsonResponse)).to.equal(JSON.stringify(actualJsonResponse));})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "{{booking_uuid}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Booking on Bed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Cancel booking\", function(){",
+                  "    pm.expect(pm.response.code).to.equal(200);})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "{{booking_uuid}}/cancel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Booking on Bed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"GET canceled booking\", function(){",
+                  "    const expectedJsonResponse = {\n\"arrivalDate\": \"2021-01-19\",\n\"numberOfNights\": 3,\n\"bedPackage\": \"bloodthirsty\",\n\"status\": \"canceled\",\n \"total\": 35.63}",
+                  "    const actualJsonResponse = pm.response.json()",
+                  "    pm.expect(JSON.stringify(expectedJsonResponse)).to.equal(JSON.stringify(actualJsonResponse));})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "{{booking_uuid}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel already canceled Booking on Bed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Cancel already canceled booking\", function(){",
+                  "    pm.expect(pm.response.code).to.equal(400);})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "{{booking_uuid}}/cancel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Make a booking with today's as arrival date",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Make booking should return 201\", function(){",
+                  "    pm.collectionVariables.set(\"tomorrow_booking_uuid\", pm.response.text());",
+                  "    pm.expect(pm.response.code).to.equal(201);})"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.test(\"prerequest\", function(){",
+                  "    let date = new Date()",
+                  "    date.setDate(date.getDate() + 1)",
+                  "    pm.collectionVariables.set(\"tomorrow_date\", date.toISOString().slice(0,10).toString())})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"tenantPublicKey\": \"AA0436A6FB0AA49085B7F19AB73933973BA216276F2EC7D122AC110BB46A3A4E\", \"arrivalDate\": \"{{tomorrow_date}}\", \"numberOfNights\": 3,\"package\": \"bloodthirsty\"};",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "beds/{{bed_uuid}}/bookings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking within 24 hours of arrival date",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Cancel booking\", function(){",
+                  "    pm.expect(pm.response.code).to.equal(400);})"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "{{booking_uuid}}/cancel"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

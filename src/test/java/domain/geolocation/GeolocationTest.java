@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import domain.geolocation.exception.InvalidZipCodeException;
 import domain.geolocation.exception.NonExistingZipCodeException;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
@@ -45,18 +46,31 @@ public class GeolocationTest {
   }
 
   @Test
-  void getLocation_withValidZipCode_shouldReturnLatAndLng() throws IOException {
-    assertEquals(Geolocation.getLocation("12345").get("latitude").asText(), "42.8333");
-    assertEquals(Geolocation.getLocation("12345").get("longitude").asText(), "-74.058");
+  void getZipCodeCoordinates_withValidZipCode_shouldReturnLatAndLng() throws IOException {
+    Point2D coord = Geolocation.getZipCodeCoordinates("12345");
+    assertEquals(coord.getX(), 4736.249314, 0.000001);
+    assertEquals(coord.getY(), -6045.712671, 0.000001);
   }
 
   @Test
-  void getLocation_withNonUSZipCode_shouldThrowNonExistingZipCodeException() {
-    assertThrows(NonExistingZipCodeException.class, () -> Geolocation.getLocation("99999"));
+  void coordinatesDegreeConverter_withValidZipCode_shouldReturnlatLongConvertedToDegrees()
+      throws IOException {
+
+    Point2D coordinates = new Point2D.Double(42.8333, -74.058);
+    Point2D convertedCoord = Geolocation.coordinatesDegreeConverter(coordinates);
+
+    assertEquals(convertedCoord.getX(), 4736.249314, 0.000001);
+    assertEquals(convertedCoord.getY(), -6045.712671, 0.000001);
   }
 
   @Test
-  void getLocation_withInvalidZipCodeLength_shouldThrowInvalidZipCodeException() {
-    assertThrows(InvalidZipCodeException.class, () -> Geolocation.getLocation("1234"));
+  void getZipCodeCoordinates_withNonUSZipCode_shouldThrowNonExistingZipCodeException() {
+    assertThrows(
+        NonExistingZipCodeException.class, () -> Geolocation.getZipCodeCoordinates("99999"));
+  }
+
+  @Test
+  void getZipCodeCoordinates_withInvalidZipCodeLength_shouldThrowInvalidZipCodeException() {
+    assertThrows(InvalidZipCodeException.class, () -> Geolocation.getZipCodeCoordinates("1234"));
   }
 }

@@ -4,12 +4,12 @@ import static spark.Spark.get;
 import static spark.Spark.post;
 
 import application.Query;
+import application.bed.BedService;
 import application.bed.BedStarCalculator;
 import application.bed.BedValidator;
 import application.booking.BookingValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.bed.Bed;
-import domain.bed.BedService;
 import domain.bed.exception.AirbnbException;
 import domain.booking.Booking;
 import domain.booking.exception.BedNotFoundException;

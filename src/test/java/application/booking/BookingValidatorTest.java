@@ -2,11 +2,11 @@ package application.booking;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import application.bed.BedService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.bed.Bed;
-import domain.bed.BedService;
 import domain.bed.enums.BedPackage;
 import domain.bed.enums.BedType;
 import domain.bed.enums.BloodType;

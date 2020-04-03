@@ -1,10 +1,9 @@
-package domain.bed;
+package application.bed;
 
 import application.Query;
-import application.bed.BedStarCalculator;
-import application.bed.BedStarComparator;
 import application.booking.BookingTotalPriceCalculator;
 import application.booking.CancelationValidator;
+import domain.bed.Bed;
 import domain.bed.enums.PackageName;
 import domain.booking.Booking;
 import domain.transaction.TransactionService;
